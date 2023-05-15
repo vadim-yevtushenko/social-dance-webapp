@@ -1,27 +1,23 @@
 import {GET} from "./Endpoints";
 import axios from 'axios'
 
-class DancerApi  {
-    getResource = async (url) => {
-        let res = await fetch(url);
 
-        if (!res.ok) {
-            throw new Error(`Could not fetch ${url}, status ${res.status}`)
-        }
+export const getResource = async (url) => {
+    console.log("url", url);
+    let res = await fetch(url);
 
-        return await res.json();
-        // return await axios.get(url);
+    if (!res.ok) {
+        throw new Error(`Could not fetch ${url}, status ${res.status}`)
     }
 
-    getAllDancers = () => {
-        console.log("url", GET.getAllDancers());
-        return this.getResource(GET.getAllDancers())
-    }
+    return await res.json();
+    // return await axios.get(url);const
+};
 
-    getDancer = (id) => {
-        const url = `http://localhost:8080/dancers/`;
-        return this.getResource(GET.getDancer(id));
-    }
+export const getDancers = (offset, size) => {
+    return getResource(GET.getDancers(offset, size));
+};
+
+export const getDancer = (id) => {
+    return getResource(GET.getDancer(id));
 }
-
-export default DancerApi;
