@@ -1,7 +1,9 @@
 import logo from './logo.svg';
 import './App.css';
+import {useRouter} from "next/router";
 
 function App() {
+  const router = useRouter()
   return (
     <div className="App">
       <header className="App-header">

@@ -14,8 +14,8 @@ export const getResource = async (url) => {
     // return await axios.get(url);const
 };
 
-export const getDancers = (offset, size) => {
-    return getResource(GET.getDancers(offset, size));
+export const getDancers = (page, size) => {
+    return getResource(GET.getDancers(page, size));
 };
 
 export const getDancer = (id) => {

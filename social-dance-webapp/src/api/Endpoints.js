@@ -5,9 +5,9 @@ const API_BASE_URL='http://localhost:8080';
 
 export const GET = {
     // Dancers
-    getDancers: (offset, size) => {
+    getDancers: (page, size) => {
         let url = `${API_BASE_URL}/dancers?`
-        if (!!offset) url = url.concat(`offset=${offset}&`)
+        if (!!page) url = url.concat(`pageNumber=${page}&`)
         if (!!size) url = url.concat(`size=${size}&`)
         return url
     },

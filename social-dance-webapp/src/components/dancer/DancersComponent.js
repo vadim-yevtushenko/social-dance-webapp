@@ -8,13 +8,15 @@ import Spinner from "../spinner/Spinner";
 const DancersComponent = () => {
 
     const [dancerList, setDancerList] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [total, setTotal] = useState();
-    const [offset, setOffset] = useState(0);
-    const [size, setSize] = useState(10);
-
+    const [page, setPage] = useState(1);
+    const [size, setSize] = useState(5);
+    console.log("dancers", dancerList)
     useEffect(() => {
-        getDancers(offset, size)
+        console.log("useEffect")
+        setLoading(true);
+        getDancers(page, size)
             .then(res => {
                 setDancerList(res.results);
                 setTotal(res.total)
@@ -24,8 +26,7 @@ const DancersComponent = () => {
                 setLoading(false);
                 console.log("error", error)
             });
-        ;
-    }, []);
+    }, [page, size]);
 
     if (loading){
         return (
@@ -39,10 +40,10 @@ const DancersComponent = () => {
         <div>
             <DancerTable dancers={dancerList}/>
             <Pagination
-                offset={offset}
-                size={dancerList.length < size ? dancerList.length : size}
+                page={page}
+                size={size}
                 total={total}
-                setOffset={setOffset}
+                setPage={setPage}
                 setSize={setSize}
             />
         </div>

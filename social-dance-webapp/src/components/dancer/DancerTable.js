@@ -3,11 +3,6 @@ import dayjs from "dayjs";
 
 const DancerTable = ({dancers}) => {
 
-    const [dancerList, setDancerList] = useState([]);
-    useEffect(() => {
-        setDancerList(dancers);
-    }, [dancers])
-
     const dancesStr = (dances) => {
         return dances.map(d => d.name).join(", ");
     }
@@ -15,6 +10,7 @@ const DancerTable = ({dancers}) => {
     const parseFullDateString = (fullDateString) => {
         return dayjs(fullDateString, 'utc').format('DD MMM YYYY');
     };
+    console.log("DancerTable", dancers.length)
 
     return (
         <div className="px-4 sm:px-6 lg:px-8 my-5">
@@ -58,7 +54,7 @@ const DancerTable = ({dancers}) => {
                             </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200 bg-white">
-                            {dancerList.map((dancer) => (
+                            {dancers.map((dancer) => (
                                 <tr key={dancer.id}>
                                     <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
                                         <div className="flex items-center">
@@ -78,7 +74,7 @@ const DancerTable = ({dancers}) => {
                                     <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                                         <div
                                             className="text-gray-900">{(dancer.school && dancer.school.name) || (dancer.teacher && dancer.teacher.name)}</div>
-                                        <div className="mt-1 text-gray-500">{dancesStr(dancer.dances)}</div>
+                                        <div className="mt-1 text-gray-500">{dancer.dances && dancesStr(dancer.dances)}</div>
                                     </td>
                                     <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                                       <span
