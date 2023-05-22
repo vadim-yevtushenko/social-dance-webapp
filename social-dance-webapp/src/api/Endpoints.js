@@ -12,12 +12,28 @@ export const GET = {
         return url
     },
 
-    getDancer: (dancerId) => `${API_BASE_URL}/dancers/${dancerId}`
+    getDancer: (dancerId) => `${API_BASE_URL}/dancers/${dancerId}`,
 
 
     // Schools
+    getSchools: (page, size) => {
+        let url = `${API_BASE_URL}/schools?`
+        if (!!page) url = url.concat(`pageNumber=${page}&`)
+        if (!!size) url = url.concat(`size=${size}&`)
+        return url
+    },
+
+    getSchool: (schoolId) => `${API_BASE_URL}/schools/${schoolId}`,
 
     // Events
+    getEvents: (page, size) => {
+        let url = `${API_BASE_URL}/events?`
+        if (!!page) url = url.concat(`pageNumber=${page}&`)
+        if (!!size) url = url.concat(`size=${size}&`)
+        return url
+    },
+
+    getEvent: (eventId) => `${API_BASE_URL}/events/${eventId}`,
 };
 
 export const POST = {

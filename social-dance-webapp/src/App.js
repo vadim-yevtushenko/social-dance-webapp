@@ -1,27 +1,24 @@
-import logo from './logo.svg';
 import './App.css';
-import {useRouter} from "next/router";
+import { DancersPage, EventsPage, SchoolsPage } from "./pages";
+import {BrowserRouter,Route, Link, Routes} from "react-router-dom";
+import MainLayout from "./components/layouts/MainLayout";
+import Page404 from "./pages/404";
 
-function App() {
-  const router = useRouter()
+const App = () => {
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+      <BrowserRouter>
+          <main>
+            <Routes>
+              <Route path="/" element={<EventsPage/>}/>
+              <Route path="events" element={<EventsPage/>}/>
+              <Route path="schools" element={<SchoolsPage/>}/>>
+              <Route path="dancers" element={<DancersPage/>}/>>
+              <Route path="*" element={<Page404/>}/>>
+            </Routes>
+          </main>
+      </BrowserRouter>
+  )
 }
 
 export default App;

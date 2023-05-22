@@ -1,23 +1,22 @@
 import React, {useEffect, useState} from "react";
-import {getDancers} from "../../api/DancerApi";
-import DancerTable from "./DancerTable";
-import Pagination from "../pagination/Pagination";
-import LoadingSpinner from "../spinner/LoadingSpinner";
 import Spinner from "../spinner/Spinner";
+import {getEvents} from "../../api/EventApi";
+import CardContainer from "../cardcontainer/CardContainer";
+import CardList from "../cardcontainer/CardList";
 
-const DancersComponent = () => {
+const EventsComponent = () => {
 
-    const [dancers, setDancers] = useState([]);
+    const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(false);
     const [total, setTotal] = useState();
     const [page, setPage] = useState(1);
-    const [size, setSize] = useState(5);
+    const [size, setSize] = useState(6);
 
     useEffect(() => {
         setLoading(true);
-        getDancers(page, size)
+        getEvents(page, size)
             .then(res => {
-                setDancers(res.results);
+                setEvents(res.results);
                 setTotal(res.total)
                 setLoading(false);
             })
@@ -37,16 +36,9 @@ const DancersComponent = () => {
 
     return (
         <div>
-            <DancerTable dancers={dancers}/>
-            <Pagination
-                page={page}
-                size={size}
-                total={total}
-                setPage={setPage}
-                setSize={setSize}
-            />
+            <CardList events={events}/>
         </div>
-    );
+    )
 }
 
-export default DancersComponent
+export default EventsComponent

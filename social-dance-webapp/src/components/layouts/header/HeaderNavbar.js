@@ -2,10 +2,7 @@ import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
+import {classNamesJoin} from "../../../util/classNameUtils";
 
 export default function HeaderNavbar() {
   return (
@@ -30,23 +27,23 @@ export default function HeaderNavbar() {
                 <div className="hidden lg:ml-6 lg:block">
                   <div className="flex space-x-4">
                     {/* Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" */}
-                    <a href="#" className="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white">
+                    <a href="src/components/layouts/header/HeaderNavbar#" className="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white">
                       Dashboard
                     </a>
                     <a
-                      href="#"
+                      href="src/components/layouts/header/HeaderNavbar#"
                       className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
                     >
                       Team
                     </a>
                     <a
-                      href="#"
+                      href="src/components/layouts/header/HeaderNavbar#"
                       className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
                     >
                       Projects
                     </a>
                     <a
-                      href="#"
+                      href="src/components/layouts/header/HeaderNavbar#"
                       className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
                     >
                       Calendar
@@ -119,8 +116,8 @@ export default function HeaderNavbar() {
                         <Menu.Item>
                           {({ active }) => (
                             <a
-                              href="#"
-                              className={classNames(
+                              href="src/components/layouts/header/HeaderNavbar#"
+                              className={classNamesJoin(
                                 active ? 'bg-gray-100' : '',
                                 'block px-4 py-2 text-sm text-gray-700'
                               )}
@@ -132,8 +129,8 @@ export default function HeaderNavbar() {
                         <Menu.Item>
                           {({ active }) => (
                             <a
-                              href="#"
-                              className={classNames(
+                              href="src/components/layouts/header/HeaderNavbar#"
+                              className={classNamesJoin(
                                 active ? 'bg-gray-100' : '',
                                 'block px-4 py-2 text-sm text-gray-700'
                               )}
@@ -145,8 +142,8 @@ export default function HeaderNavbar() {
                         <Menu.Item>
                           {({ active }) => (
                             <a
-                              href="#"
-                              className={classNames(
+                              href="src/components/layouts/header/HeaderNavbar#"
+                              className={classNamesJoin(
                                 active ? 'bg-gray-100' : '',
                                 'block px-4 py-2 text-sm text-gray-700'
                               )}

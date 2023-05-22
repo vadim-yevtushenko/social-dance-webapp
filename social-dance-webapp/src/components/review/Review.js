@@ -1,4 +1,5 @@
 import { StarIcon } from '@heroicons/react/20/solid'
+import {classNamesJoin} from "../../util/classNameUtils";
 
 const reviews = {
     average: 4,
@@ -25,10 +26,6 @@ const reviews = {
     ],
 }
 
-function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
-}
-
 export default function Review() {
     return (
         <div className="bg-white">
@@ -42,7 +39,7 @@ export default function Review() {
                                 {[0, 1, 2, 3, 4].map((rating) => (
                                     <StarIcon
                                         key={rating}
-                                        className={classNames(
+                                        className={classNamesJoin(
                                             reviews.average > rating ? 'text-yellow-400' : 'text-gray-300',
                                             'h-5 w-5 flex-shrink-0'
                                         )}
@@ -68,7 +65,7 @@ export default function Review() {
                                         </p>
                                         <div aria-hidden="true" className="ml-1 flex flex-1 items-center">
                                             <StarIcon
-                                                className={classNames(
+                                                className={classNamesJoin(
                                                     count.count > 0 ? 'text-yellow-400' : 'text-gray-300',
                                                     'h-5 w-5 flex-shrink-0'
                                                 )}
@@ -124,7 +121,7 @@ export default function Review() {
                                                 {[0, 1, 2, 3, 4].map((rating) => (
                                                     <StarIcon
                                                         key={rating}
-                                                        className={classNames(
+                                                        className={classNamesJoin(
                                                             review.rating > rating ? 'text-yellow-400' : 'text-gray-300',
                                                             'h-5 w-5 flex-shrink-0'
                                                         )}

@@ -1,5 +1,5 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
-import {useCallback, useEffect, useRef, useState} from "react";
+import {useCallback, useRef} from "react";
 
 export default function Pagination({page, size, total, setPage, setSize}) {
     // const [currentPage, setCurrentPage] = useState(page);

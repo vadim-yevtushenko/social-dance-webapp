@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { Dialog } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import {NavLink} from "react-router-dom";
 
 const navigation = [
-    { name: 'Events', href: '#' },
-    { name: 'Schools', href: '#' },
-    { name: 'Dancers', href: '#' },
+    { name: 'Events', href: '/events' },
+    { name: 'Schools', href: '/schools' },
+    { name: 'Dancers', href: '/dancers' },
 ]
 
 export default function Header() {
@@ -15,24 +16,29 @@ export default function Header() {
         <header className="bg-gray-800 text-white">
             <nav className="mx-auto flex max-w-7xl items-center justify-between gap-x-6 p-6 lg:px-8" aria-label="Global">
                 <div className="flex lg:flex">
-                    <a href="#" className="-m-1.5 p-1.5">
+                    <a href="src/components/layouts/header/Header#" className="-m-1.5 p-1.5">
                         <span className="sr-only">Your Company</span>
                         <img className="h-10 w-auto -translate-x-12" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="" />
                     </a>
                 </div>
                 <div className="hidden lg:flex lg:gap-x-12 ml-5">
                     {navigation.map((item) => (
-                        <a key={item.name} href={item.href} className="text-sm font-semibold leading-6 text-white">
+                        <NavLink
+                            // key={item.name}
+                            to={item.href}
+                            className="text-md font-semibold leading-6 text-gray-300"
+                            style={({isActive}) => ({'text-decoration': isActive && 'underline', color: isActive && 'white'})}
+                        >
                             {item.name}
-                        </a>
+                        </NavLink>
                     ))}
                 </div>
                 <div className="flex flex-1 items-center justify-end gap-x-6">
-                    <a href="#" className="hidden lg:block lg:text-sm lg:font-semibold lg:leading-6 lg:text-white">
+                    <a href="src/components/layouts/header/Header#" className="hidden lg:block lg:text-sm lg:font-semibold lg:leading-6 lg:text-white">
                         Log in
                     </a>
                     <a
-                        href="#"
+                        href="src/components/layouts/header/Header#"
                         className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     >
                         Sign up
@@ -53,7 +59,7 @@ export default function Header() {
                 <div className="fixed inset-0 z-10" />
                 <Dialog.Panel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
                     <div className="flex items-center gap-x-6">
-                        <a href="#" className="-m-1.5 p-1.5">
+                        <a href="src/components/layouts/header/Header#" className="-m-1.5 p-1.5">
                             <span className="sr-only">Your Company</span>
                             <img
                                 className="h-8 w-auto"
@@ -62,7 +68,7 @@ export default function Header() {
                             />
                         </a>
                         <a
-                            href="#"
+                            href="src/components/layouts/header/Header#"
                             className="ml-auto rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
                             Sign up
@@ -91,7 +97,7 @@ export default function Header() {
                             </div>
                             <div className="py-6">
                                 <a
-                                    href="#"
+                                    href="src/components/layouts/header/Header#"
                                     className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                                 >
                                     Log in
