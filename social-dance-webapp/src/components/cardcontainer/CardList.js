@@ -1,34 +1,10 @@
 import {parseFullDateTimeString} from "../../util/dateTimeUtils";
 import {getFullAddress} from "../../util/addressUtils";
 
-const products = [
-    {
-        id: 1,
-        name: 'Basic Tee 8-Pack',
-        href: '#',
-        price: '$256',
-        description: 'Get the full lineup of our Basic Tees. Have a fresh shirt all week, and an extra for laundry day.',
-        options: '8 colors',
-        imageSrc: 'https://tailwindui.com/img/ecommerce-images/category-page-02-image-card-01.jpg',
-        imageAlt: 'Eight shirts arranged on table in black, olive, grey, blue, white, red, mustard, and green.',
-    },
-    {
-        id: 2,
-        name: 'Basic Tee',
-        href: '#',
-        price: '$32',
-        description: 'Look like a visionary CEO and wear the same black t-shirt every day.',
-        options: 'Black',
-        imageSrc: 'https://tailwindui.com/img/ecommerce-images/category-page-02-image-card-02.jpg',
-        imageAlt: 'Front of plain black t-shirt.',
-    },
-    // More products...
-]
-
 export default function CardList({events}) {
     console.log("events", events)
     return (
-        <div className="bg-white">
+        <div className="bg-gray-50">
             <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
                 <h2 className="sr-only">Events</h2>
 

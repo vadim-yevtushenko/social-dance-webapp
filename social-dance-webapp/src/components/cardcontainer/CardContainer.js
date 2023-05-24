@@ -1,9 +1,8 @@
-import Review from "../review/Review";
 import {StarIcon} from "@heroicons/react/20/solid";
 import {classNamesJoin} from "../../util/classNameUtils";
 
 export default function CardContainer( {schools} ) {
-    console.log("schools", schools)
+
     return (
         <ul role="list" className="space-y-3 my-5 mx-10">
             {schools.map((school) => (

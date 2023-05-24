@@ -24,24 +24,18 @@ export default function Header() {
                 <div className="hidden lg:flex lg:gap-x-12 ml-5">
                     {navigation.map((item) => (
                         <NavLink
-                            // key={item.name}
+                            key={item.name}
                             to={item.href}
                             className="text-md font-semibold leading-6 text-gray-300"
-                            style={({isActive}) => ({'text-decoration': isActive && 'underline', color: isActive && 'white'})}
+                            style={({isActive}) => ({textDecoration: isActive && 'underline', color: isActive && 'white'})}
                         >
                             {item.name}
                         </NavLink>
                     ))}
                 </div>
                 <div className="flex flex-1 items-center justify-end gap-x-6">
-                    <a href="src/components/layouts/header/Header#" className="hidden lg:block lg:text-sm lg:font-semibold lg:leading-6 lg:text-white">
+                    <a href="/login" className="hidden lg:block lg:text-xl lg:font-semibold lg:leading-6 lg:text-red">
                         Log in
-                    </a>
-                    <a
-                        href="src/components/layouts/header/Header#"
-                        className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                    >
-                        Sign up
                     </a>
                 </div>
                 <div className="flex lg:hidden">
@@ -67,12 +61,6 @@ export default function Header() {
                                 alt=""
                             />
                         </a>
-                        <a
-                            href="src/components/layouts/header/Header#"
-                            className="ml-auto rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                        >
-                            Sign up
-                        </a>
                         <button
                             type="button"
                             className="-m-2.5 rounded-md p-2.5 text-gray-700"
@@ -97,7 +85,7 @@ export default function Header() {
                             </div>
                             <div className="py-6">
                                 <a
-                                    href="src/components/layouts/header/Header#"
+                                    href="/login"
                                     className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                                 >
                                     Log in

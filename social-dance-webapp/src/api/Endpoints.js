@@ -8,7 +8,7 @@ export const GET = {
     getDancers: (page, size) => {
         let url = `${API_BASE_URL}/dancers?`
         if (!!page) url = url.concat(`pageNumber=${page}&`)
-        if (!!size) url = url.concat(`size=${size}&`)
+        if (!!size) url = url.concat(`size=${size}`)
         return url
     },
 
@@ -19,7 +19,7 @@ export const GET = {
     getSchools: (page, size) => {
         let url = `${API_BASE_URL}/schools?`
         if (!!page) url = url.concat(`pageNumber=${page}&`)
-        if (!!size) url = url.concat(`size=${size}&`)
+        if (!!size) url = url.concat(`size=${size}`)
         return url
     },
 
@@ -29,22 +29,28 @@ export const GET = {
     getEvents: (page, size) => {
         let url = `${API_BASE_URL}/events?`
         if (!!page) url = url.concat(`pageNumber=${page}&`)
-        if (!!size) url = url.concat(`size=${size}&`)
+        if (!!size) url = url.concat(`size=${size}`)
         return url
     },
 
     getEvent: (eventId) => `${API_BASE_URL}/events/${eventId}`,
+
+    // Credential
+    login: (email, password) => `${API_BASE_URL}/credential?email=${email}&password=${password}`,
 };
 
 export const POST = {
     // Dancers
     createDancer: () => {
         return `${API_BASE_URL}/dancers`;
-    }
+    },
 
     // Schools
 
     // Events
+
+    // Credential
+    registration: (email, password, name) => `${API_BASE_URL}/credential?email=${email}&password=${password}&name=${name}`,
 };
 
 export const DELETE = {

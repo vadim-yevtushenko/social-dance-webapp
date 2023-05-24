@@ -5,12 +5,10 @@ export default function Pagination({page, size, total, setPage, setSize}) {
     // const [currentPage, setCurrentPage] = useState(page);
     const currentPage = useRef(page);
 
-    console.log("currentPage", currentPage.current)
     const changePagination = (i) => {
         // setCurrentPage(changedPage)
         currentPage.current = currentPage.current + i
         passSetPage()
-        console.log("changePagination", currentPage.current)
     }
 
     // useEffect(() => {

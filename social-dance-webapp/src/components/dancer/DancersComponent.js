@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import {getDancers} from "../../api/DancerApi";
 import DancerTable from "./DancerTable";
 import Pagination from "../pagination/Pagination";
-import LoadingSpinner from "../spinner/LoadingSpinner";
 import Spinner from "../spinner/Spinner";
 
 const DancersComponent = () => {
