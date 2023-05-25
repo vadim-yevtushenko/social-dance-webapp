@@ -1,10 +1,10 @@
-import Header from "./header/Header";
 import Footer from "./footer/Footer";
+import MainHeader from "./header/MainHeader";
 
 const MainLayout = ({ children }) => {
     return (
         <div className='flex flex-col h-screen z-20 overflow-auto'>
-            <Header/>
+            <MainHeader/>
             <main className='flex-grow'>{children}</main>
             <Footer/>
         </div>

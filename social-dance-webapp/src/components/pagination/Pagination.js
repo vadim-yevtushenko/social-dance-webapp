@@ -1,70 +1,58 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
-import {useCallback, useRef} from "react";
+import PageSizeOptions from "./PageSizeOptions";
 
 export default function Pagination({page, size, total, setPage, setSize}) {
-    // const [currentPage, setCurrentPage] = useState(page);
-    const currentPage = useRef(page);
-
-    const changePagination = (i) => {
-        // setCurrentPage(changedPage)
-        currentPage.current = currentPage.current + i
-        passSetPage()
-    }
-
-    // useEffect(() => {
-    //     passSetPage()
-    // }, [currentPage.current])
-
-    const passSetPage = useCallback(() => {
-        setPage(currentPage.current)
-    }, [currentPage.current])
 
     const getFirstIndex = () => {
-        return (currentPage.current-1) * size + 1
+        return (page - 1) * size + 1
     }
 
     const getLastIndex = () => {
-        if (currentPage.current > total/size){
-            return total%size + getFirstIndex() - 1
+        if (page > total/size){
+            return total % size + getFirstIndex() - 1
         }
-        return (currentPage.current-1) * size + size
+        return (page - 1) * size + size
     }
-
-    // const changeSize = (newSize) => {
-    //     setFinishIndex(startIndex + newSize - 1);
-    //     setSize(newSize);
-    // }
 
     return (
         <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 mb-4">
             <div className="flex flex-1 justify-between sm:hidden">
                 <a
-                    onClick={() => changePagination(-1)}
+                    onClick={() => setPage(page - 1)}
                     className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
                 >
                     Previous
                 </a>
                 <a
-                    onClick={() => changePagination(1)}
+                    onClick={() => setPage(page + 1)}
                     className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
                 >
                     Next
                 </a>
             </div>
             <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-                <div>
-                    <p className="text-sm text-gray-700">
-                        {size === 0 ? "0 results" :
-                            <>Showing < span className="font-medium">{getFirstIndex()}</span> to <span className="font-medium">{getLastIndex()}</span> of{' '}
-                            <span className="font-medium">{total}</span> results</>
-                        }
-                    </p>
+                <div className="hidden sm:flex sm:flex-1 sm:items-center">
+                    <div>
+                        <p className="text-sm text-gray-700">
+                            {size === 0 ? "0 results" :
+                                <>Showing < span className="font-medium">{getFirstIndex()}</span> to <span className="font-medium">{getLastIndex()}</span> of{' '}
+                                    <span className="font-medium">{total}</span> results</>
+                            }
+                        </p>
+                    </div>
+                    <div className="ml-10 -translate-y-1">
+                        <PageSizeOptions
+                            disabled={false}
+                            pageSize={size}
+                            setPageSize={setSize}
+                        />
+                    </div>
                 </div>
                 <div>
                     <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
                         <button
-                            disabled={currentPage.current < 2}
-                            onClick={() => changePagination(-1)}
+                            disabled={page < 2}
+                            onClick={() => setPage(page - 1)}
                             className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
                         >
                             <span className="sr-only">Previous</span>
@@ -112,8 +100,8 @@ export default function Pagination({page, size, total, setPage, setSize}) {
                             10
                         </a>
                         <button
-                            disabled={currentPage.current >= total/size}
-                            onClick={() => changePagination(1)}
+                            disabled={page >= total/size}
+                            onClick={() => setPage(page + 1)}
                             className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
 
                         >

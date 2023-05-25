@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Dialog } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import {NavLink} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {userLogout} from "../../../redux/actions/authActions";
 
 const navigation = [
     { name: 'Events', href: '/events' },
@@ -11,9 +13,16 @@ const navigation = [
 
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    const isAuthenticated = useSelector(state => state.isAuthenticated)
+    const dispatch = useDispatch();
+    console.log("state", useSelector(state => state))
+
+    const logout = () => {
+        dispatch(userLogout())
+    }
 
     return (
-        <header className="bg-gray-800 text-white">
+        <header className="bg-gray-800 text-white mb-5">
             <nav className="mx-auto flex max-w-7xl items-center justify-between gap-x-6 p-6 lg:px-8" aria-label="Global">
                 <div className="flex lg:flex">
                     <a href="src/components/layouts/header/Header#" className="-m-1.5 p-1.5">
@@ -34,9 +43,22 @@ export default function Header() {
                     ))}
                 </div>
                 <div className="flex flex-1 items-center justify-end gap-x-6">
-                    <a href="/login" className="hidden lg:block lg:text-xl lg:font-semibold lg:leading-6 lg:text-red">
-                        Log in
-                    </a>
+                    {isAuthenticated ? (
+                            <button
+                                className='block px-4 py-2 text-xl text-white'
+                                onClick={() => logout()}
+                            >
+                                Sign out
+                            </button>
+                        ) : (
+                        <NavLink
+                            to="/login"
+                            className="hidden lg:block lg:text-xl lg:font-semibold lg:leading-6 lg:text-red"
+                            style={({isActive}) => ({textDecoration: isActive && 'underline'})}
+                        >
+                            Log in
+                        </NavLink>
+                        )}
                 </div>
                 <div className="flex lg:hidden">
                     <button
@@ -83,14 +105,17 @@ export default function Header() {
                                     </a>
                                 ))}
                             </div>
-                            <div className="py-6">
-                                <a
-                                    href="/login"
-                                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                                >
-                                    Log in
-                                </a>
-                            </div>
+
+                                <div className="py-6">
+                                    {isAuthenticated ||
+                                        <a
+                                            href="/login"
+                                            className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                                        >
+                                            Log in
+                                        </a>
+                                    }
+                                </div>
                         </div>
                     </div>
                 </Dialog.Panel>

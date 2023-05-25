@@ -1,15 +1,24 @@
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {login} from "../../api/CredentialApi";
 import Spinner from "../spinner/Spinner";
 import { useNavigate } from "react-router-dom";
 import React from "react";
-import {getDancers} from "../../api/DancerApi";
+import {useDispatch, useSelector} from "react-redux";
+import {userLogin} from "../../redux/actions/authActions";
 
 const LoginForm = () => {
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const isAuthenticated = useSelector(state => state.isAuthenticated)
+
+    useEffect(() => {
+        if (isAuthenticated){
+            navigate("/events")
+        }
+    },[isAuthenticated])
 
     console.log("email", email)
     console.log("password", password)
@@ -17,23 +26,14 @@ const LoginForm = () => {
         setLoading(true)
         login(email, password)
             .then(res => {
-                console.log(res)
+                console.log("res", res)
+                dispatch(userLogin({email, password}, res))
                 setLoading(false);
             })
             .catch(error => {
                 console.log("error", error)
                 setLoading(false);
             })
-        // getDancers(1, 2)
-        //     .then(res => {
-        //         console.log("res", res)
-        //         setLoading(false);
-        //
-        //     })
-        //     .catch(error => {
-        //         setLoading(false);
-        //         console.log("error", error)
-        //     });
     }
 
     if (loading){
