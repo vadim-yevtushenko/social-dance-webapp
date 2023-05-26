@@ -1,7 +1,7 @@
 import './App.css';
-import {DancersPage, EventsPage, LoginPage, Page404, SchoolsPage} from "./pages";
+import {DancersPage, EventsPage, LoginPage, Page404,
+    ProfilePage, RegistrationPage, SchoolsPage} from "./pages";
 import {BrowserRouter,Route, Routes} from "react-router-dom";
-import RegistrationForm from "./components/forms/RegistrationForm";
 
 const App = () => {
 
@@ -13,10 +13,9 @@ const App = () => {
               <Route path="events" element={<EventsPage/>}/>
               <Route path="schools" element={<SchoolsPage/>}/>
               <Route path="dancers" element={<DancersPage/>}/>
-                <Route path="login" element={<LoginPage/>}>
-
-                </Route>
-                <Route path="registration" element={<RegistrationForm/>}/>
+              <Route path="profile" element={<ProfilePage/>}/>
+              <Route path="login" element={<LoginPage/>}/>
+              <Route path="registration" element={<RegistrationPage/>}/>
               <Route path="*" element={<Page404/>}/>
             </Routes>
           </main>

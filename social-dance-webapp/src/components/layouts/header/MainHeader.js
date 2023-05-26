@@ -13,6 +13,12 @@ const navigation = [
   { name: 'Dancers', href: '/dancers' },
 ]
 
+const menu = [
+  { name: 'Your profile', href: '/profile' },
+  { name: 'Settings', href: '/profile' },
+  { name: 'Sign out', href: '#' },
+]
+
 export default function MainHeader() {
 
   const navigate = useNavigate();
@@ -51,7 +57,7 @@ export default function MainHeader() {
                   ))}
                 </div>
               </div>
-              <div className="flex lg:hidden">
+              <div className="flex lg:hidden mr-5">
                 {/* Mobile menu button */}
                 <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                   <span className="sr-only">Open main menu</span>
@@ -97,59 +103,46 @@ export default function MainHeader() {
                       >
                         <Menu.Items
                             className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                          <Menu.Item>
+                          {menu.map(item => (
+                              <Menu.Item>
                             {({active}) => (
-                                <a
-                                    href="src/components/layouts/header/HeaderNavbar#MainHeader.js"
+                                <NavLink
+                                    to={item.href}
                                     className={classNamesJoin(
                                         active ? 'bg-gray-100' : '',
                                         'block px-4 py-2 text-sm text-gray-700'
                                     )}
+                                    onClick={() => item.name==='Sign out' && logout()}
                                 >
-                                  Your Profile
-                                </a>
+                                  {item.name}
+                                </NavLink>
                             )}
                           </Menu.Item>
-                          <Menu.Item>
-                            {({active}) => (
-                                <a
-                                    href="src/components/layouts/header/HeaderNavbar#MainHeader.js"
-                                    className={classNamesJoin(
-                                        active ? 'bg-gray-100' : '',
-                                        'block px-4 py-2 text-sm text-gray-700'
-                                    )}
-                                >
-                                  Settings
-                                </a>
-                            )}
-                          </Menu.Item>
-                          <Menu.Item>
-                            {({active}) => (
-                                <button
-                                    href="src/components/layouts/header/HeaderNavbar#"
-                                    className={classNamesJoin(
-                                        active ? 'bg-gray-100' : '',
-                                        'block px-4 py-2 text-sm text-gray-700'
-                                    )}
-                                    onClick={() => logout()}
-                                >
-                                  Sign out
-                                </button>
-                            )}
-                          </Menu.Item>
+                          ))}
                         </Menu.Items>
                       </Transition>
                     </Menu>
                   </div>
                 </div>
               ) : (
-                  <NavLink
-                      to="/login"
-                      className="hidden lg:block lg:text-xl lg:font-semibold lg:leading-6 lg:text-white"
-                      style={({isActive}) => ({textDecoration: isActive && 'underline'})}
-                  >
-                    Log in
-                  </NavLink>
+                  <div className="hidden lg:flex flex-1 items-center justify-end gap-x-6">
+                    <NavLink
+                        to="/login"
+                        className="hidden lg:block lg:text-xl lg:font-semibold lg:leading-6 lg:text-white"
+                        style={({isActive}) => ({textDecoration: isActive && 'underline', color: isActive && 'orange'})}
+                    >
+                      Log in
+                    </NavLink>
+                    <NavLink
+                        to="/registration"
+                        className="rounded-md bg-indigo-600 px-3 py-2 text-md font-semibold text-white
+                        shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2
+                        focus-visible:outline-offset-2 focus-visible:outline-indigo-600 translate-x-7"
+                        style={({isActive}) => ({background: isActive && 'orange'})}
+                    >
+                      Sign up
+                    </NavLink>
+                  </div>
               )}
             </div>
           </div>
@@ -169,6 +162,7 @@ export default function MainHeader() {
                 ))}
               </div>
             </div>
+            {isAuthenticated ? (
             <div className="border-t border-gray-700 pb-3 pt-4">
               <div className="flex items-center px-5">
                 <div className="flex-shrink-0">
@@ -191,29 +185,37 @@ export default function MainHeader() {
                 </button>
               </div>
               <div className="mt-3 space-y-1 px-2">
-                <Disclosure.Button
-                  as="a"
-                  href="#"
-                  className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-                >
-                  Your Profile
-                </Disclosure.Button>
-                <Disclosure.Button
-                  as="a"
-                  href="#"
-                  className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-                >
-                  Settings
-                </Disclosure.Button>
-                <Disclosure.Button
-                  as="a"
-                  href="#"
-                  className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-                >
-                  Sign out
-                </Disclosure.Button>
+                {menu.map(item => (
+                          <NavLink
+                              to={item.href}
+                              className='block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white'
+                              onClick={() => item.name==='Sign out' && logout()}
+                          >
+                            {item.name}
+                          </NavLink>
+                ))}
               </div>
             </div>
+            ) : (
+                <div className="flex flex-1 items-center justify-around gap-x-6 mx-5">
+                  <NavLink
+                      to="/login"
+                      className="block text-xl font-semibold leading-6 text-white"
+                      style={({isActive}) => ({textDecoration: isActive && 'underline'})}
+                  >
+                    Log in
+                  </NavLink>
+                  <NavLink
+                      to="/registration"
+                      className="rounded-md bg-indigo-600 px-3 py-2 text-md font-semibold text-white
+                        shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2
+                        focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                      style={({isActive}) => ({background: isActive && 'orange'})}
+                  >
+                    Sign up
+                  </NavLink>
+                </div>
+            )}
           </Disclosure.Panel>
         </>
       )}

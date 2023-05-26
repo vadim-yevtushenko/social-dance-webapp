@@ -1,6 +1,7 @@
 import axios from "axios";
 
-export const getResource = async (url) => {
+const requestWrapper = async (url, method, body) => {
+
     console.log("url", url);
     let res = await fetch(url);
 
@@ -11,3 +12,5 @@ export const getResource = async (url) => {
     return await res.json();
     // return await axios.get(url).then(res => res.data);
 };
+
+export default requestWrapper

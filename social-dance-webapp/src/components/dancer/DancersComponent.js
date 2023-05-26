@@ -14,7 +14,7 @@ const DancersComponent = () => {
 
     useEffect(() => {
         setLoading(true);
-        getDancers(page, size)
+        getDancers(page, Number(size))
             .then(res => {
                 setDancers(res.results);
                 setTotal(res.total)

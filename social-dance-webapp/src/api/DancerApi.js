@@ -1,10 +1,10 @@
 import {GET} from "./Endpoints";
-import {getResource} from "./request";
+import requestWrapper from "./requestWrapper";
 
 export const getDancers = (page, size) => {
-    return getResource(GET.getDancers(page, size));
+    return requestWrapper(GET.getDancers(page, size));
 };
 
 export const getDancer = (id) => {
-    return getResource(GET.getDancer(id));
+    return requestWrapper(GET.getDancer(id));
 }

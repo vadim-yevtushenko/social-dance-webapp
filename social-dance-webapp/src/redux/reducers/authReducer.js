@@ -1,5 +1,5 @@
 import initialState from "../initialState";
-import {DANCER_LOGIN, DANCER_LOGOUT, GET_DANCER} from "../actions/authActions";
+import {DANCER_LOGIN, DANCER_LOGOUT} from "../actions/authActions";
 
 const authReducer = (
     state = initialState().auth,
@@ -9,7 +9,7 @@ const authReducer = (
         case DANCER_LOGIN:
             const {email, password} = action.payload
             const dancer = action.payload
-            const isAuthenticated = (dancer) => Boolean(dancer)
+            const isAuthenticated = dancer != null
             return {
                 ...state,
                 email: email,
@@ -18,6 +18,7 @@ const authReducer = (
                 dancer: dancer
             }
         case DANCER_LOGOUT:
+            console.log("LOGOUT")
             return {
                 ...initialState().auth
             }

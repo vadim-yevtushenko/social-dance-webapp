@@ -1,7 +1,8 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
-import PageSizeOptions from "./PageSizeOptions";
+import DropDownList from "../forms/DropDownList";
 
 export default function Pagination({page, size, total, setPage, setSize}) {
+    const pageSizeOptions = [5, 10, 20, 50]
 
     const getFirstIndex = () => {
         return (page - 1) * size + 1
@@ -40,11 +41,13 @@ export default function Pagination({page, size, total, setPage, setSize}) {
                             }
                         </p>
                     </div>
-                    <div className="ml-10 -translate-y-1">
-                        <PageSizeOptions
+                    <div className="ml-10 text-sm flex items-center">
+                        <p className="mr-2">Page size</p>
+                        <DropDownList
                             disabled={false}
-                            pageSize={size}
-                            setPageSize={setSize}
+                            startOption={size}
+                            setOption={setSize}
+                            options={pageSizeOptions}
                         />
                     </div>
                 </div>

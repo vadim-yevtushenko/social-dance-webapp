@@ -50,7 +50,7 @@ export const POST = {
     // Events
 
     // Credential
-    registration: (email, password, name) => `${API_BASE_URL}/credential?email=${email}&password=${password}&name=${name}`,
+    registration: (email, password) => `${API_BASE_URL}/credential?email=${email}&password=${password}`,
 };
 
 export const DELETE = {

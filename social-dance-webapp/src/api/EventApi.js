@@ -1,10 +1,10 @@
-import {getResource} from "./request";
+import requestWrapper from "./requestWrapper";
 import {GET} from "./Endpoints";
 
 export const getEvents = (page, size) => {
-    return getResource(GET.getEvents(page, size));
+    return requestWrapper(GET.getEvents(page, size));
 };
 
 export const getEvent = (id) => {
-    return getResource(GET.getEvent(id));
+    return requestWrapper(GET.getEvent(id));
 }
