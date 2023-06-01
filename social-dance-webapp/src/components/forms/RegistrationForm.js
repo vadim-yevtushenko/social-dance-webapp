@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {userLogin} from "../../redux/actions/authActions";
+import {dancerLogin, updateDancer} from "../../redux/actions/authActions";
 import Spinner from "../spinner/Spinner";
 import RadioGroup from "./RadioGroup";
 import DropDownList from "./DropDownList";
 import {useHttp} from "../../hooks/http.hook";
 import {POST} from "../../api/Endpoints";
+import {useValues} from "../../hooks/useValues";
 
 const RegistrationForm = () => {
     const [loading, setLoading] = useState(false);
@@ -20,12 +21,7 @@ const RegistrationForm = () => {
     const dispatch = useDispatch();
     const isAuthenticated = useSelector(state => state.isAuthenticated)
     const {request} = useHttp();
-
-    const levelOptions = ["JUNIOR", "MIDDLE", "ADVANCED", "TEACHER"]
-    const genderButtons = [
-        { id: 'male', title: 'male' },
-        { id: 'female', title: 'female' }
-    ]
+    const {levelOptions, genderButtons} = useValues()
 
     useEffect(() => {
         if (isAuthenticated){
@@ -33,16 +29,15 @@ const RegistrationForm = () => {
         }
     },[isAuthenticated])
 
-    const signup = (email, password, dancer) => {
-        return request(POST.registration(email, password), "POST", JSON.stringify(dancer))
-    }
-
-    const startSignup = (email, password, {name, gender, level}) => {
+    const onSubmit = (email, password, {name, gender, level}) => {
         setLoading(true)
-        signup(email, password, {name, gender, level})
+        const signup = () => request(POST.registration(email, password), "POST", JSON.stringify({name, gender, level}))
+        signup()
             .then(res => {
                 console.log("res", res)
-                dispatch(userLogin({email, password}, res))
+                const isAuth = res != null
+                dispatch(dancerLogin(email, password, isAuth))
+                dispatch(updateDancer(res))
                 setLoading(false);
             })
             .then(navigate("/profile"))
@@ -76,7 +71,11 @@ const RegistrationForm = () => {
 
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
                     <div className="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
-                        <form className="space-y-6" action="#" method="POST">
+                        <form
+                            className="space-y-6"
+                            action="#"
+                            method="POST"
+                        >
                             <div>
                                 <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                                     Name
@@ -179,7 +178,7 @@ const RegistrationForm = () => {
                                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5
                                     text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline
                                     focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                onClick={() => startSignup(email, password, {name, gender, level})}
+                                onClick={() => onSubmit(email, password, {name, gender, level})}
                             >
                                 Sign up
                             </button>

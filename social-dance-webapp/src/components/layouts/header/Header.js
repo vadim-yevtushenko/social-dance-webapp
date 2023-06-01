@@ -3,7 +3,7 @@ import { Dialog } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import {NavLink} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {userLogout} from "../../../redux/actions/authActions";
+import {dancerLogout} from "../../../redux/actions/authActions";
 
 const navigation = [
     { name: 'Events', href: '/events' },
@@ -18,7 +18,7 @@ export default function Header() {
     console.log("state", useSelector(state => state))
 
     const logout = () => {
-        dispatch(userLogout())
+        dispatch(dancerLogout())
     }
 
     return (

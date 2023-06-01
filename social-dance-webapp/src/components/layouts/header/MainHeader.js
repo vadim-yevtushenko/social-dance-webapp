@@ -1,11 +1,10 @@
-import { Fragment } from 'react'
+import {Fragment} from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import {classNamesJoin} from "../../../util/classNameUtils";
 import {NavLink, useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {userLogout} from "../../../redux/actions/authActions";
+import {dancerLogout} from "../../../redux/actions/authActions";
 
 const navigation = [
   { name: 'Events', href: '/events' },
@@ -16,17 +15,22 @@ const navigation = [
 const menu = [
   { name: 'Your profile', href: '/profile' },
   { name: 'Settings', href: '/profile' },
-  { name: 'Sign out', href: '#' },
+  { name: 'Log out', href: '#' },
 ]
 
 export default function MainHeader() {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const isAuthenticated = useSelector(state => state.isAuthenticated)
+  const {isAuthenticated, email, dancer} = useSelector(state => state)
+  const  {name, lastName} = useSelector(state => state.dancer.dancer)
+
+  console.log("dancer", dancer.dancer)
+  console.log("isAuthenticated", isAuthenticated)
+  console.log("email", email)
 
   const logout = () => {
-    dispatch(userLogout())
+    dispatch(dancerLogout())
   }
 
   return (
@@ -85,11 +89,17 @@ export default function MainHeader() {
                         <Menu.Button
                             className="flex rounded-full bg-gray-800 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                           <span className="sr-only">Open user menu</span>
-                          <img
-                              className="h-8 w-8 rounded-full"
-                              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                              alt=""
-                          />
+                          <div className="flex item-center">
+                            <img
+                                className="h-8 w-8 rounded-full mt-1"
+                                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                alt=""
+                            />
+                            <div className="mx-3">
+                              <div className="text-base font-medium text-white">{name} {lastName}</div>
+                              <div className="text-sm font-medium text-gray-400">{email}</div>
+                            </div>
+                          </div>
                         </Menu.Button>
                       </div>
                       <Transition
@@ -104,7 +114,7 @@ export default function MainHeader() {
                         <Menu.Items
                             className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                           {menu.map(item => (
-                              <Menu.Item>
+                              <Menu.Item key={item.name}>
                             {({active}) => (
                                 <NavLink
                                     to={item.href}
@@ -112,7 +122,7 @@ export default function MainHeader() {
                                         active ? 'bg-gray-100' : '',
                                         'block px-4 py-2 text-sm text-gray-700'
                                     )}
-                                    onClick={() => item.name==='Sign out' && logout()}
+                                    onClick={() => item.name==='Log out' && logout()}
                                 >
                                   {item.name}
                                 </NavLink>
@@ -173,8 +183,8 @@ export default function MainHeader() {
                   />
                 </div>
                 <div className="ml-3">
-                  <div className="text-base font-medium text-white">Tom Cook</div>
-                  <div className="text-sm font-medium text-gray-400">tom@example.com</div>
+                  <div className="text-base font-medium text-white">{name} {lastName}</div>
+                  <div className="text-sm font-medium text-gray-400">{email}</div>
                 </div>
                 <button
                   type="button"
@@ -189,7 +199,7 @@ export default function MainHeader() {
                           <NavLink
                               to={item.href}
                               className='block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white'
-                              onClick={() => item.name==='Sign out' && logout()}
+                              onClick={() => item.name==='Log out' && logout()}
                           >
                             {item.name}
                           </NavLink>

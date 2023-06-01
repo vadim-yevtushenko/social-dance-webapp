@@ -1,5 +1,5 @@
 import initialState from "../initialState";
-import {DANCER_LOGIN, DANCER_LOGOUT} from "../actions/authActions";
+import {DANCER_LOGIN, DANCER_LOGOUT, UPDATE_DANCER} from "../actions/authActions";
 
 const authReducer = (
     state = initialState().auth,
@@ -7,27 +7,29 @@ const authReducer = (
 ) => {
     switch (action.type){
         case DANCER_LOGIN:
-            const {email, password} = action.payload
-            const dancer = action.payload
-            const isAuthenticated = dancer != null
+            const {email, password, isAuth} = action.payload
             return {
                 ...state,
                 email: email,
                 password: password,
-                isAuthenticated: isAuthenticated,
-                dancer: dancer
+                isAuthenticated: isAuth,
             }
         case DANCER_LOGOUT:
             console.log("LOGOUT")
             return {
                 ...initialState().auth
+                // ...state,
+                // email: '',
+                // password: '',
+                // isAuthenticated: false,
+                // dancer: {}
             }
-        // case GET_DANCER:
-        //     const data = action.payload
-        //     return {
-        //         ...state,
-        //         dancer: data
-        //     }
+        case UPDATE_DANCER:
+            const data = action.payload
+            return {
+                ...state,
+                dancer: data
+            }
         default:
             return state
     }

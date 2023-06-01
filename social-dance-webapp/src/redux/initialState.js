@@ -3,7 +3,9 @@ const initialState = () => ({
         email: '',
         password: '',
         isAuthenticated: false,
-        dancer: {}
+        dancer: {dancer: {
+            contactInfo:{}
+            }}
     },
     // dancer: {
     //     id: null,
@@ -20,12 +22,8 @@ const initialState = () => ({
     //     teacher: null,
     //     school: null
     // },
-    dancerList: {
-        size: 10,
-        page: 1,
-        results: [],
-        total: 0,
-        filter: [],
+    danceList: {
+        dances: [],
         loading: false
     },
     // schoolList: {

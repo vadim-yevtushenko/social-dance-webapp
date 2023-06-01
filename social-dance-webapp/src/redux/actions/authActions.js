@@ -1,18 +1,22 @@
+import {createAction} from "@reduxjs/toolkit";
+
 export const DANCER_LOGIN = 'DANCER_LOGIN'
 export const DANCER_LOGOUT = 'DANCER_LOGOUT'
-// export const GET_DANCER = 'GET_DANCER'
+export const UPDATE_DANCER = 'UPDATE_DANCER'
 
 // Action Creator
-export const userLogin = ({ email, password}, dancer ) => ({
+export const dancerLogin = (email, password, isAuth ) => ({
     type: DANCER_LOGIN,
-    payload: { email, password, dancer }
+    payload: { email, password, isAuth }
 })
 
-export const userLogout = () => ({
+export const dancerLogout = () => ({
     type: DANCER_LOGOUT
 })
 
-// export const getUserData = data => ({
-//     type: GET_DANCER,
-//     payload: data
-// })
+// export const userLogout = createAction(DANCER_LOGOUT)
+
+export const updateDancer = dancer => ({
+    type: UPDATE_DANCER,
+    payload: { dancer }
+})

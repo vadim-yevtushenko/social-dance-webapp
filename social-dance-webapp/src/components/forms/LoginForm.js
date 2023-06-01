@@ -1,10 +1,11 @@
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useState} from "react";
 import {login} from "../../api/CredentialApi";
 import Spinner from "../spinner/Spinner";
 import { useNavigate } from "react-router-dom";
 import React from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {userLogin} from "../../redux/actions/authActions";
+import {dancerLogin, updateDancer} from "../../redux/actions/authActions";
+import {useForm} from "react-hook-form";
 
 const LoginForm = () => {
     const [loading, setLoading] = useState(false);
@@ -13,6 +14,7 @@ const LoginForm = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const isAuthenticated = useSelector(state => state.isAuthenticated)
+    const { register, handleSubmit, formState: { errors }, } = useForm()
 
     useEffect(() => {
         if (isAuthenticated){
@@ -20,14 +22,15 @@ const LoginForm = () => {
         }
     },[isAuthenticated])
 
-    console.log("email", email)
-    console.log("password", password)
-    const startLogin = (email, password) => {
+    const onSubmit = ({email, password}) => {
         setLoading(true)
+        // const login = () =>
         login(email, password)
             .then(res => {
                 console.log("res", res)
-                dispatch(userLogin({email, password}, res))
+                const isAuth = res != null
+                dispatch(dancerLogin(email, password, isAuth))
+                dispatch(updateDancer(res))
                 setLoading(false);
             })
             .catch(error => {
@@ -60,7 +63,11 @@ const LoginForm = () => {
 
                     <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
                         <div className="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
-                            <form className="space-y-6" action="#" method="POST">
+                            <form
+                                className="space-y-6"
+                                // action="#"
+                                // method="POST"
+                                onSubmit={handleSubmit(onSubmit)}>
                                 <div>
                                     <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                                         Email address
@@ -72,11 +79,13 @@ const LoginForm = () => {
                                             type="email"
                                             autoComplete="email"
                                             required
+                                            {...register('email', { required: true, maxLength: 60, minLength: 5 })}
                                             value={email}
                                             onChange={event => setEmail(event.target.value)}
                                             placeholder='youremail@example.com'
                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                         />
+                                        {errors.email && <p className="text-sm text-red-600">Email is required.</p>}
                                     </div>
                                 </div>
 
@@ -91,6 +100,7 @@ const LoginForm = () => {
                                             type="password"
                                             autoComplete="current-password"
                                             required
+                                            {...register('password', { required: true })}
                                             value={password}
                                             onChange={event => setPassword(event.target.value)}
                                             placeholder='**********'
@@ -121,11 +131,11 @@ const LoginForm = () => {
 
                                 <div>
                                     <button
-                                        type="button"
+                                        type="submit"
                                         className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold
                                         leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2
                                         focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                        onClick={() => startLogin(email, password)}
+                                        // onClick={() => startLogin(email, password)}
                                     >
                                         Sign in
                                     </button>

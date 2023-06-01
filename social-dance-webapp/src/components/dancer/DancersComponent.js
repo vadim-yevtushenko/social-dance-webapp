@@ -3,6 +3,7 @@ import {getDancers} from "../../api/DancerApi";
 import DancerTable from "./DancerTable";
 import Pagination from "../pagination/Pagination";
 import Spinner from "../spinner/Spinner";
+import {useSelector} from "react-redux";
 
 const DancersComponent = () => {
 

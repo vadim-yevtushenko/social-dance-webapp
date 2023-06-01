@@ -1,10 +1,10 @@
 import MainLayout from "../components/layouts/MainLayout";
-import ProfileComponent from "../components/profile/ProfileComponent";
+import MainProfileComponent from "../components/dancer/profile/MainProfileComponent";
 
 const ProfilePage = () => {
     return <>
         <MainLayout>
-            <ProfileComponent/>
+            <MainProfileComponent/>
         </MainLayout>
     </>
 }

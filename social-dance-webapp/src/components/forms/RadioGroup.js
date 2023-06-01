@@ -1,4 +1,4 @@
-export default function RadioGroup({title, radioButtons, setValue}) {
+export default function RadioGroup({title, startValue, radioButtons, setValue}) {
     return (
         <div>
             <label className="text-sm font-medium leading-6 text-gray-900">{title}</label>
@@ -12,7 +12,7 @@ export default function RadioGroup({title, radioButtons, setValue}) {
                                 id={button.id}
                                 name="notification-method"
                                 type="radio"
-                                defaultChecked={button.id === 'email'}
+                                defaultChecked={button.id === startValue}
                                 className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
                                 value={button.title}
                                 onClick={event => setValue(event.target.value)}
