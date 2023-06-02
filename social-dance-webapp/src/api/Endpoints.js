@@ -39,8 +39,22 @@ export const GET = {
     getEvent: (eventId) => `${API_BASE_URL}/events/${eventId}`,
 
     // Credential
+
     // Utils
     getDances: () => `${API_BASE_URL}/utils/dances`,
+
+    getCountries: (name) => {
+        let url = `${API_BASE_URL}/utils/countries?`
+        if (!!name) url = url.concat(`name=${name}`)
+        return url
+    },
+
+    getCities: (name, country) => {
+        let url = `${API_BASE_URL}/utils/cities?`
+        if (!!name) url = url.concat(`name=${name}&`)
+        if (!!country) url = url.concat(`country=${country}`)
+        return url
+    },
 
 };
 

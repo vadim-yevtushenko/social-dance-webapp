@@ -13,7 +13,7 @@ const LoginForm = () => {
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const isAuthenticated = useSelector(state => state.isAuthenticated)
+    const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
     const { register, handleSubmit, formState: { errors }, } = useForm()
 
     useEffect(() => {

@@ -18,5 +18,5 @@ export const dancerLogout = () => ({
 
 export const updateDancer = dancer => ({
     type: UPDATE_DANCER,
-    payload: { dancer }
+    payload: dancer
 })

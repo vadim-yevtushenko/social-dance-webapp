@@ -8,6 +8,7 @@ const authReducer = (
     switch (action.type){
         case DANCER_LOGIN:
             const {email, password, isAuth} = action.payload
+            console.log("authReducer", email)
             return {
                 ...state,
                 email: email,
@@ -18,17 +19,11 @@ const authReducer = (
             console.log("LOGOUT")
             return {
                 ...initialState().auth
-                // ...state,
-                // email: '',
-                // password: '',
-                // isAuthenticated: false,
-                // dancer: {}
             }
         case UPDATE_DANCER:
-            const data = action.payload
             return {
                 ...state,
-                dancer: data
+                dancer: action.payload
             }
         default:
             return state

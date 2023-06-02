@@ -22,12 +22,11 @@ export default function MainHeader() {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const {isAuthenticated, email, dancer} = useSelector(state => state)
-  const  {name, lastName} = useSelector(state => state.dancer.dancer)
+  const {isAuthenticated, email } = useSelector(state => state.auth)
+  const  {name, lastName} = useSelector(state => state.auth.dancer)
+  const  state = useSelector(state => state)
 
-  console.log("dancer", dancer.dancer)
-  console.log("isAuthenticated", isAuthenticated)
-  console.log("email", email)
+  console.log("state", state)
 
   const logout = () => {
     dispatch(dancerLogout())

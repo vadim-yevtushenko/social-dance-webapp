@@ -1,14 +1,31 @@
 import authReducer from './reducers/authReducer';
 import storage from 'redux-persist/lib/storage'
 import {persistReducer, persistStore} from "redux-persist";
-import {configureStore} from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers } from 'redux'
+import danceReducer from "./reducers/danceReducer";
+import {DANCER_LOGOUT} from "./actions/authActions";
+import storageSession from 'redux-persist/lib/storage/session'
+import initialState from "./initialState";
 
 const persistConfig = {
     key: 'root',
+    version: 1,
     storage,
 }
 
-const persistedReducer = persistReducer(persistConfig, authReducer)
+const dancerPersistConfig = {
+    key: 'auth',
+    storage: storageSession
+}
+
+const combineReducer = combineReducers({
+    auth: authReducer,
+    danceList: danceReducer,
+})
+
+
+const persistedReducer = persistReducer(persistConfig, combineReducer)
 
 export const store = configureStore({
     reducer: persistedReducer,

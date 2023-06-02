@@ -9,7 +9,7 @@ import ComboboxElement from "../../forms/ComboboxElement";
 import CheckboxElement from "../../forms/CheckboxElement";
 import {useHttp} from "../../../hooks/http.hook";
 import {useForm} from "react-hook-form";
-import {POST} from "../../../api/Endpoints";
+import {GET, POST} from "../../../api/Endpoints";
 import {updateDancer, userLogin} from "../../../redux/actions/authActions";
 import {dancerMapper} from "../../../util/mapper";
 
@@ -17,8 +17,7 @@ const InfoProfileComponent = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const {isAuthenticated, email} = useSelector(state => state)
-    const {dancer} = useSelector(state => state.dancer)
+    const {isAuthenticated, email, dancer} = useSelector(state => state.auth)
 
     const [level, setLevel] = useState(dancer.level)
     const [gender, setGender] = useState(dancer.gender)
@@ -39,6 +38,7 @@ const InfoProfileComponent = () => {
             setMonth(months.find(mon => mon.id === month)?.name);
         }
     }, [isAuthenticated])
+    console.log("country", country)
 
     const onSubmit = (data) => {
         console.log("onSubmit", data)
@@ -47,18 +47,22 @@ const InfoProfileComponent = () => {
         const updatedDancer = dancerMapper(dancer.id, data.name, data.lastName, gender,
             joinDateString(data.year, bMonth, data.day, months), data.description, level, dances, contactInfo, image)
         console.log("updatedDancer", updatedDancer)
-        // const update = () => request(POST.saveDancer(updatedDancer), "POST", JSON.stringify(updatedDancer))
-        // update()
-        //     .then(res => {
-        //         console.log("res", res)
-        //         dispatch(updateDancer(res))
-        //         setLoading(false);
-        //     })
-        //     .catch(error => {
-        //         console.log("error", error)
-        //         setLoading(false);
-        //     })
+        const update = () => request(POST.saveDancer(updatedDancer), "POST", JSON.stringify(updatedDancer))
+        update()
+            .then(res => {
+                // console.log("res", res)
+                dispatch(updateDancer(res))
+                setLoading(false);
+            })
+            .catch(error => {
+                console.log("error", error)
+                setLoading(false);
+            })
     }
+
+    const getCountries = (countryName) => request(GET.getCountries(countryName))
+
+    const getCities = (cityName) => request(GET.getCities(cityName, country))
 
     return (
     <div>
@@ -230,8 +234,9 @@ const InfoProfileComponent = () => {
                                           country:
                                         </span>
                                         <ComboboxElement
-                                            value={dancer.contactInfo?.country}
+                                            value={country}
                                             setValue={setCountry}
+                                            request={getCountries}
                                         />
                                     </div>
 
@@ -240,8 +245,10 @@ const InfoProfileComponent = () => {
                                           city:
                                         </span>
                                         <ComboboxElement
-                                            value={dancer.contactInfo?.city}
+                                            value={city}
                                             setValue={setCity}
+                                            request={getCities}
+                                            // isDisable={country === null || country === ""}
                                         />
                                     </div>
                                 </div>
@@ -270,7 +277,6 @@ const InfoProfileComponent = () => {
                             <div className="col-span-full">
                                 <CheckboxElement
                                     label={"Dances"}
-                                    socialDances={socialDances}
                                     checkedDances={dances.map(dance => dance.name)}
                                     setDances={setDances}
                                 />

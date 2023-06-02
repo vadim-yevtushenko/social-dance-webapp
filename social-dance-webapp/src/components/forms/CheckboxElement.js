@@ -1,39 +1,73 @@
 import {useEffect, useState} from "react";
+import {useHttp} from "../../hooks/http.hook";
+import { getDances } from "../../redux/actions/danceAction";
+import {useDispatch, useSelector} from "react-redux";
+import Spinner from "../spinner/Spinner";
+import {GET} from "../../api/Endpoints";
 
-export default function CheckboxElement({label, socialDances, checkedDances, setDances}) {
+export default function CheckboxElement({label, checkedDances, setDances}) {
 
-    const [checkedState, setCheckedState] = useState(
-        new Array(socialDances.length).fill(false)
-    );
+    const [loading, setLoading] = useState(false);
+    const dispatch = useDispatch();
+    const danceList = useSelector(state => state.danceList.dances)
+    const [socialDances, setSocialDances] = useState([])
+    const [checkedState, setCheckedState] = useState([]);
+    const {request} = useHttp();
 
     useEffect(() => {
-        if (!checkedDances.isEmpty){
-            socialDances?.forEach((element, i) => {
-                if (checkedDances.includes(element.name)){
-                    checkedState[i] = true
+        setLoading(true);
+        request(GET.getDances())
+            .then(res => {
+                dispatch(getDances(res))
+                setLoading(false);
+            })
+            .then(() => {
+                setSocialDances(danceList)
+            })
+            .then(() => {
+                // console.log("checkedDances", checkedDances)
+                if (checkedDances.length > 0){
+                    // console.log("checkedDances1")
+                    danceList?.forEach((element, i) => {
+                        if (checkedDances.includes(element.name)){
+                            checkedState[i] = true
+                        }
+                    })
+                }else {
+                    // console.log("checkedDances2", socialDances)
+                    setCheckedState(new Array(danceList?.length).fill(false))
                 }
             })
-        }
+            .catch(error => {
+                console.log("error", error)
+                // setSocialDances(localSocialDances)
+                setLoading(false);
+            })
     }, [])
 
     function handleOnChange(i) {
+        // console.log("checkedState", checkedState)
         const updatedCheckedState = checkedState.map((item, index) =>
             index === i ? !item : item
         );
 
         setCheckedState(updatedCheckedState);
-
+// console.log("updatedCheckedState", updatedCheckedState)
+// console.log("socialDances", socialDances)
         const updatedDances = []
         socialDances.forEach((dance, i) => {
             if (updatedCheckedState[i]){
                 updatedDances.push(dance)
             }
         })
+        // console.log("updatedDances", updatedDances)
+
         setDances(updatedDances)
     }
 
     return (
         <fieldset>
+            {loading && <Spinner/>}
             <legend className="text-base font-semibold leading-6 text-gray-900">{label}</legend>
             <div className="mt-4 divide-y divide-gray-400 border-b border-t border-gray-400">
                 {socialDances?.map((element, i) => (

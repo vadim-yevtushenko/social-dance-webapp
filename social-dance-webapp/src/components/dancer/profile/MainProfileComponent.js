@@ -7,8 +7,7 @@ import {useEffect} from "react";
 const MainProfileComponent = () => {
 
     const navigate = useNavigate()
-    const {dancer} = useSelector(state => state.dancer)
-    const isAuthenticated = useSelector(state => state.isAuthenticated)
+    const {isAuthenticated, dancer} = useSelector(state => state.auth)
 
     const secondaryNavigation = [
         { name: 'Account', href: '#', current: true },
@@ -23,8 +22,6 @@ const MainProfileComponent = () => {
             navigate("/login")
         }
     },[isAuthenticated])
-
-    // console.log("dancer", dancer)
 
     return (
     <div className="flex">

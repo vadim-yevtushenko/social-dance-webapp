@@ -19,7 +19,7 @@ const RegistrationForm = () => {
     const [confirmPassword, setConfirmPassword] = useState();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const isAuthenticated = useSelector(state => state.isAuthenticated)
+    const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
     const {request} = useHttp();
     const {levelOptions, genderButtons} = useValues()
 
