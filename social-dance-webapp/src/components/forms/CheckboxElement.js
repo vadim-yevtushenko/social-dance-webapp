@@ -25,16 +25,13 @@ export default function CheckboxElement({label, checkedDances, setDances}) {
                 setSocialDances(danceList)
             })
             .then(() => {
-                // console.log("checkedDances", checkedDances)
-                if (checkedDances.length > 0){
-                    // console.log("checkedDances1")
+                if (checkedDances?.length > 0){
                     danceList?.forEach((element, i) => {
                         if (checkedDances.includes(element.name)){
                             checkedState[i] = true
                         }
                     })
                 }else {
-                    // console.log("checkedDances2", socialDances)
                     setCheckedState(new Array(danceList?.length).fill(false))
                 }
             })
@@ -46,21 +43,17 @@ export default function CheckboxElement({label, checkedDances, setDances}) {
     }, [])
 
     function handleOnChange(i) {
-        // console.log("checkedState", checkedState)
         const updatedCheckedState = checkedState.map((item, index) =>
             index === i ? !item : item
         );
 
         setCheckedState(updatedCheckedState);
-// console.log("updatedCheckedState", updatedCheckedState)
-// console.log("socialDances", socialDances)
         const updatedDances = []
         socialDances.forEach((dance, i) => {
             if (updatedCheckedState[i]){
                 updatedDances.push(dance)
             }
         })
-        // console.log("updatedDances", updatedDances)
 
         setDances(updatedDances)
     }

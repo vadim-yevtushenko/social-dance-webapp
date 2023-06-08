@@ -8,20 +8,19 @@ import DropDownList from "./DropDownList";
 import {useHttp} from "../../hooks/http.hook";
 import {POST} from "../../api/Endpoints";
 import {useValues} from "../../hooks/useValues";
+import {useForm} from "react-hook-form";
 
 const RegistrationForm = () => {
     const [loading, setLoading] = useState(false);
-    const [name, setName] = useState();
     const [gender, setGender] = useState();
     const [level, setLevel] = useState();
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
     const [confirmPassword, setConfirmPassword] = useState();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
+    const {isAuthenticated} = useSelector(state => state.auth)
     const {request} = useHttp();
     const {levelOptions, genderButtons} = useValues()
+    const { register, handleSubmit, formState: { errors }, getValues } = useForm()
 
     useEffect(() => {
         if (isAuthenticated){
@@ -29,7 +28,8 @@ const RegistrationForm = () => {
         }
     },[isAuthenticated])
 
-    const onSubmit = (email, password, {name, gender, level}) => {
+    const onSubmit = ({name, email, password}) => {
+
         setLoading(true)
         const signup = () => request(POST.registration(email, password), "POST", JSON.stringify({name, gender, level}))
         signup()
@@ -40,7 +40,7 @@ const RegistrationForm = () => {
                 dispatch(updateDancer(res))
                 setLoading(false);
             })
-            .then(navigate("/profile"))
+            .then(() => navigate("/profile"))
             .catch(error => {
                 console.log("error", error)
                 setLoading(false);
@@ -73,8 +73,7 @@ const RegistrationForm = () => {
                     <div className="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
                         <form
                             className="space-y-6"
-                            action="#"
-                            method="POST"
+                            onSubmit={handleSubmit(onSubmit)}
                         >
                             <div>
                                 <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
@@ -85,13 +84,14 @@ const RegistrationForm = () => {
                                         id="name"
                                         name="name"
                                         type="text"
-                                        // autoComplete="email"
+                                        autoComplete="name"
                                         required
-                                        value={name}
-                                        onChange={event => setName(event.target.value)}
+                                        {...register('name', { required: true, maxLength: 60 })}
                                         placeholder='name'
-                                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300
+                                        placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     />
+                                    {errors?.name?.type === "required" && <p className="text-xs leading-5 text-red-700">Name is required.</p>}
                                 </div>
                             </div>
 
@@ -125,11 +125,11 @@ const RegistrationForm = () => {
                                         type="email"
                                         autoComplete="email"
                                         required
-                                        value={email}
-                                        onChange={event => setEmail(event.target.value)}
+                                        {...register('email', { required: true, maxLength: 60, minLength: 5 })}
                                         placeholder='youremail@example.com'
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     />
+                                    {errors.email?.type === "required" && <p className="text-xs leading-5 text-red-700">Email is required.</p>}
                                 </div>
                             </div>
 
@@ -142,13 +142,13 @@ const RegistrationForm = () => {
                                         id="password"
                                         name="password"
                                         type="password"
-                                        autoComplete="current-password"
+                                        autoComplete="password"
                                         required
-                                        value={password}
-                                        onChange={event => setPassword(event.target.value)}
+                                        {...register('password', { required: true })}
                                         placeholder='**********'
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     />
+                                    {errors?.password?.type === "required" && <p className="text-xs leading-5 text-red-700">Password is required.</p>}
                                 </div>
                             </div>
 
@@ -159,30 +159,37 @@ const RegistrationForm = () => {
                                 <div className="mt-2">
                                     <input
                                         id="confirmPassword"
-                                        name="password"
+                                        name="confirmPassword"
                                         type="password"
-                                        autoComplete="current-password"
+                                        autoComplete="confirmPassword"
                                         required
-                                        value={confirmPassword}
-                                        onChange={event => setConfirmPassword(event.target.value)}
+                                        {...register('confirmPassword', { required: true,
+                                            validate: (value) => {
+                                                if (getValues().password !== value) {
+                                                    return "Your passwords do not match.";
+                                                }
+                                            },
+                                        })}
                                         placeholder='**********'
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     />
+                                    {errors?.confirmPassword?.type === "required" && <p className="text-xs leading-5 text-red-700">Confirm password is required.</p>}
+                                    {errors?.confirmPassword?.type === "validate" && <p className="text-xs leading-5 text-red-700">{errors.confirmPassword.message}</p>}
                                 </div>
+                            </div>
+
+                            <div>
+                                <button
+                                    type="submit"
+                                    className="mt-12 flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5
+                                    text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline
+                                    focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                >
+                                    Sign up
+                                </button>
                             </div>
                         </form>
 
-                        <div className="mt-10">
-                            <button
-                                type="button"
-                                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5
-                                    text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline
-                                    focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                onClick={() => onSubmit(email, password, {name, gender, level})}
-                            >
-                                Sign up
-                            </button>
-                        </div>
                     </div>
                 </div>
             </div>

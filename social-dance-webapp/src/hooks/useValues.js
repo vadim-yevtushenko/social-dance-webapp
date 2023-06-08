@@ -1,5 +1,7 @@
 export const useValues = () => {
 
+    const pageSizeOptions = [5, 10, 20, 50]
+
     const levelOptions = ["JUNIOR", "MIDDLE", "ADVANCED", "TEACHER"]
 
     const genderButtons = [
@@ -33,6 +35,8 @@ export const useValues = () => {
         { id: '08', name: 'Mambo' },
     ]
 
-    return {levelOptions, genderButtons, months, socialDances}
+    const createOptions = ["school", "event"]
+
+    return {pageSizeOptions, levelOptions, genderButtons, months, socialDances, createOptions}
 
 }

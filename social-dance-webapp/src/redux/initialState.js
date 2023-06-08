@@ -26,22 +26,16 @@ const initialState = () => ({
         dances: [],
         loading: false
     },
-    // schoolList: {
-    //     size: 10,
-    //     page: 1,
-    //     results: [],
-    //     total: 0,
-    //     filter: [],
-    //     loading: false
-    // },
-    // eventList: {
-    //     size: 10,
-    //     page: 1,
-    //     results: [],
-    //     total: 0,
-    //     filter: [],
-    //     loading: false
-    // },
+    mySchools: {
+        administratedSchool: {
+            contactInfo:{}
+        },
+        loading: false
+    },
+    myEvents: {
+        organizedEvents: [],
+        loading: false
+    },
 })
 
 export default initialState

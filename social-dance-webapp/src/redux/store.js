@@ -4,9 +4,9 @@ import {persistReducer, persistStore} from "redux-persist";
 import { configureStore } from "@reduxjs/toolkit";
 import { combineReducers } from 'redux'
 import danceReducer from "./reducers/danceReducer";
-import {DANCER_LOGOUT} from "./actions/authActions";
 import storageSession from 'redux-persist/lib/storage/session'
-import initialState from "./initialState";
+import schoolReducer from "./reducers/schoolReducer";
+import eventReducer from "./reducers/eventReducer";
 
 const persistConfig = {
     key: 'root',
@@ -22,6 +22,8 @@ const dancerPersistConfig = {
 const combineReducer = combineReducers({
     auth: authReducer,
     danceList: danceReducer,
+    mySchools: schoolReducer,
+    myEvents: eventReducer,
 })
 
 

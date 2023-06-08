@@ -1,8 +1,10 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import DropDownList from "../forms/DropDownList";
+import {useValues} from "../../hooks/useValues";
 
 export default function Pagination({page, size, total, setPage, setSize}) {
-    const pageSizeOptions = [5, 10, 20, 50]
+
+    const {pageSizeOptions} = useValues()
 
     const getFirstIndex = () => {
         return (page - 1) * size + 1
@@ -12,7 +14,7 @@ export default function Pagination({page, size, total, setPage, setSize}) {
         if (page > total/size){
             return total % size + getFirstIndex() - 1
         }
-        return (page - 1) * size + size
+        return (page - 1) * size + Number(size)
     }
 
     return (

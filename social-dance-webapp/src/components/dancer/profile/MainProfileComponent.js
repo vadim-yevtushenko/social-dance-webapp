@@ -2,20 +2,25 @@ import {useSelector} from "react-redux";
 import Sidebar from "./Sidebar";
 import InfoProfileComponent from "./InfoProfileComponent";
 import {useNavigate} from "react-router-dom";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
+import MySchoolsProfileComponent from "./MySchoolsProfileComponent";
+import MyEventsProfileComponent from "./MyEventsProfileComponent";
+import SettingsProfileComponent from "./SettingsProfileComponent";
+import SchoolOrEventProfileComponent from "./SchoolOrEventProfileComponent";
+
+const CHAPTER = {
+    PERSONAL_INFO: "PERSONAL_INFO",
+    CREATE_SCHOOL_EVENT: "CREATE_SCHOOL_EVENT",
+    MY_SCHOOLS: "MY_SCHOOLS",
+    MY_EVENTS: "MY_EVENTS",
+    SETTINGS: "SETTINGS"
+}
 
 const MainProfileComponent = () => {
 
     const navigate = useNavigate()
     const {isAuthenticated, dancer} = useSelector(state => state.auth)
-
-    const secondaryNavigation = [
-        { name: 'Account', href: '#', current: true },
-        { name: 'Notifications', href: '#', current: false },
-        { name: 'Billing', href: '#', current: false },
-        { name: 'Teams', href: '#', current: false },
-        { name: 'Integrations', href: '#', current: false },
-    ]
+    const [currentChapter, setCurrentChapter] = useState(CHAPTER.PERSONAL_INFO)
 
     useEffect(() => {
         if (!isAuthenticated){
@@ -23,27 +28,27 @@ const MainProfileComponent = () => {
         }
     },[isAuthenticated])
 
+    const renderChapter = () => {
+        switch (currentChapter) {
+            case CHAPTER.PERSONAL_INFO:
+                return <InfoProfileComponent/>
+            case CHAPTER.CREATE_SCHOOL_EVENT:
+                return <SchoolOrEventProfileComponent/>
+            case CHAPTER.MY_SCHOOLS:
+                return <MySchoolsProfileComponent/>
+            case CHAPTER.MY_EVENTS:
+                return <MyEventsProfileComponent/>
+            case CHAPTER.SETTINGS:
+                return <SettingsProfileComponent/>
+        }
+    }
+
     return (
     <div className="flex">
-        <Sidebar/>
-        <header className="xl:hidden border-b border-white/5">
-            {/* Secondary navigation */}
-            <nav className="flex overflow-x-auto py-4">
-                <ul
-                    role="list"
-                    className="flex min-w-full flex-none gap-x-6 px-4 text-sm font-semibold leading-6 text-gray-400 sm:px-6 lg:px-8"
-                >
-                    {secondaryNavigation.map((item) => (
-                        <li key={item.name}>
-                            <a href={item.href} className={item.current ? 'text-indigo-400' : ''}>
-                                {item.name}
-                            </a>
-                        </li>
-                    ))}
-                </ul>
-            </nav>
-        </header>
-        <InfoProfileComponent/>
+        <Sidebar
+            onChange={chapter => setCurrentChapter(chapter)}
+        />
+        {renderChapter()}
     </div>
     )
 }

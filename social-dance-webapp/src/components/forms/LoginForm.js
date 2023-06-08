@@ -9,12 +9,10 @@ import {useForm} from "react-hook-form";
 
 const LoginForm = () => {
     const [loading, setLoading] = useState(false);
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
-    const { register, handleSubmit, formState: { errors }, } = useForm()
+    const {isAuthenticated} = useSelector(state => state.auth)
+    const { register, handleSubmit, formState: { errors } } = useForm()
 
     useEffect(() => {
         if (isAuthenticated){
@@ -24,7 +22,6 @@ const LoginForm = () => {
 
     const onSubmit = ({email, password}) => {
         setLoading(true)
-        // const login = () =>
         login(email, password)
             .then(res => {
                 console.log("res", res)
@@ -65,9 +62,8 @@ const LoginForm = () => {
                         <div className="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
                             <form
                                 className="space-y-6"
-                                // action="#"
-                                // method="POST"
-                                onSubmit={handleSubmit(onSubmit)}>
+                                onSubmit={handleSubmit(onSubmit)}
+                            >
                                 <div>
                                     <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                                         Email address
@@ -80,12 +76,11 @@ const LoginForm = () => {
                                             autoComplete="email"
                                             required
                                             {...register('email', { required: true, maxLength: 60, minLength: 5 })}
-                                            value={email}
-                                            onChange={event => setEmail(event.target.value)}
                                             placeholder='youremail@example.com'
-                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300
+                                            placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                         />
-                                        {errors.email && <p className="text-sm text-red-600">Email is required.</p>}
+                                        {errors?.email?.type === "required" && <p className="text-xs leading-5 text-red-700">Email is required.</p>}
                                     </div>
                                 </div>
 
@@ -101,11 +96,11 @@ const LoginForm = () => {
                                             autoComplete="current-password"
                                             required
                                             {...register('password', { required: true })}
-                                            value={password}
-                                            onChange={event => setPassword(event.target.value)}
                                             placeholder='**********'
-                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300
+                                            placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                         />
+                                        {errors?.password?.type === "required" && <p className="text-xs leading-5 text-red-700">Password is required.</p>}
                                     </div>
                                 </div>
 
@@ -135,7 +130,6 @@ const LoginForm = () => {
                                         className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold
                                         leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2
                                         focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                        // onClick={() => startLogin(email, password)}
                                     >
                                         Sign in
                                     </button>

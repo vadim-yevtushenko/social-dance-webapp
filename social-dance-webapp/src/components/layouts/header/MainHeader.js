@@ -33,16 +33,16 @@ export default function MainHeader() {
   }
 
   return (
-    <Disclosure as="nav" className="bg-gray-800 py-3">
+    <Disclosure as="nav" className="bg-gray-800 py-5">
       {({ open }) => (
         <>
-          <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:px-8">
+          <div className="mx-auto max-w-7xl px-2 sm:px-4">
             <div className="relative flex h-16 items-center justify-between">
               <div className="flex items-center px-2 lg:px-0">
-                <div className="flex-shrink-0">
+                <div className="flex flex-shrink-10 -translate-x-12 mb-2">
                   <img
-                    className="hidden h-8 w-auto lg:block cursor-pointer"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+                    className="hidden h-12 w-auto lg:block cursor-pointer"
+                    src="/images/logo/dancing_logo.png"
                     alt="Your Company"
                     onClick={() => navigate("/")}
                   />
