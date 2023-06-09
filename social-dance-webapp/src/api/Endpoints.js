@@ -79,9 +79,15 @@ export const DELETE = {
     // Dancers
     deleteDancer: (dancerId) => {
         return `${API_BASE_URL}/dancers/${dancerId}`;
-    }
+    },
 
     // Schools
+    deleteSchool: (schoolId) => {
+        return `${API_BASE_URL}/schools/${schoolId}`;
+    },
 
     // Events
+    deleteEvent: (eventId) => {
+        return `${API_BASE_URL}/events/${eventId}`;
+    }
 };

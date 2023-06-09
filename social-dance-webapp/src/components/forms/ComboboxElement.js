@@ -8,6 +8,7 @@ export default function ComboboxElement({ label, value, setValue, request, isDis
 
     const [loading, setLoading] = useState(false);
     const [filteredValues, setFilteredValues] = useState([])
+    const [currentValue, setCurrentValue] = useState(value)
 
     const onChange = (value) => {
         if (value.length > 0) {
@@ -25,7 +26,7 @@ export default function ComboboxElement({ label, value, setValue, request, isDis
     }
 
     return (
-        <Combobox as="div" value={value} onChange={setValue}>
+        <Combobox as="div" value={currentValue} onChange={setValue}>
             <Combobox.Label className="block text-sm font-medium leading-6 text-gray-900">{label}</Combobox.Label>
             <div className="relative mt-2">
                 <Combobox.Input

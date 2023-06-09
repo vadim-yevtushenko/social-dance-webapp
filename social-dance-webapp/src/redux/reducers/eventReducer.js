@@ -1,15 +1,15 @@
 import initialState from "../initialState";
-import {GET_ORGANIZED_EVENTS} from "../actions/eventActions";
+import {GET_ORGANIZED_EVENT} from "../actions/eventActions";
 
 const eventReducer = (
     state = initialState().myEvents,
     action = {}
 ) => {
     switch (action.type){
-        case GET_ORGANIZED_EVENTS:{
+        case GET_ORGANIZED_EVENT:{
             return {
                 ...state,
-                organizedEvents: action.payload
+                organizedEvent: action.payload
             }
         }
         default:

@@ -11,7 +11,7 @@ const SUBTITLE = {
     EXIST_ADMINISTRATED_SCHOOL: "You already have a school for administrate.",
     NOT_EXIST_ADMINISTRATED_SCHOOL: "You can create new school.",
     DELETE_SCHOOL: "You can delete your school here. This action is not reversible. " +
-        "All information related to this account will be deleted permanently."
+        "All information related to this school will be deleted permanently."
 }
 
 const MySchoolsProfileComponent = () => {
@@ -19,7 +19,7 @@ const MySchoolsProfileComponent = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const {isAuthenticated, email, dancer} = useSelector(state => state.auth)
+    const {isAuthenticated, dancer} = useSelector(state => state.auth)
     const {administratedSchool} = useSelector(state => state.mySchools)
     const {request} = useHttp();
     const [administratedSchoolExist, setAdministratedSchoolExist] = useState(!!dancer.administrator)

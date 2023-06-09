@@ -44,7 +44,7 @@ const MainProfileComponent = () => {
     }
 
     return (
-    <div className="flex">
+    <div className="flex min-h-screen">
         <Sidebar
             onChange={chapter => setCurrentChapter(chapter)}
         />

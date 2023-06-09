@@ -5,7 +5,7 @@ const MainLayout = ({ children }) => {
     return (
         <div className='flex flex-col h-screen z-20 overflow-auto'>
             <MainHeader/>
-            <main className='flex-grow'>{children}</main>
+                <main className='flex-grow'>{children}</main>
             <Footer/>
         </div>
     );

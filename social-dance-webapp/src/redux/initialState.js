@@ -33,7 +33,9 @@ const initialState = () => ({
         loading: false
     },
     myEvents: {
-        organizedEvents: [],
+        organizedEvent: {
+            contactInfo:{}
+        },
         loading: false
     },
 })

@@ -4,13 +4,16 @@ import ComboboxElement from "../../forms/ComboboxElement";
 import CheckboxElement from "../../forms/CheckboxElement";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import { useValues } from "../../../hooks/useValues";
 import { useHttp } from "../../../hooks/http.hook";
 import { useForm } from "react-hook-form";
 import { eventMapper, schoolMapper } from "../../../util/mapper";
 import { GET, POST } from "../../../api/Endpoints";
 import { joinDateString } from "../../../util/dateTimeUtils";
+import {getAdministratedSchool} from "../../../redux/actions/schoolActions";
+import {getOrganizedEvent} from "../../../redux/actions/eventActions";
+import {updateDancer} from "../../../redux/actions/authActions";
 
 export const TYPE_OPTIONS = {
     SCHOOL: "school",
@@ -21,28 +24,44 @@ const SchoolEventForm = ({typeOption, optionObject}) => {
 
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const {isAuthenticated, dancer} = useSelector(state => state.auth)
-    const [city, setCity] = useState(optionObject?.contactInfo?.city)
-    const [country, setCountry] = useState(optionObject?.contactInfo?.country)
-    const [dances, setDances] = useState(optionObject?.dances);
-    const [image, setImage] = useState(optionObject?.image);
+    const [city, setCity] = useState(optionObject.contactInfo?.city)
+    const [country, setCountry] = useState(optionObject.contactInfo?.country)
+    const [dances, setDances] = useState(optionObject.dances);
+    const [image, setImage] = useState(optionObject.image);
     const [sMonth, setSMonth] = useState("");
     const [fMonth, setFMonth] = useState("");
     const { months } = useValues()
     const {request} = useHttp();
-    const { register, handleSubmit, formState: { errors } } = useForm()
-    console.log("optionObject", optionObject)
+    const { register, handleSubmit, formState: { errors }, setValue } = useForm()
+
     useEffect(() => {
         if (!isAuthenticated){
             navigate("/events")
         }
-        else if (typeOption === TYPE_OPTIONS.EVENT){
+    }, [isAuthenticated])
+
+    useEffect(() => {
+        setValue('name', optionObject.name)
+        setValue('email', optionObject.contactInfo?.email)
+        setValue('phoneNumber', optionObject.contactInfo?.phoneNumber)
+        setValue('description', optionObject.description)
+        setDances(optionObject.dances)
+        setCountry(optionObject.contactInfo?.country)
+        setCity(optionObject.contactInfo?.city)
+        setImage(optionObject.image)
+        if (typeOption === TYPE_OPTIONS.EVENT){
             const startMonth = optionObject?.dateEvent?.split("-")[1]
             const finishMonth = optionObject?.dateFinishEvent?.split("-")[1]
             setSMonth(months.find(mon => mon.id === startMonth)?.name);
             setFMonth(months.find(mon => mon.id === finishMonth)?.name);
+            setValue('sDay', optionObject?.dateEvent?.split("-")[2])
+            setValue('sYear', optionObject?.dateEvent?.split("-")[0])
+            setValue('fDay', optionObject?.dateFinishEvent?.split("-")[2])
+            setValue('fYear', optionObject?.dateFinishEvent?.split("-")[0])
         }
-    }, [isAuthenticated])
+    }, [optionObject])
 
     const onSubmit = (data) => {
 
@@ -51,28 +70,32 @@ const SchoolEventForm = ({typeOption, optionObject}) => {
         if (typeOption === TYPE_OPTIONS.SCHOOL){
             const newSchool = schoolMapper(null, data.name, data.description, dances, contactInfo, image, [dancer])
             console.log("newSchool", newSchool)
-            // const create = () => request(POST.saveSchool(), "POST", JSON.stringify(newSchool))
-            // create()
-            //     .then(res => {
-            //         console.log(res)
-            //         setLoading(false);
-            //     })
-            //     .catch(error => {
-            //         console.log("error", error)
-            //         setLoading(false);
-            //     })
+            const save = () => request(POST.saveSchool(), "POST", JSON.stringify(newSchool))
+            save()
+                .then(res => {
+                    console.log(res)
+                    dispatch(getAdministratedSchool(res))
+                    setLoading(false);
+                })
+                .catch(error => {
+                    console.log("error", error)
+                    setLoading(false);
+                })
         }else {
             const startDate = joinDateString(data.sYear, sMonth, data.sDay, months) + "T19:00+00:00"
             const finishDate = joinDateString(data.sYear, sMonth, data.sDay, months) + "T02:00+00:00"
             const newEvent = eventMapper(null, data.name, data.description, dances, contactInfo, image,
                 startDate, finishDate, [dancer])
             console.log("newEvent", newEvent)
-
-            const create = () => request(POST.saveEvent(), "POST", JSON.stringify(newEvent))
-            create()
+            const save = () => request(POST.saveEvent(), "POST", JSON.stringify(newEvent))
+            save()
                 .then(res => {
                     console.log(res)
+                    dispatch(getOrganizedEvent(res))
                     setLoading(false);
+                })
+                .then(() => {
+                    refreshDancer()
                 })
                 .catch(error => {
                     console.log("error", error)
@@ -80,6 +103,20 @@ const SchoolEventForm = ({typeOption, optionObject}) => {
                 })
         }
 
+    }
+
+    const refreshDancer = () => {
+        setLoading(true);
+        const getDancer = () => request(GET.getDancer(dancer.id))
+        getDancer()
+            .then(res => {
+                dispatch(updateDancer(res))
+                setLoading(false);
+            })
+            .catch(error => {
+                console.log("error", error)
+                setLoading(false);
+            })
     }
 
     const getCountries = (countryName) => request(GET.getCountries(countryName))

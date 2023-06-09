@@ -5,6 +5,8 @@ import {classNamesJoin} from "../../../util/classNameUtils";
 import {NavLink, useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {dancerLogout} from "../../../redux/actions/authActions";
+import {getOrganizedEvent} from "../../../redux/actions/eventActions";
+import {getAdministratedSchool} from "../../../redux/actions/schoolActions";
 
 const navigation = [
   { name: 'Events', href: '/events' },
@@ -23,12 +25,14 @@ export default function MainHeader() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const {isAuthenticated, email } = useSelector(state => state.auth)
-  const  {name, lastName} = useSelector(state => state.auth.dancer)
+  const {name, lastName} = useSelector(state => state.auth?.dancer)
   const  state = useSelector(state => state)
 
   console.log("state", state)
 
   const logout = () => {
+    dispatch(getOrganizedEvent({}))
+    dispatch(getAdministratedSchool({}))
     dispatch(dancerLogout())
   }
 

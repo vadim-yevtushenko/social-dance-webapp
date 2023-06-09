@@ -4,7 +4,7 @@ import {useState} from "react";
 
 const chapterData = [
     { id: 'PERSONAL_INFO', name: 'Personal Information', href: '#', icon: FolderIcon, current: true },
-    { id: 'CREATE_SCHOOL_EVENT', name: 'Create school or event', href: '#', icon: ChartBarSquareIcon, current: false },
+    // { id: 'CREATE_SCHOOL_EVENT', name: 'Create school or event', href: '#', icon: ChartBarSquareIcon, current: false },
     { id: 'MY_SCHOOLS', name: 'My schools', href: '#', icon: ServerIcon, current: false },
     { id: 'MY_EVENTS', name: 'My events', href: '#', icon: GlobeAltIcon, current: false },
     { id: 'SETTINGS', name: 'Settings', href: '#', icon: Cog6ToothIcon, current: false },
