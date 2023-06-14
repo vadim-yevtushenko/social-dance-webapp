@@ -1,7 +1,7 @@
 import { PhotoIcon } from "@heroicons/react/20/solid";
-import DropDownList from "../../forms/DropDownList";
-import ComboboxElement from "../../forms/ComboboxElement";
-import CheckboxElement from "../../forms/CheckboxElement";
+import DropDownListElement from "../../forms/elements/DropDownListElement";
+import ComboboxElement from "../../forms/elements/ComboboxElement";
+import CheckboxElement from "../../forms/elements/CheckboxElement";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
@@ -10,10 +10,12 @@ import { useHttp } from "../../../hooks/http.hook";
 import { useForm } from "react-hook-form";
 import { eventMapper, schoolMapper } from "../../../util/mapper";
 import { GET, POST } from "../../../api/Endpoints";
-import { joinDateString } from "../../../util/dateTimeUtils";
-import {getAdministratedSchool} from "../../../redux/actions/schoolActions";
-import {getOrganizedEvent} from "../../../redux/actions/eventActions";
-import {updateDancer} from "../../../redux/actions/authActions";
+import {joinDateString, joinDateTimeString} from "../../../util/dateTimeUtils";
+import { getAdministratedSchool } from "../../../redux/actions/schoolActions";
+import { getOrganizedEvent } from "../../../redux/actions/eventActions";
+import { updateDancer } from "../../../redux/actions/authActions";
+import axios from "axios";
+import {uploadSchoolImage} from "../../../api/SchoolApi";
 
 export const TYPE_OPTIONS = {
     SCHOOL: "school",
@@ -52,14 +54,22 @@ const SchoolEventForm = ({typeOption, optionObject}) => {
         setCity(optionObject.contactInfo?.city)
         setImage(optionObject.image)
         if (typeOption === TYPE_OPTIONS.EVENT){
-            const startMonth = optionObject?.dateEvent?.split("-")[1]
-            const finishMonth = optionObject?.dateFinishEvent?.split("-")[1]
+            const sDate = optionObject?.dateEvent?.split("T")[0]
+            const sTime = optionObject?.dateEvent?.split("T")[1]
+            const fDate = optionObject?.dateFinishEvent?.split("T")[0]
+            const fTime = optionObject?.dateFinishEvent?.split("T")[1]
+            const startMonth = sDate?.split("-")[1]
+            const finishMonth = fDate?.split("-")[1]
             setSMonth(months.find(mon => mon.id === startMonth)?.name);
             setFMonth(months.find(mon => mon.id === finishMonth)?.name);
-            setValue('sDay', optionObject?.dateEvent?.split("-")[2])
-            setValue('sYear', optionObject?.dateEvent?.split("-")[0])
-            setValue('fDay', optionObject?.dateFinishEvent?.split("-")[2])
-            setValue('fYear', optionObject?.dateFinishEvent?.split("-")[0])
+            setValue('sDay', sDate?.split("-")[2])
+            setValue('sYear', sDate?.split("-")[0])
+            setValue('fDay', fDate?.split("-")[2])
+            setValue('fYear', fDate?.split("-")[0])
+            setValue('sHour', sTime?.split(":")[0])
+            setValue('sMinute', sTime?.split(":")[1])
+            setValue('fHour', fTime?.split(":")[0])
+            setValue('fMinute', fTime?.split(":")[1])
         }
     }, [optionObject])
 
@@ -82,8 +92,8 @@ const SchoolEventForm = ({typeOption, optionObject}) => {
                     setLoading(false);
                 })
         }else {
-            const startDate = joinDateString(data.sYear, sMonth, data.sDay, months) + "T19:00+00:00"
-            const finishDate = joinDateString(data.sYear, sMonth, data.sDay, months) + "T02:00+00:00"
+            const startDate = joinDateTimeString(data.sYear, sMonth, data.sDay, data.sHour, data.sMinute, months)
+            const finishDate = joinDateTimeString(data.fYear, fMonth, data.fDay, data.fHour, data.fMinute, months)
             const newEvent = eventMapper(null, data.name, data.description, dances, contactInfo, image,
                 startDate, finishDate, [dancer])
             console.log("newEvent", newEvent)
@@ -119,6 +129,26 @@ const SchoolEventForm = ({typeOption, optionObject}) => {
             })
     }
 
+    const upload = (e) => {
+        console.log(e.target.files[0])
+        const image = e.target.files[0]
+        const formData = new FormData();
+        formData.append('file', image);
+        if (typeOption === TYPE_OPTIONS.SCHOOL){
+            uploadSchoolImage(optionObject.id, formData)
+                .then(function (response) {
+                    //handle success
+                    console.log(response);
+                })
+                .catch(function (response) {
+                    //handle error
+                    console.log(response);
+                });
+        }else {
+
+        }
+    }
+
     const getCountries = (countryName) => request(GET.getCountries(countryName))
 
     const getCities = (cityName) => request(GET.getCities(cityName, country))
@@ -140,10 +170,16 @@ const SchoolEventForm = ({typeOption, optionObject}) => {
                                         className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none
                                                         focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
                                     >
-                                        <span>Upload a file</span>
-                                        <input id="file-upload" name="file-upload" type="file" className="sr-only" />
+                                        <span className="flex ml-8">Upload a file</span>
+                                        <input
+                                            id="file-upload"
+                                            name="file-upload"
+                                            type="file"
+                                            className="sr-only"
+                                            onChange={upload}
+                                        />
                                     </label>
-                                    <p className="pl-1">or drag and drop</p>
+                                    {/*<p className="pl-1">or drag and drop</p>*/}
                                 </div>
                                 <p className="text-xs leading-5 text-gray-600">PNG, JPG, GIF up to 10MB</p>
                             </div>
@@ -181,13 +217,13 @@ const SchoolEventForm = ({typeOption, optionObject}) => {
                                         name="sDay"
                                         id="sDay"
                                         autoComplete="sDay"
-                                        {...register('sDay', { value: optionObject?.dateEvent?.split("-")[2], maxLength: 2, minLength: 2, min: 1, max: 31 })}
+                                        {...register('sDay', { maxLength: 2, minLength: 2, min: 1, max: 31 })}
                                         className="flex-1 w-10 rounded-md shadow-md border-1 bg-transparent py-1.5 pl-1 text-black focus:ring-0 sm:text-sm sm:leading-6"
                                         placeholder="day"
                                     />
                                 </div>
                                 <div className="flex">
-                                    <DropDownList
+                                    <DropDownListElement
                                         disabled={false}
                                         startOption={sMonth}
                                         setOption={setSMonth}
@@ -200,10 +236,35 @@ const SchoolEventForm = ({typeOption, optionObject}) => {
                                         name="sYear"
                                         id="sYear"
                                         autoComplete="sYear"
-                                        {...register('sYear', { value: optionObject?.dateEvent?.split("-")[0], maxLength: 4, minLength: 4, min: 1900, max: 2100 })}
+                                        {...register('sYear', { maxLength: 4, minLength: 4, min: 1900, max: 2100 })}
                                         className="flex-1 w-20 rounded-md shadow-md border-1 bg-transparent py-1.5 pl-1 text-black focus:ring-0 sm:text-sm sm:leading-6"
                                         placeholder="year"
                                     />
+                                </div>
+                                <div className="flex items-center">
+                                    <div className="flex w-10 rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
+                                        <input
+                                            type="text"
+                                            name="sHour"
+                                            id="sHour"
+                                            autoComplete="sHour"
+                                            {...register('sHour', { maxLength: 2, minLength: 2, min: 0, max: 23 })}
+                                            className="flex-1 w-10 rounded-md shadow-md border-1 bg-transparent py-1.5 pl-1 text-black focus:ring-0 sm:text-sm sm:leading-6"
+                                            placeholder="h"
+                                        />
+                                    </div>
+                                    <span className="text-xl">&nbsp;:&nbsp;</span>
+                                    <div className="flex w-10 rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
+                                        <input
+                                            type="text"
+                                            name="sMinute"
+                                            id="sMinute"
+                                            autoComplete="sMinute"
+                                            {...register('sMinute', { maxLength: 2, minLength: 2, min: 0, max: 59 })}
+                                            className="flex-1 w-10 rounded-md shadow-md border-1 bg-transparent py-1.5 pl-1 text-black focus:ring-0 sm:text-sm sm:leading-6"
+                                            placeholder="m"
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -219,13 +280,13 @@ const SchoolEventForm = ({typeOption, optionObject}) => {
                                         name="fDay"
                                         id="fDay"
                                         autoComplete="fDay"
-                                        {...register('fDay', { value: optionObject?.dateFinishEvent?.split("-")[2], maxLength: 2, minLength: 2, min: 1, max: 31 })}
+                                        {...register('fDay', { maxLength: 2, minLength: 2, min: 1, max: 31 })}
                                         className="flex-1 w-10 rounded-md shadow-md border-1 bg-transparent py-1.5 pl-1 text-black focus:ring-0 sm:text-sm sm:leading-6"
                                         placeholder="day"
                                     />
                                 </div>
                                 <div className="flex">
-                                    <DropDownList
+                                    <DropDownListElement
                                         disabled={false}
                                         startOption={fMonth}
                                         setOption={setFMonth}
@@ -238,11 +299,37 @@ const SchoolEventForm = ({typeOption, optionObject}) => {
                                         name="fYear"
                                         id="fYear"
                                         autoComplete="fYear"
-                                        {...register('fYear', { value: optionObject?.dateFinishEvent?.split("-")[0], maxLength: 4, minLength: 4, min: 1900, max: 2100 })}
+                                        {...register('fYear', { maxLength: 4, minLength: 4, min: 1900, max: 2100 })}
                                         className="flex-1 w-20 rounded-md shadow-md border-1 bg-transparent py-1.5 pl-1 text-black focus:ring-0 sm:text-sm sm:leading-6"
                                         placeholder="year"
                                     />
                                 </div>
+                                <div className="flex items-center">
+                                    <div className="flex w-10 rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
+                                        <input
+                                            type="text"
+                                            name="fHour"
+                                            id="fHour"
+                                            autoComplete="fHour"
+                                            {...register('fHour', { maxLength: 2, minLength: 2, min: 0, max: 23 })}
+                                            className="flex-1 w-10 rounded-md shadow-md border-1 bg-transparent py-1.5 pl-1 text-black focus:ring-0 sm:text-sm sm:leading-6"
+                                            placeholder="h"
+                                        />
+                                    </div>
+                                    <span className="text-xl">&nbsp;:&nbsp;</span>
+                                    <div className="flex w-10 rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
+                                        <input
+                                            type="text"
+                                            name="fMinute"
+                                            id="fMinute"
+                                            autoComplete="fMinute"
+                                            {...register('fMinute', { maxLength: 2, minLength: 2, min: 0, max: 59 })}
+                                            className="flex-1 w-10 rounded-md shadow-md border-1 bg-transparent py-1.5 pl-1 text-black focus:ring-0 sm:text-sm sm:leading-6"
+                                            placeholder="m"
+                                        />
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </>

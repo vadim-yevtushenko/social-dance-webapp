@@ -2,17 +2,21 @@ import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {useValues} from "../../../hooks/useValues";
-import RadioGroup from "../../forms/RadioGroup";
-import DropDownList from "../../forms/DropDownList";
+import RadioGroupElement from "../../forms/elements/RadioGroupElement";
+import DropDownListElement from "../../forms/elements/DropDownListElement";
 import {joinDateString} from "../../../util/dateTimeUtils";
-import ComboboxElement from "../../forms/ComboboxElement";
-import CheckboxElement from "../../forms/CheckboxElement";
+import ComboboxElement from "../../forms/elements/ComboboxElement";
+import CheckboxElement from "../../forms/elements/CheckboxElement";
 import {useHttp} from "../../../hooks/http.hook";
 import {useForm} from "react-hook-form";
 import {GET, POST} from "../../../api/Endpoints";
 import {updateDancer} from "../../../redux/actions/authActions";
 import {dancerMapper} from "../../../util/mapper";
 import DateTimeForm from "../../forms/DateTimeForm";
+import Spinner from "../../spinner/Spinner";
+import {useUpload} from "../../../hooks/useUpload";
+import {deleteDancerImage, fetchDancer, uploadDancerImage} from "../../../api/DancerApi";
+import LoadingSpinner from "../../spinner/LoadingSpinner";
 
 const InfoProfileComponent = () => {
     const [loading, setLoading] = useState(false);
@@ -25,10 +29,12 @@ const InfoProfileComponent = () => {
     const [country, setCountry] = useState(dancer.contactInfo?.country)
     const [bMonth, setMonth] = useState("");
     const [dances, setDances] = useState(dancer.dances);
-    const [image, setImage] = useState(dancer.image);
     const {request} = useHttp();
     const { register, handleSubmit, formState: { errors }, } = useForm()
     const {levelOptions, genderButtons, months} = useValues()
+    const [photo, setPhoto] = useState()
+    const [photoUrl, setPhotoUrl] = useState(dancer.image)
+    const {checkSize} = useUpload()
 
     useEffect(() => {
         if (!isAuthenticated){
@@ -38,14 +44,19 @@ const InfoProfileComponent = () => {
             setMonth(months.find(mon => mon.id === month)?.name);
         }
     }, [isAuthenticated])
-    // console.log("country", country)
+
+    useEffect(() => {
+        fetchDancer(dancer.id)
+            .then(res => dispatch(updateDancer(res.data)))
+
+    }, [photoUrl])
 
     const onSubmit = (data) => {
         console.log("onSubmit", data)
         setLoading(true)
         const contactInfo = { email: data.email, phoneNumber: data.phoneNumber, country, city }
         const updatedDancer = dancerMapper(dancer.id, data.name, data.lastName, gender,
-            joinDateString(data.year, bMonth, data.day, months), data.description, level, dances, contactInfo, image)
+            joinDateString(data.year, bMonth, data.day, months), data.description, level, dances, contactInfo, photoUrl)
         console.log("updatedDancer", updatedDancer)
         const update = () => request(POST.saveDancer(), "POST", JSON.stringify(updatedDancer))
         update()
@@ -60,12 +71,52 @@ const InfoProfileComponent = () => {
             })
     }
 
+    const selectPhoto = (photo) => {
+        setPhoto(photo)
+        setPhotoUrl(URL.createObjectURL(photo))
+    }
+
+    const uploadImage = () => {
+        if (!!photo){
+            if (!checkSize(1024, photo)){
+                const formData = new FormData();
+                formData.append('file', photo);
+                setLoading(true)
+                uploadDancerImage(dancer.id, formData)
+                    .then(res => {
+                        console.log(res.data)
+                        setPhotoUrl(res.data)
+                        setLoading(false);
+                    })
+                    .catch(error => {
+                        console.log("error", error)
+                        setLoading(false);
+                    })
+            }
+        }
+    }
+
+    const deletePhoto = () => {
+        setLoading(true)
+        deleteDancerImage(dancer.id)
+            .then(() => {
+                setPhotoUrl(null)
+                setLoading(false);
+            })
+            .catch(error => {
+                console.log("error", error)
+                setLoading(false);
+            })
+    }
+
     const getCountries = (countryName) => request(GET.getCountries(countryName))
 
     const getCities = (cityName) => request(GET.getCities(cityName, country))
 
+
     return (
     <div>
+        {loading && <Spinner/>}
         <main>
             <div className="divide-y divide-white/5">
                 <div className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
@@ -76,19 +127,40 @@ const InfoProfileComponent = () => {
                     <form className="md:col-span-2" onSubmit={handleSubmit(onSubmit)}>
                         <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
                             <div className="col-span-full flex items-center gap-x-8">
-                                <img
-                                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                    alt=""
-                                    className="h-24 w-24 flex-none rounded-lg bg-gray-800 object-cover"
-                                />
+                                <label
+                                    htmlFor="file-upload"
+                                    className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none
+                                                        focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
+                                >
+                                    <img
+                                        src={photoUrl ? photoUrl : "/images/avatar-default/avatar_default_icon.png"}
+                                        alt="Photo"
+                                        className="h-24 w-24 flex-none rounded-lg bg-gray-300 object-cover"
+                                    />
+                                    <input
+                                        id="file-upload"
+                                        name="file-upload"
+                                        type="file"
+                                        className="sr-only"
+                                        onChange={(e) => selectPhoto(e.target.files[0])}
+                                    />
+                                </label>
                                 <div>
                                     <button
                                         type="button"
                                         className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
+                                        onClick={uploadImage}
                                     >
                                         Change avatar
                                     </button>
-                                    <p className="mt-2 text-xs leading-5 text-gray-400">JPG, GIF or PNG. 1MB max.</p>
+                                    <p className="my-1 text-xs leading-5 text-gray-400">JPG, GIF or PNG. 1MB max.</p>
+                                    <button
+                                        type="button"
+                                        className="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500"
+                                        onClick={deletePhoto}
+                                    >
+                                        Delete avatar
+                                    </button>
                                 </div>
                             </div>
 
@@ -167,7 +239,7 @@ const InfoProfileComponent = () => {
                                 <label htmlFor="level" className="block text-sm font-medium leading-6 text-gray-900">
                                     Gender
                                 </label>
-                                <RadioGroup
+                                <RadioGroupElement
                                     radioButtons={genderButtons}
                                     setValue={setGender}
                                     startValue={dancer.gender}
@@ -178,7 +250,7 @@ const InfoProfileComponent = () => {
                                 <label htmlFor="level" className="block text-sm font-medium leading-6 text-gray-900">
                                     Level
                                 </label>
-                                <DropDownList
+                                <DropDownListElement
                                     disabled={false}
                                     startOption={level}
                                     setOption={setLevel}
@@ -203,7 +275,7 @@ const InfoProfileComponent = () => {
                                         />
                                     </div>
                                     <div className="flex">
-                                        <DropDownList
+                                        <DropDownListElement
                                             disabled={false}
                                             startOption={bMonth}
                                             setOption={setMonth}
@@ -249,7 +321,7 @@ const InfoProfileComponent = () => {
                                             value={city}
                                             setValue={setCity}
                                             request={getCities}
-                                            // isDisable={country === null || country === ""}
+                                            // isDisable={country === ""}
                                         />
                                     </div>
                                 </div>

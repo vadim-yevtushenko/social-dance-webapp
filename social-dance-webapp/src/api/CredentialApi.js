@@ -3,7 +3,12 @@ import {POST} from "./Endpoints";
 import {dancerLogin} from "../redux/actions/authActions";
 
 export const login = (email, password) => {
-    return requestWrapper(POST.login(email, password), "POST")
+    return requestWrapper({
+        axiosConfig: {
+            method: 'POST',
+            url: POST.login(email, password)
+        }
+    })
 }
 
 // export const login = ({email, password}) => (dispatch) => {
@@ -18,7 +23,14 @@ export const login = (email, password) => {
 //                     })
 // }
 
-export const signup = (email, password, dancer) => {
-    return requestWrapper(POST.registration(email, password), "POST", dancer)
-
+export const signup = (email, password, formData) => {
+    return requestWrapper({
+        axiosConfig: {
+            method: 'post',
+            url: POST.registration(email, password),
+            data: formData,
+            headers: {'Content-Type': 'multipart/form-data'}
+        }
+    })
 }
+

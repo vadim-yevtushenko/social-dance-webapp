@@ -1,19 +1,29 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {CheckIcon, ChevronUpDownIcon} from "@heroicons/react/20/solid";
-import {classNamesJoin} from "../../util/classNameUtils";
+import {classNamesJoin} from "../../../util/classNameUtils";
 import { Combobox } from '@headlessui/react'
-import Spinner from "../spinner/Spinner";
+import Spinner from "../../spinner/Spinner";
+import {set} from "react-hook-form";
 
 export default function ComboboxElement({ label, value, setValue, request, isDisable = false }) {
 
     const [loading, setLoading] = useState(false);
     const [filteredValues, setFilteredValues] = useState([])
     const [currentValue, setCurrentValue] = useState(value)
+    const [disable, setDisable] = useState(isDisable)
 
-    const onChange = (value) => {
-        if (value.length > 0) {
+    useEffect(() => {
+        setDisable(isDisable)
+    }, [isDisable])
+
+    useEffect(() => {
+        setCurrentValue(value)
+    }, [value])
+
+    const onChange = (changedValue) => {
+        if (changedValue.length > 0) {
             setLoading(true)
-            request(value)
+            request(changedValue)
                 .then(res => {
                     setFilteredValues(res)
                     setLoading(false)
@@ -22,6 +32,8 @@ export default function ComboboxElement({ label, value, setValue, request, isDis
                     console.log("error", error)
                     setLoading(false);
                 })
+        }else {
+            setValue(changedValue)
         }
     }
 
@@ -33,8 +45,8 @@ export default function ComboboxElement({ label, value, setValue, request, isDis
                     className="w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1 ring-inset
                     ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     onChange={(event) => onChange(event.target.value)}
-                    displayValue={() => value}
-                    // onFocus={(event) => event.target.disabled=isDisable}
+                    displayValue={() => currentValue}
+                    onFocus={(event) => event.target.disabled=disable}
                 />
                 <Combobox.Button className="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
                     <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />

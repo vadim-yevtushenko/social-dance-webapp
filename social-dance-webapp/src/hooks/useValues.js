@@ -1,6 +1,8 @@
 export const useValues = () => {
 
-    const pageSizeOptions = [5, 10, 20, 50]
+    const dancerPageSizeOptions = [5, 10, 20, 50]
+
+    const eventSchoolPageSizeOptions = [6, 12, 24]
 
     const levelOptions = ["JUNIOR", "MIDDLE", "ADVANCED", "TEACHER"]
 
@@ -37,6 +39,6 @@ export const useValues = () => {
 
     const createOptions = ["school", "event"]
 
-    return {pageSizeOptions, levelOptions, genderButtons, months, socialDances, createOptions}
+    return {dancerPageSizeOptions, eventSchoolPageSizeOptions, levelOptions, genderButtons, months, socialDances, createOptions}
 
 }

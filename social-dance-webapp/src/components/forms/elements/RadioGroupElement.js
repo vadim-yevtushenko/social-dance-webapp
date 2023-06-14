@@ -1,4 +1,4 @@
-export default function RadioGroup({title, startValue, radioButtons, setValue}) {
+export default function RadioGroupElement({title, startValue, radioButtons, setValue}) {
     return (
         <div>
             <label className="text-sm font-medium leading-6 text-gray-900">{title}</label>

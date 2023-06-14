@@ -1,6 +1,6 @@
 import React from 'react'
 
-const DropDownList = ({ disabled, startOption, setOption, options , font}) => {
+const DropDownListElement = ({ disabled, startOption, setOption, options , font}) => {
 
   return (
     <div className="inline-block gap-x-2">
@@ -26,4 +26,4 @@ const DropDownList = ({ disabled, startOption, setOption, options , font}) => {
   )
 }
 
-export default DropDownList
+export default DropDownListElement

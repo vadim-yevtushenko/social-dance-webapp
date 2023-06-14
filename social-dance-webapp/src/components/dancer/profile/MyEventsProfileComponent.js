@@ -9,6 +9,7 @@ import {getOrganizedEvent} from "../../../redux/actions/eventActions";
 import {GET} from "../../../api/Endpoints";
 import {getAdministratedSchool} from "../../../redux/actions/schoolActions";
 import {updateDancer} from "../../../redux/actions/authActions";
+import Spinner from "../../spinner/Spinner";
 
 const SUBTITLE = {
     EXIST_EVENTS: "All your active events.",
@@ -37,18 +38,13 @@ const MyEventsProfileComponent = () => {
 
     }, [isAuthenticated])
 
-    const toggleOpenEditForm = () => {
-        if (openEditForm && organizedEvent !== null){
-            dispatch(getOrganizedEvent({}))
-        }else {
-            setOpenEditForm(!openEditForm)
-        }
-
+    const openEmptyEditForm = () => {
+        dispatch(getOrganizedEvent({}))
+        setOpenEditForm(true)
     }
 
     const setEventForUpdate = (id) => {
         setLoading(true);
-        // setOpenEditForm(false)
         const getEvent = () => request(GET.getEvent(id))
         getEvent()
             .then(res => {
@@ -65,6 +61,7 @@ const MyEventsProfileComponent = () => {
 
     return (
         <div className="divide-y divide-white/5">
+            {loading && <Spinner/>}
             <div className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
                 <div>
                     <h2 className="text-base font-semibold leading-7 text-black">Your created events</h2>
@@ -100,7 +97,7 @@ const MyEventsProfileComponent = () => {
                     <button
                         type="button"
                         className="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400"
-                        onClick={() => toggleOpenEditForm()}
+                        onClick={() => openEmptyEditForm()}
                     >
                         Create event
                     </button>
@@ -110,13 +107,6 @@ const MyEventsProfileComponent = () => {
                     <>
                         <div>
                             <h2 className="text-lg font-semibold leading-7 text-black">Event Information</h2>
-                            {/*<button*/}
-                            {/*    type="button"*/}
-                            {/*    className="rounded-md bg-gray-200 px-3 py-2 text-sm font-semibold text-black shadow-sm hover:bg-gray-400"*/}
-                            {/*    onClick={() => toggleOpenEditForm()}*/}
-                            {/*>*/}
-                            {/*    Close edit form*/}
-                            {/*</button>*/}
                         </div>
                         <SchoolEventForm
                             typeOption={"event"}

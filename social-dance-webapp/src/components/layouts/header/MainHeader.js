@@ -16,7 +16,7 @@ const navigation = [
 
 const menu = [
   { name: 'Your profile', href: '/profile' },
-  { name: 'Settings', href: '/profile' },
+  // { name: 'Settings', href: '/profile' },
   { name: 'Log out', href: '#' },
 ]
 
@@ -24,7 +24,7 @@ export default function MainHeader() {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const {isAuthenticated, email } = useSelector(state => state.auth)
+  const {isAuthenticated, email, dancer } = useSelector(state => state.auth)
   const {name, lastName} = useSelector(state => state.auth?.dancer)
   const  state = useSelector(state => state)
 
@@ -95,7 +95,7 @@ export default function MainHeader() {
                           <div className="flex item-center">
                             <img
                                 className="h-8 w-8 rounded-full mt-1"
-                                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                src={dancer.image ? dancer.image : "/images/avatar-default/avatar_default_icon.png"}
                                 alt=""
                             />
                             <div className="mx-3">
@@ -117,9 +117,10 @@ export default function MainHeader() {
                         <Menu.Items
                             className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                           {menu.map(item => (
-                              <Menu.Item key={item.name}>
+                              <Menu.Item >
                             {({active}) => (
                                 <NavLink
+                                    key={item.name}
                                     to={item.href}
                                     className={classNamesJoin(
                                         active ? 'bg-gray-100' : '',
@@ -181,7 +182,7 @@ export default function MainHeader() {
                 <div className="flex-shrink-0">
                   <img
                     className="h-10 w-10 rounded-full"
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    src={dancer.image ? dancer.image : "/images/avatar-default/avatar_default_icon.png"}
                     alt=""
                   />
                 </div>

@@ -1,17 +1,14 @@
-import {useEffect, useMemo, useState} from "react";
 import {parseFullDateString} from "../../util/dateTimeUtils";
 import {MagnifyingGlassIcon} from "@heroicons/react/20/solid";
 
-const columns = [
-    {id: 1, name: "Name"},
-    {id: 2, name: "School / Dances"},
-    {id: 3, name: "Birthday"},
-    {id: 4, name: "Level"},
-];
+// const columns = [
+//     {id: 1, name: "Name"},
+//     {id: 2, name: "School / Dances"},
+//     {id: 3, name: "Birthday"},
+//     {id: 4, name: "Level"},
+// ];
 
 const DancerTable = ({dancers}) => {
-
-    const tableColumns = useMemo(() => columns, []);
 
     const dancesStr = (dances) => {
         return dances.map(d => d.name).join(", ");
@@ -36,7 +33,7 @@ const DancerTable = ({dancers}) => {
                                 id="search"
                                 name="search"
                                 className="block w-full rounded-md border-0 bg-gray-700 py-1.5 pl-10 pr-3 text-gray-300 placeholder:text-gray-400 focus:bg-white focus:text-gray-900 focus:ring-0 sm:text-sm sm:leading-6"
-                                placeholder="Search"
+                                placeholder="Name Last name"
                                 type="search"
                             />
                         </div>

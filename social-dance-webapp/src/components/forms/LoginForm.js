@@ -6,6 +6,8 @@ import React from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {dancerLogin, updateDancer} from "../../redux/actions/authActions";
 import {useForm} from "react-hook-form";
+import {POST} from "../../api/Endpoints";
+import {useHttp} from "../../hooks/http.hook";
 
 const LoginForm = () => {
     const [loading, setLoading] = useState(false);
@@ -13,6 +15,7 @@ const LoginForm = () => {
     const dispatch = useDispatch();
     const {isAuthenticated} = useSelector(state => state.auth)
     const { register, handleSubmit, formState: { errors } } = useForm()
+    const {request} = useHttp();
 
     useEffect(() => {
         if (isAuthenticated){
@@ -22,6 +25,7 @@ const LoginForm = () => {
 
     const onSubmit = ({email, password}) => {
         setLoading(true)
+        const login = () => request(POST.login(email, password), "POST")
         login(email, password)
             .then(res => {
                 console.log("res", res)

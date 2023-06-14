@@ -63,12 +63,15 @@ export const GET = {
 export const POST = {
     // Dancers
     saveDancer: () => `${API_BASE_URL}/dancers`,
+    uploadDancerImage: (id) => `${API_BASE_URL}/dancers/upload-image?id=${id}`,
 
     // Schools
     saveSchool: () => `${API_BASE_URL}/schools`,
+    uploadSchoolImage: (id) => `${API_BASE_URL}/schools/upload-image?id=${id}`,
 
     // Events
     saveEvent: () => `${API_BASE_URL}/events`,
+    uploadEventImage: (id) => `${API_BASE_URL}/events/upload-image?id=${id}`,
 
     // Credential
     login: (email, password) => `${API_BASE_URL}/credential/login?email=${email}&password=${password}`,
@@ -77,17 +80,14 @@ export const POST = {
 
 export const DELETE = {
     // Dancers
-    deleteDancer: (dancerId) => {
-        return `${API_BASE_URL}/dancers/${dancerId}`;
-    },
+    deleteDancer: (dancerId) => `${API_BASE_URL}/dancers/${dancerId}`,
+    deleteDancerImage: (dancerId) => `${API_BASE_URL}/dancers/delete-image?id=${dancerId}`,
 
     // Schools
-    deleteSchool: (schoolId) => {
-        return `${API_BASE_URL}/schools/${schoolId}`;
-    },
+    deleteSchool: (schoolId) => `${API_BASE_URL}/schools/${schoolId}`,
+    deleteSchoolImage: (schoolId) => `${API_BASE_URL}/schools/delete-image?id=${schoolId}`,
 
     // Events
-    deleteEvent: (eventId) => {
-        return `${API_BASE_URL}/events/${eventId}`;
-    }
+    deleteEvent: (eventId) => `${API_BASE_URL}/events/${eventId}`,
+    deleteEventImage: (eventId) => `${API_BASE_URL}/events/delete-image?id=${eventId}`,
 };

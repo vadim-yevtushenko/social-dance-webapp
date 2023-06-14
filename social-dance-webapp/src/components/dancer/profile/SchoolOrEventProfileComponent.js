@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import DropDownList from "../../forms/DropDownList";
+import DropDownListElement from "../../forms/elements/DropDownListElement";
 import { useEffect } from "react";
 import { useValues } from "../../../hooks/useValues";
 import SchoolEventForm from "./SchoolEventForm";
@@ -28,7 +28,7 @@ const SchoolOrEventProfileComponent = () => {
                         <div className="flex content-center">
                             <h2 className="flex mt-2 mr-2 text-lg font-semibold leading-7 text-black">Create </h2>
                             <div>
-                                <DropDownList
+                                <DropDownListElement
                                     disabled={false}
                                     startOption={typeOption}
                                     setOption={setTypeOption}

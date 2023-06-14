@@ -4,6 +4,7 @@ import DancerTable from "./DancerTable";
 import Pagination from "../pagination/Pagination";
 import Spinner from "../spinner/Spinner";
 import {useSelector} from "react-redux";
+import {useValues} from "../../hooks/useValues";
 
 const DancersComponent = () => {
 
@@ -12,13 +13,14 @@ const DancersComponent = () => {
     const [total, setTotal] = useState();
     const [page, setPage] = useState(1);
     const [size, setSize] = useState(5);
+    const {dancerPageSizeOptions} = useValues()
 
     useEffect(() => {
         setLoading(true);
         getDancers(page, Number(size))
             .then(res => {
-                setDancers(res.results);
-                setTotal(res.total)
+                setDancers(res.data.results);
+                setTotal(res.data.total)
                 setLoading(false);
             })
             .catch(error => {
@@ -44,6 +46,7 @@ const DancersComponent = () => {
                 total={total}
                 setPage={setPage}
                 setSize={setSize}
+                pageSizeOptions={dancerPageSizeOptions}
             />
         </div>
     );

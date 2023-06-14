@@ -1,5 +1,5 @@
 import {useSelector} from "react-redux";
-import Sidebar from "./Sidebar";
+import Sidebar, {chapterData} from "./Sidebar";
 import InfoProfileComponent from "./InfoProfileComponent";
 import {useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
@@ -44,12 +44,12 @@ const MainProfileComponent = () => {
     }
 
     return (
-    <div className="flex min-h-screen">
-        <Sidebar
-            onChange={chapter => setCurrentChapter(chapter)}
-        />
-        {renderChapter()}
-    </div>
+        <div className="xl:flex min-h-screen">
+            <Sidebar
+                onChange={chapter => setCurrentChapter(chapter)}
+            />
+            {renderChapter()}
+        </div>
     )
 }
 

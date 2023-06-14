@@ -3,8 +3,8 @@ import {useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {dancerLogin, updateDancer} from "../../redux/actions/authActions";
 import Spinner from "../spinner/Spinner";
-import RadioGroup from "./RadioGroup";
-import DropDownList from "./DropDownList";
+import RadioGroupElement from "./elements/RadioGroupElement";
+import DropDownListElement from "./elements/DropDownListElement";
 import {useHttp} from "../../hooks/http.hook";
 import {POST} from "../../api/Endpoints";
 import {useValues} from "../../hooks/useValues";
@@ -96,7 +96,7 @@ const RegistrationForm = () => {
                             </div>
 
                             <div className="flex justify-between">
-                                <RadioGroup
+                                <RadioGroupElement
                                     title="Gender"
                                     radioButtons={genderButtons}
                                     setValue={setGender}
@@ -105,7 +105,7 @@ const RegistrationForm = () => {
                                     <label htmlFor="text" className="block text-sm font-medium leading-6 text-gray-900">
                                         Level
                                     </label>
-                                    <DropDownList
+                                    <DropDownListElement
                                         disabled={false}
                                         startOption={level}
                                         setOption={setLevel}

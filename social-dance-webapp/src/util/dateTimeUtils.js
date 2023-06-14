@@ -26,3 +26,12 @@ export const joinDateString = (year, month, day, months) => {
     console.log("numMonth", numMonth)
     return year + "-" + numMonth + "-" + day
 }
+
+export const joinDateTimeString = (year, month, day, hour, minute, months) => {
+    const date = joinDateString(year, month, day, months)
+    if (date == null){
+        return null
+    }
+
+    return date + "T" + hour + ":" + minute
+}

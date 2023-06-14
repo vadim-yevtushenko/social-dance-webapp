@@ -2,7 +2,7 @@ import {classNamesJoin} from "../../../util/classNameUtils";
 import {Cog6ToothIcon, FolderIcon, GlobeAltIcon, ServerIcon, ChartBarSquareIcon} from "@heroicons/react/24/outline";
 import {useState} from "react";
 
-const chapterData = [
+export const chapterData = [
     { id: 'PERSONAL_INFO', name: 'Personal Information', href: '#', icon: FolderIcon, current: true },
     // { id: 'CREATE_SCHOOL_EVENT', name: 'Create school or event', href: '#', icon: ChartBarSquareIcon, current: false },
     { id: 'MY_SCHOOLS', name: 'My schools', href: '#', icon: ServerIcon, current: false },
@@ -35,7 +35,11 @@ const Sidebar = ({onChange}) => {
                 >
                     {chapters.map((chapter) => (
                         <li key={chapter.name}>
-                            <a href={chapter.href} className={chapter.current ? 'text-indigo-400' : ''}>
+                            <a
+                                href={chapter.href}
+                                className={chapter.current && 'text-indigo-400'}
+                                onClick={() => handleChangeChapter(chapter)}
+                            >
                                 {chapter.name}
                             </a>
                         </li>

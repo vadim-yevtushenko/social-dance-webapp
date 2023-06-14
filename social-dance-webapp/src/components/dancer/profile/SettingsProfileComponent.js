@@ -1,5 +1,17 @@
+import { useForm } from "react-hook-form";
+import React from "react";
 
 const SettingsProfileComponent = () => {
+
+    const { register, handleSubmit, formState: { errors }, getValues } = useForm()
+
+    function onChangeSubmit() {
+
+    }
+
+    function onDeleteSubmit() {
+
+    }
 
     return (
         <div>
@@ -15,7 +27,7 @@ const SettingsProfileComponent = () => {
                             </p>
                         </div>
 
-                        <form className="md:col-span-2">
+                        <form className="md:col-span-2" onSubmit={handleSubmit(onChangeSubmit)}>
                             <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
                                 <div className="col-span-full">
                                     <label htmlFor="current-password" className="block text-sm font-medium leading-6 text-black">
@@ -23,12 +35,15 @@ const SettingsProfileComponent = () => {
                                     </label>
                                     <div className="mt-2">
                                         <input
-                                            id="current-password"
-                                            name="current_password"
+                                            id="currentPassword"
+                                            name="currentPassword"
                                             type="password"
-                                            autoComplete="current-password"
-                                            className="block w-full rounded-md border-1 bg-white/5 py-1.5 text-black shadow-md ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                                            autoComplete="currentPassword"
+                                            className="block w-full rounded-md border-1 bg-white/5 py-1.5 text-black shadow-md
+                                            ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                                            {...register('currentPassword', { required: true })}
                                         />
+                                        {errors?.currentPassword?.type === "required" && <p className="text-xs leading-5 text-red-700">Password is required.</p>}
                                     </div>
                                 </div>
 
@@ -38,12 +53,15 @@ const SettingsProfileComponent = () => {
                                     </label>
                                     <div className="mt-2">
                                         <input
-                                            id="new-password"
-                                            name="new_password"
+                                            id="newPassword"
+                                            name="newPassword"
                                             type="password"
-                                            autoComplete="new-password"
-                                            className="block w-full rounded-md border-1 bg-white/5 py-1.5 text-black shadow-md ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                                            autoComplete="newPassword"
+                                            className="block w-full rounded-md border-1 bg-white/5 py-1.5 text-black shadow-md
+                                            ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                                            {...register('newPassword', { required: true })}
                                         />
+                                        {errors?.newPassword?.type === "required" && <p className="text-xs leading-5 text-red-700">New password is required.</p>}
                                     </div>
                                 </div>
 
@@ -53,12 +71,20 @@ const SettingsProfileComponent = () => {
                                     </label>
                                     <div className="mt-2">
                                         <input
-                                            id="confirm-password"
-                                            name="confirm_password"
+                                            id="confirmPassword"
+                                            name="confirmPassword"
                                             type="password"
-                                            autoComplete="new-password"
-                                            className="block w-full rounded-md border-1 bg-white/5 py-1.5 text-black shadow-md ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                                            autoComplete="newPassword"
+                                            className="block w-full rounded-md border-1 bg-white/5 py-1.5 text-black shadow-md ring-1
+                                            ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                                            {...register('confirmPassword', { required: true,
+                                                validate: (value) => {
+                                                    if (getValues().newPassword !== value) {
+                                                        return "Your passwords do not match.";
+                                                    }
+                                                },})}
                                         />
+                                        {errors?.confirmPassword?.type === "required" && <p className="text-xs leading-5 text-red-700">Confirm password is required.</p>}
                                     </div>
                                 </div>
                             </div>
@@ -84,7 +110,7 @@ const SettingsProfileComponent = () => {
                             </p>
                         </div>
 
-                        <form className="md:col-span-2">
+                        <form className="md:col-span-2" onSubmit={handleSubmit(onDeleteSubmit)}>
                             <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
                                 <div className="col-span-full">
                                     <label htmlFor="logout-password" className="block text-sm font-medium leading-6 text-black">
@@ -92,12 +118,15 @@ const SettingsProfileComponent = () => {
                                     </label>
                                     <div className="mt-2">
                                         <input
-                                            id="logout-password"
-                                            name="password"
+                                            id="deletePassword"
+                                            name="deletePassword"
                                             type="password"
-                                            autoComplete="current-password"
-                                            className="block w-full rounded-md border-1 bg-white/5 py-1.5 text-black shadow-md ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                                            autoComplete="deletePassword"
+                                            className="block w-full rounded-md border-1 bg-white/5 py-1.5 text-black shadow-md ring-1
+                                            ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                                            {...register('deletePassword', { required: true })}
                                         />
+                                        {errors?.deletePassword?.type === "required" && <p className="text-xs leading-5 text-red-700">Password is required.</p>}
                                     </div>
                                 </div>
                             </div>
