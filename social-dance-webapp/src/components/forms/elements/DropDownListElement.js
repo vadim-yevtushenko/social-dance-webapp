@@ -1,6 +1,6 @@
 import React from 'react'
 
-const DropDownListElement = ({ disabled, startOption, setOption, options , font}) => {
+const DropDownListElement = ({ disabled=false, startOption, setOption, options , font}) => {
 
   return (
     <div className="inline-block gap-x-2">

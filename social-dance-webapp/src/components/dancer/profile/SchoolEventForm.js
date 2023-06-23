@@ -1,4 +1,3 @@
-import { PhotoIcon } from "@heroicons/react/20/solid";
 import DropDownListElement from "../../forms/elements/DropDownListElement";
 import ComboboxElement from "../../forms/elements/ComboboxElement";
 import CheckboxElement from "../../forms/elements/CheckboxElement";
@@ -14,13 +13,10 @@ import {joinDateString, joinDateTimeString} from "../../../util/dateTimeUtils";
 import { getAdministratedSchool } from "../../../redux/actions/schoolActions";
 import { getOrganizedEvent } from "../../../redux/actions/eventActions";
 import { updateDancer } from "../../../redux/actions/authActions";
-import axios from "axios";
-import {uploadSchoolImage} from "../../../api/SchoolApi";
-
-export const TYPE_OPTIONS = {
-    SCHOOL: "school",
-    EVENT: "event"
-}
+import {deleteSchoolImage, uploadSchoolImage} from "../../../api/SchoolApi";
+import {useUpload} from "../../../hooks/useUpload";
+import {deleteEventImage, uploadEventImage} from "../../../api/EventApi";
+import {PhotoIcon} from "@heroicons/react/24/solid";
 
 const SchoolEventForm = ({typeOption, optionObject}) => {
 
@@ -31,12 +27,14 @@ const SchoolEventForm = ({typeOption, optionObject}) => {
     const [city, setCity] = useState(optionObject.contactInfo?.city)
     const [country, setCountry] = useState(optionObject.contactInfo?.country)
     const [dances, setDances] = useState(optionObject.dances);
-    const [image, setImage] = useState(optionObject.image);
     const [sMonth, setSMonth] = useState("");
     const [fMonth, setFMonth] = useState("");
-    const { months } = useValues()
+    const { months, TYPE_OPTIONS } = useValues()
     const {request} = useHttp();
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
+    const [image, setImage] = useState()
+    const [imageUrl, setImageUrl] = useState(optionObject.image)
+    const {checkSize} = useUpload()
 
     useEffect(() => {
         if (!isAuthenticated){
@@ -52,7 +50,7 @@ const SchoolEventForm = ({typeOption, optionObject}) => {
         setDances(optionObject.dances)
         setCountry(optionObject.contactInfo?.country)
         setCity(optionObject.contactInfo?.city)
-        setImage(optionObject.image)
+        setImageUrl(optionObject.image)
         if (typeOption === TYPE_OPTIONS.EVENT){
             const sDate = optionObject?.dateEvent?.split("T")[0]
             const sTime = optionObject?.dateEvent?.split("T")[1]
@@ -78,8 +76,7 @@ const SchoolEventForm = ({typeOption, optionObject}) => {
         setLoading(true)
         const contactInfo = { email: data.email, phoneNumber: data.phoneNumber, country, city }
         if (typeOption === TYPE_OPTIONS.SCHOOL){
-            const newSchool = schoolMapper(null, data.name, data.description, dances, contactInfo, image, [dancer])
-            console.log("newSchool", newSchool)
+            const newSchool = schoolMapper(null, data.name, data.description, dances, contactInfo, imageUrl, [dancer])
             const save = () => request(POST.saveSchool(), "POST", JSON.stringify(newSchool))
             save()
                 .then(res => {
@@ -94,7 +91,7 @@ const SchoolEventForm = ({typeOption, optionObject}) => {
         }else {
             const startDate = joinDateTimeString(data.sYear, sMonth, data.sDay, data.sHour, data.sMinute, months)
             const finishDate = joinDateTimeString(data.fYear, fMonth, data.fDay, data.fHour, data.fMinute, months)
-            const newEvent = eventMapper(null, data.name, data.description, dances, contactInfo, image,
+            const newEvent = eventMapper(null, data.name, data.description, dances, contactInfo, imageUrl,
                 startDate, finishDate, [dancer])
             console.log("newEvent", newEvent)
             const save = () => request(POST.saveEvent(), "POST", JSON.stringify(newEvent))
@@ -129,25 +126,84 @@ const SchoolEventForm = ({typeOption, optionObject}) => {
             })
     }
 
-    const upload = (e) => {
-        console.log(e.target.files[0])
-        const image = e.target.files[0]
-        const formData = new FormData();
-        formData.append('file', image);
-        if (typeOption === TYPE_OPTIONS.SCHOOL){
-            uploadSchoolImage(optionObject.id, formData)
-                .then(function (response) {
-                    //handle success
-                    console.log(response);
-                })
-                .catch(function (response) {
-                    //handle error
-                    console.log(response);
-                });
-        }else {
-
+    const uploadImage = () => {
+        if (!!image) {
+            if (!checkSize(1024, image)) {
+                setLoading(true)
+                const formData = new FormData();
+                formData.append('file', image);
+                if (typeOption === TYPE_OPTIONS.SCHOOL) {
+                    uploadSchoolImage(optionObject.id, formData)
+                        .then(res => {
+                            setImageUrl(res.data)
+                            setImage(null)
+                            console.log(res);
+                            setLoading(false)
+                        })
+                        .catch(res => {
+                            //handle error
+                            console.log(res);
+                            setLoading(false)
+                        });
+                }else {
+                    uploadEventImage(optionObject.id, formData)
+                        .then(res => {
+                            setImageUrl(res.data)
+                            setImage(null)
+                            console.log(res);
+                            setLoading(false)
+                        })
+                        .catch(res => {
+                            //handle error
+                            console.log(res);
+                            setLoading(false)
+                        });
+                }
+            }
         }
     }
+
+    const deleteImage = () => {
+        if (optionObject.image){
+            setLoading(true)
+            if (typeOption === TYPE_OPTIONS.SCHOOL){
+                deleteSchoolImage(optionObject.id)
+                    .then(() => {
+                        setImageUrl(null)
+                        setImage(null)
+                        setValue('file-upload', null)
+                        setLoading(false)
+                    })
+                    .catch(error => {
+                        console.log("error", error)
+                        setLoading(false);
+                    })
+            }else {
+                deleteEventImage(optionObject.id)
+                    .then(() => {
+                        setImageUrl(null)
+                        setImage(null)
+                        setValue('file-upload', null)
+                        setLoading(false)
+                    })
+                    .catch(error => {
+                        console.log("error", error)
+                        setLoading(false);
+                    })
+            }
+
+        }else {
+            setImageUrl(null)
+            setImage(null)
+            setValue('file-upload', null)
+        }
+    }
+
+    const selectImage = (image) => {
+        setImage(image)
+        setImageUrl(URL.createObjectURL(image))
+    }
+
 
     const getCountries = (countryName) => request(GET.getCountries(countryName))
 
@@ -161,28 +217,53 @@ const SchoolEventForm = ({typeOption, optionObject}) => {
                         Photo
                     </label>
                     <div className="mt-2 sm:col-span-2 sm:mt-0">
-                        <div className="flex max-w-2xl justify-center rounded-lg border border-1 border-gray-900 px-6 py-10 shadow-md">
+                        <div className="flex max-w-2xl justify-center rounded-lg border border-1 border-gray-900 shadow-md ">
                             <div className="text-center">
-                                <PhotoIcon className="mx-auto h-12 w-12 text-gray-300" aria-hidden="true" />
-                                <div className="mt-4 flex text-sm leading-6 text-gray-600">
+                                <div className="flex text-sm leading-6 text-gray-600">
                                     <label
                                         htmlFor="file-upload"
-                                        className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none
+                                        className="relative cursor-pointer rounded-md  font-semibold text-indigo-600 focus-within:outline-none
                                                         focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
                                     >
-                                        <span className="flex ml-8">Upload a file</span>
+                                        {imageUrl ? (
+                                            <img
+                                                src={imageUrl}
+                                                alt="Photo"
+                                                className="max-w-xl flex-none rounded-lg bg-gray-300 object-cover"
+                                            />
+                                        ) : (
+                                            <PhotoIcon className="h-40 w-40 text-gray-300 hover:text-indigo-500" aria-hidden="true" />
+                                        )}
                                         <input
                                             id="file-upload"
                                             name="file-upload"
                                             type="file"
                                             className="sr-only"
-                                            onChange={upload}
+                                            {...register('file-upload')}
+                                            onChange={(e) => selectImage(e.target.files[0])}
                                         />
                                     </label>
-                                    {/*<p className="pl-1">or drag and drop</p>*/}
                                 </div>
-                                <p className="text-xs leading-5 text-gray-600">PNG, JPG, GIF up to 10MB</p>
                             </div>
+                        </div>
+                        <div className="flex justify-around mt-3">
+                            <button
+                                type="button"
+                                className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
+                                onClick={uploadImage}
+                            >
+                                Change image
+                            </button>
+                            <p className="my-1 text-xs leading-5 text-gray-400">JPG, GIF or PNG. 10MB max.</p>
+                            {imageUrl && (
+                                <button
+                                    type="button"
+                                    className="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500"
+                                    onClick={deleteImage}
+                                >
+                                    Delete image
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>

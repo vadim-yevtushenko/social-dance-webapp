@@ -1,5 +1,5 @@
 import requestWrapper from "./requestWrapper";
-import {GET, POST} from "./Endpoints";
+import {DELETE, GET, POST} from "./Endpoints";
 
 export const getSchools = (page, size) => {
     return requestWrapper({
@@ -11,7 +11,12 @@ export const getSchools = (page, size) => {
 };
 
 export const getSchool = (id) => {
-    return requestWrapper(GET.getSchool(id));
+    return requestWrapper({
+        axiosConfig: {
+            method: 'GET',
+            url: GET.getSchool(id)
+        }
+    });
 }
 
 export const uploadSchoolImage = (id, formData) => {
@@ -21,6 +26,15 @@ export const uploadSchoolImage = (id, formData) => {
             url: POST.uploadSchoolImage(id),
             data: formData ,
             headers: {'Content-Type': 'multipart/form-data' }
+        }
+    })
+}
+
+export const deleteSchoolImage = (id) => {
+    return requestWrapper({
+        axiosConfig: {
+            method: 'DELETE',
+            url: DELETE.deleteSchoolImage(id),
         }
     })
 }

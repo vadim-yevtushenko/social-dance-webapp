@@ -14,9 +14,7 @@ export const GET = {
         if (!!size) url = url.concat(`size=${size}`)
         return url
     },
-
     getDancer: (dancerId) => `${API_BASE_URL}/dancers/${dancerId}`,
-
 
     // Schools
     getSchools: (page, size) => {
@@ -25,7 +23,6 @@ export const GET = {
         if (!!size) url = url.concat(`size=${size}`)
         return url
     },
-
     getSchool: (schoolId) => `${API_BASE_URL}/schools/${schoolId}`,
 
     // Events
@@ -35,22 +32,27 @@ export const GET = {
         if (!!size) url = url.concat(`size=${size}`)
         return url
     },
-
     getEvent: (eventId) => `${API_BASE_URL}/events/${eventId}`,
-
     getEventsByDancerId: (dancerId) => `${API_BASE_URL}/events/organizer/${dancerId}`,
 
-    // Credential
+    // Rating
+    getGeneralRating: (schoolId) => `${API_BASE_URL}/ratings/${schoolId}`,
+    getRating: (schoolId, dancerId) => `${API_BASE_URL}/ratings?schoolId=${schoolId}&dancerId=${dancerId}`,
+
+    // Review
+    getReviews: (schoolId, page, size) => {
+        let url = `${API_BASE_URL}/reviews?schoolId=${schoolId}`
+        if (!!page) url = url.concat(`&pageNumber=${page}`)
+        if (!!size) url = url.concat(`&size=${size}`)
+        return url
+    },
 
     // Utils
-    getDances: () => `${API_BASE_URL}/utils/dances`,
-
     getCountries: (name) => {
         let url = `${API_BASE_URL}/utils/countries?`
         if (!!name) url = url.concat(`name=${name}`)
         return url
     },
-
     getCities: (name, country) => {
         let url = `${API_BASE_URL}/utils/cities?`
         if (!!name) url = url.concat(`name=${name}&`)
@@ -76,6 +78,12 @@ export const POST = {
     // Credential
     login: (email, password) => `${API_BASE_URL}/credential/login?email=${email}&password=${password}`,
     registration: (email, password) => `${API_BASE_URL}/credential/registration?email=${email}&password=${password}`,
+
+    // Rating
+    saveRating: () => `${API_BASE_URL}/ratings`,
+
+    // Review
+    saveReview: () => `${API_BASE_URL}/reviews`,
 };
 
 export const DELETE = {

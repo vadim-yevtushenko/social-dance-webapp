@@ -1,10 +1,35 @@
+import {StarIcon} from "@heroicons/react/20/solid";
+
 export const useValues = () => {
 
-    const dancerPageSizeOptions = [5, 10, 20, 50]
+    const pageSizeOptions = [5, 10, 20, 50]
 
-    const eventSchoolPageSizeOptions = [6, 12, 24]
+    const eventOrSchoolPageSizeOptions = [6, 12, 24]
 
     const levelOptions = ["JUNIOR", "MIDDLE", "ADVANCED", "TEACHER"]
+
+    const ratingButtons = [
+        { id: '1', title: <div className="flex items-center">
+                <p>1</p>
+                <StarIcon className='text-yellow-400 h-5 w-5 flex-shrink-0 ml-1'/>
+            </div> },
+        { id: '2', title: <div className="flex items-center">
+                <p>2</p>
+                <StarIcon className='text-yellow-400 h-5 w-5 flex-shrink-0 ml-1'/>
+            </div> },
+        { id: '3', title: <div className="flex items-center">
+                <p>3</p>
+                <StarIcon className='text-yellow-400 h-5 w-5 flex-shrink-0 ml-1'/>
+            </div> },
+        { id: '4', title: <div className="flex items-center">
+                <p>4</p>
+                <StarIcon className='text-yellow-400 h-5 w-5 flex-shrink-0 ml-1'/>
+            </div> },
+        { id: '5', title: <div className="flex items-center">
+                <p>5</p>
+                <StarIcon className='text-yellow-400 h-5 w-5 flex-shrink-0 ml-1'/>
+            </div> },
+    ]
 
     const genderButtons = [
         { id: 'male', title: 'male' },
@@ -37,8 +62,11 @@ export const useValues = () => {
         { id: '08', name: 'Mambo' },
     ]
 
-    const createOptions = ["school", "event"]
+    const TYPE_OPTIONS = {
+        SCHOOL: "school",
+        EVENT: "event"
+    }
 
-    return {dancerPageSizeOptions, eventSchoolPageSizeOptions, levelOptions, genderButtons, months, socialDances, createOptions}
+    return {dancerPageSizeOptions: pageSizeOptions, eventOrSchoolPageSizeOptions, levelOptions, genderButtons, months, socialDances, TYPE_OPTIONS, ratingButtons}
 
 }

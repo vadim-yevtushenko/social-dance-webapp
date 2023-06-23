@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {getDancers} from "../../api/DancerApi";
 import DancerTable from "./DancerTable";
-import Pagination from "../pagination/Pagination";
+import PaginationComponent from "../pagination/PaginationComponent";
 import Spinner from "../spinner/Spinner";
-import {useSelector} from "react-redux";
 import {useValues} from "../../hooks/useValues";
 
 const DancersComponent = () => {
@@ -40,7 +39,7 @@ const DancersComponent = () => {
     return (
         <div>
             <DancerTable dancers={dancers}/>
-            <Pagination
+            <PaginationComponent
                 page={page}
                 size={size}
                 total={total}

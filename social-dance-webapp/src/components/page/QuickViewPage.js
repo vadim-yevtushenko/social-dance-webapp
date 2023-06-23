@@ -2,6 +2,7 @@ import { Fragment, useState } from 'react'
 import { Dialog, RadioGroup, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { StarIcon } from '@heroicons/react/20/solid'
+import {classNamesJoin} from "../../util/classNameUtils";
 
 const product = {
     name: "Women's Basic Tee",
@@ -26,12 +27,8 @@ const product = {
     ],
 }
 
-function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
-}
-
 export default function QuickViewPage() {
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState(true)
     const [selectedColor, setSelectedColor] = useState(product.colors[0])
     const [selectedSize, setSelectedSize] = useState(product.sizes[2])
 
@@ -102,7 +99,7 @@ export default function QuickViewPage() {
                                                             {[0, 1, 2, 3, 4].map((rating) => (
                                                                 <StarIcon
                                                                     key={rating}
-                                                                    className={classNames(
+                                                                    className={classNamesJoin(
                                                                         product.rating > rating ? 'text-yellow-400' : 'text-gray-200',
                                                                         'h-5 w-5 flex-shrink-0'
                                                                     )}
@@ -140,7 +137,7 @@ export default function QuickViewPage() {
                                                                         key={color.name}
                                                                         value={color}
                                                                         className={({ active, checked }) =>
-                                                                            classNames(
+                                                                            classNamesJoin(
                                                                                 color.selectedColor,
                                                                                 active && checked ? 'ring ring-offset-1' : '',
                                                                                 !active && checked ? 'ring-2' : '',
@@ -153,7 +150,7 @@ export default function QuickViewPage() {
                                                                         </RadioGroup.Label>
                                                                         <span
                                                                             aria-hidden="true"
-                                                                            className={classNames(
+                                                                            className={classNamesJoin(
                                                                                 color.bgColor,
                                                                                 'h-8 w-8 rounded-full border border-black border-opacity-10'
                                                                             )}
@@ -181,7 +178,7 @@ export default function QuickViewPage() {
                                                                         key={size.name}
                                                                         value={size}
                                                                         className={({ active, checked }) =>
-                                                                            classNames(
+                                                                            classNamesJoin(
                                                                                 size.inStock
                                                                                     ? 'cursor-pointer focus:outline-none'
                                                                                     : 'cursor-not-allowed opacity-25',

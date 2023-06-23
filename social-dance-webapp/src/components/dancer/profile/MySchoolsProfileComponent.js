@@ -4,9 +4,10 @@ import {useDispatch, useSelector} from "react-redux";
 import {useHttp} from "../../../hooks/http.hook";
 import {useForm} from "react-hook-form";
 import {GET} from "../../../api/Endpoints";
-import SchoolEventForm, {TYPE_OPTIONS} from "./SchoolEventForm";
+import SchoolEventForm from "./SchoolEventForm";
 import {getAdministratedSchool} from "../../../redux/actions/schoolActions";
 import Spinner from "../../spinner/Spinner";
+import {useValues} from "../../../hooks/useValues";
 
 const SUBTITLE = {
     EXIST_ADMINISTRATED_SCHOOL: "You already have a school for administrate.",
@@ -24,6 +25,7 @@ const MySchoolsProfileComponent = () => {
     const {administratedSchool} = useSelector(state => state.mySchools)
     const {request} = useHttp();
     const [administratedSchoolExist, setAdministratedSchoolExist] = useState(!!dancer.administrator)
+    const { TYPE_OPTIONS } = useValues()
 
     useEffect(() => {
         if (administratedSchoolExist){

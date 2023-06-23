@@ -7,8 +7,6 @@ import {useValues} from "../../../hooks/useValues";
 import SchoolEventForm from "./SchoolEventForm";
 import {getOrganizedEvent} from "../../../redux/actions/eventActions";
 import {GET} from "../../../api/Endpoints";
-import {getAdministratedSchool} from "../../../redux/actions/schoolActions";
-import {updateDancer} from "../../../redux/actions/authActions";
 import Spinner from "../../spinner/Spinner";
 
 const SUBTITLE = {
@@ -27,7 +25,7 @@ const MyEventsProfileComponent = () => {
     const dispatch = useDispatch();
     const {isAuthenticated, dancer} = useSelector(state => state.auth)
     const {organizedEvent} = useSelector(state => state.myEvents)
-    const { months } = useValues()
+    const { TYPE_OPTIONS } = useValues()
     const {request} = useHttp();
     const [openEditForm, setOpenEditForm] = useState(false);
 
@@ -74,17 +72,19 @@ const MyEventsProfileComponent = () => {
                     </p>
                 </div>
                 <div className="md:col-span-2">
-                    {dancer.eventsOrganizer?.map(e => (
-                        <a
-                            key={e.id}
-                            href="#"
-                            className="hover:text-indigo-600"
-                            onClick={() => setEventForUpdate(e.id)}
-                        >
-                            | {e.name} |
-                        </a>
-
-                    ))}
+                    <div className="prose prose-md font-bold text-gray-900">
+                        <ul role="list" >
+                            {dancer.eventsOrganizer?.map((item) => (
+                                <li
+                                    key={item.id}
+                                    className="hover:text-indigo-600 cursor-pointer"
+                                    onClick={() => setEventForUpdate(item.id)}
+                                >
+                                    {item.name}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                 </div>
 
                 <div>
@@ -109,7 +109,7 @@ const MyEventsProfileComponent = () => {
                             <h2 className="text-lg font-semibold leading-7 text-black">Event Information</h2>
                         </div>
                         <SchoolEventForm
-                            typeOption={"event"}
+                            typeOption={TYPE_OPTIONS.EVENT}
                             optionObject={organizedEvent}
                         />
                         {!!organizedEvent && (

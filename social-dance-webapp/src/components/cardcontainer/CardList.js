@@ -1,11 +1,13 @@
 import {parseFullDateTimeString} from "../../util/dateTimeUtils";
 import {getFullAddress} from "../../util/addressUtils";
 import {PhotoIcon, StarIcon} from "@heroicons/react/20/solid";
-import {TYPE_OPTIONS} from "../dancer/profile/SchoolEventForm";
 import {classNamesJoin} from "../../util/classNameUtils";
+import {NavLink} from "react-router-dom";
+import {useValues} from "../../hooks/useValues";
 
 export default function CardList({typeOption, optionObjects}) {
 
+    const { TYPE_OPTIONS } = useValues()
     console.log("events", optionObjects)
 
     return (
@@ -21,24 +23,24 @@ export default function CardList({typeOption, optionObjects}) {
                         >
                             <div className="flex max-w-full justify-center rounded-lg border border-1 border-gray-900 px-3 py-3 shadow-md mx-4 mt-4">
                                 <div className="text-center">
-                                    {!obj.image ? (
+                                    {obj.image ? (
                                         <img
-                                            src={"https://thumbs.dreamstime.com/b/sherlock-holmes-concept-private-detective-tools-wood-tab-table-background-deerstalker-cap-old-key-book-tobacco-pipe-65190425.jpg"}
+                                            src={obj.image}
                                             alt={obj.name}
                                             className="h-full w-full object-cover object-center sm:h-full sm:w-full"
                                         />
                                     ) : (
-                                        <PhotoIcon className="mx-auto h-20 w-20 text-gray-300" aria-hidden="true" />
+                                        <PhotoIcon className="mx-auto h-40 w-40 text-gray-300" aria-hidden="true" />
                                     )}
                                 </div>
                             </div>
                             <div className="flex flex-1 flex-col space-y-2 p-4">
                                 <div className="flex justify-between">
                                     <h3 className="text-2xl font-bold text-gray-900 hover:text-indigo-600 flex">
-                                        <a href={"/dancers"}>
+                                        <NavLink to={obj.id}>
                                             <span aria-hidden="true" className="inset-0" />
                                             {obj.name}
-                                        </a>
+                                        </NavLink>
                                     </h3>
                                     {/*<button*/}
                                     {/*    type="button"*/}

@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from "react";
 import Spinner from "../spinner/Spinner";
 import {getEvents} from "../../api/EventApi";
-import CardContainerDeprecated from "../cardcontainer/CardContainerDeprecated";
 import CardList from "../cardcontainer/CardList";
-import {TYPE_OPTIONS} from "../dancer/profile/SchoolEventForm";
-import Pagination from "../pagination/Pagination";
+import PaginationComponent from "../pagination/PaginationComponent";
 import {useValues} from "../../hooks/useValues";
 import {MagnifyingGlassIcon} from "@heroicons/react/20/solid";
 import ComboboxElement from "../forms/elements/ComboboxElement";
+import {GET} from "../../api/Endpoints";
+import {useHttp} from "../../hooks/http.hook";
 
 const EventsComponent = () => {
 
@@ -16,7 +16,10 @@ const EventsComponent = () => {
     const [total, setTotal] = useState();
     const [page, setPage] = useState(1);
     const [size, setSize] = useState(6);
-    const {eventSchoolPageSizeOptions} = useValues()
+    const {eventOrSchoolPageSizeOptions, TYPE_OPTIONS} = useValues()
+    const [city, setCity] = useState()
+    const [country, setCountry] = useState()
+    const {request} = useHttp();
 
     useEffect(() => {
         setLoading(true);
@@ -31,6 +34,10 @@ const EventsComponent = () => {
                 console.log("error", error)
             });
     }, [page, size]);
+
+    const getCountries = (countryName) => request(GET.getCountries(countryName))
+
+    const getCities = (cityName) => request(GET.getCities(cityName, country))
 
     // if (loading){
     //     return (
@@ -67,30 +74,30 @@ const EventsComponent = () => {
                         </div>
                     </div>
                 </div>
-                {/*<div className="xl:flex justify-between ">*/}
-                {/*    <div className="flex">*/}
-                {/*        <span className="inline-flex items-center px-3 text-gray-500 sm:text-sm">*/}
-                {/*          country:*/}
-                {/*        </span>*/}
-                {/*        <ComboboxElement*/}
-                {/*            value={country}*/}
-                {/*            setValue={setCountry}*/}
-                {/*            request={getCountries}*/}
-                {/*        />*/}
-                {/*    </div>*/}
+                <div className="xl:flex justify-between ">
+                    <div className="flex">
+                        <span className="inline-flex items-center px-3 text-gray-500 sm:text-sm">
+                          country:
+                        </span>
+                        <ComboboxElement
+                            value={country}
+                            setValue={setCountry}
+                            request={getCountries}
+                        />
+                    </div>
 
-                {/*    <div className="flex">*/}
-                {/*        <span className="inline-flex items-center px-3 text-gray-500 sm:text-sm">*/}
-                {/*          city:*/}
-                {/*        </span>*/}
-                {/*        <ComboboxElement*/}
-                {/*            value={city}*/}
-                {/*            setValue={setCity}*/}
-                {/*            request={getCities}*/}
-                {/*            // isDisable={country === null || country === ""}*/}
-                {/*        />*/}
-                {/*    </div>*/}
-                {/*</div>*/}
+                    <div className="flex">
+                        <span className="inline-flex items-center px-3 text-gray-500 sm:text-sm">
+                          city:
+                        </span>
+                        <ComboboxElement
+                            value={city}
+                            setValue={setCity}
+                            request={getCities}
+                            // isDisable={country === null || country === ""}
+                        />
+                    </div>
+                </div>
                 <div className="mt-4 ml-2 sm:ml-8 sm:mt-0 sm:flex-none mr-20">
                     <button
                         type="button"
@@ -106,13 +113,13 @@ const EventsComponent = () => {
                 typeOption={TYPE_OPTIONS.EVENT}
                 optionObjects={events}
             />
-            <Pagination
+            <PaginationComponent
                 page={page}
                 size={size}
                 total={total}
                 setPage={setPage}
                 setSize={setSize}
-                pageSizeOptions={eventSchoolPageSizeOptions}
+                pageSizeOptions={eventOrSchoolPageSizeOptions}
             />
         </div>
     )

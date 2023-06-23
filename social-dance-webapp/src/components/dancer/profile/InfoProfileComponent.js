@@ -30,7 +30,7 @@ const InfoProfileComponent = () => {
     const [bMonth, setMonth] = useState("");
     const [dances, setDances] = useState(dancer.dances);
     const {request} = useHttp();
-    const { register, handleSubmit, formState: { errors }, } = useForm()
+    const { register, handleSubmit, formState: { errors }, getValues, setValue} = useForm()
     const {levelOptions, genderButtons, months} = useValues()
     const [photo, setPhoto] = useState()
     const [photoUrl, setPhotoUrl] = useState(dancer.image)
@@ -52,7 +52,6 @@ const InfoProfileComponent = () => {
     }, [photoUrl])
 
     const onSubmit = (data) => {
-        console.log("onSubmit", data)
         setLoading(true)
         const contactInfo = { email: data.email, phoneNumber: data.phoneNumber, country, city }
         const updatedDancer = dancerMapper(dancer.id, data.name, data.lastName, gender,
@@ -71,12 +70,12 @@ const InfoProfileComponent = () => {
             })
     }
 
-    const selectPhoto = (photo) => {
-        setPhoto(photo)
-        setPhotoUrl(URL.createObjectURL(photo))
+    const selectPhoto = (img) => {
+        setPhoto(img)
+        setPhotoUrl(URL.createObjectURL(img))
     }
 
-    const uploadImage = () => {
+    const uploadPhoto = () => {
         if (!!photo){
             if (!checkSize(1024, photo)){
                 const formData = new FormData();
@@ -86,6 +85,7 @@ const InfoProfileComponent = () => {
                     .then(res => {
                         console.log(res.data)
                         setPhotoUrl(res.data)
+                        setPhoto(null)
                         setLoading(false);
                     })
                     .catch(error => {
@@ -97,16 +97,26 @@ const InfoProfileComponent = () => {
     }
 
     const deletePhoto = () => {
-        setLoading(true)
-        deleteDancerImage(dancer.id)
-            .then(() => {
-                setPhotoUrl(null)
-                setLoading(false);
-            })
-            .catch(error => {
-                console.log("error", error)
-                setLoading(false);
-            })
+        if (dancer.image){
+            setLoading(true)
+            deleteDancerImage(dancer.id)
+                .then(() => {
+                    setPhotoUrl(null)
+                    setPhoto(null)
+                    setLoading(false);
+                })
+                .catch(error => {
+                    console.log("error", error)
+                    setLoading(false);
+                })
+        }else {
+            setPhotoUrl(null)
+            setPhoto(null)
+        }
+
+        setPhotoUrl(null)
+        setPhoto(null)
+        setValue('file-upload', null)
     }
 
     const getCountries = (countryName) => request(GET.getCountries(countryName))
@@ -142,6 +152,7 @@ const InfoProfileComponent = () => {
                                         name="file-upload"
                                         type="file"
                                         className="sr-only"
+                                        {...register('file-upload')}
                                         onChange={(e) => selectPhoto(e.target.files[0])}
                                     />
                                 </label>
@@ -149,18 +160,20 @@ const InfoProfileComponent = () => {
                                     <button
                                         type="button"
                                         className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
-                                        onClick={uploadImage}
+                                        onClick={uploadPhoto}
                                     >
                                         Change avatar
                                     </button>
                                     <p className="my-1 text-xs leading-5 text-gray-400">JPG, GIF or PNG. 1MB max.</p>
-                                    <button
-                                        type="button"
-                                        className="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500"
-                                        onClick={deletePhoto}
-                                    >
-                                        Delete avatar
-                                    </button>
+                                    {photoUrl && (
+                                        <button
+                                            type="button"
+                                            className="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500"
+                                            onClick={deletePhoto}
+                                        >
+                                            Delete avatar
+                                        </button>
+                                    )}
                                 </div>
                             </div>
 

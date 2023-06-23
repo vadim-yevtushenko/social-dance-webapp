@@ -6,11 +6,9 @@ import {useEffect, useState} from "react";
 import MySchoolsProfileComponent from "./MySchoolsProfileComponent";
 import MyEventsProfileComponent from "./MyEventsProfileComponent";
 import SettingsProfileComponent from "./SettingsProfileComponent";
-import SchoolOrEventProfileComponent from "./SchoolOrEventProfileComponent";
 
 const CHAPTER = {
     PERSONAL_INFO: "PERSONAL_INFO",
-    CREATE_SCHOOL_EVENT: "CREATE_SCHOOL_EVENT",
     MY_SCHOOLS: "MY_SCHOOLS",
     MY_EVENTS: "MY_EVENTS",
     SETTINGS: "SETTINGS"
@@ -32,8 +30,6 @@ const MainProfileComponent = () => {
         switch (currentChapter) {
             case CHAPTER.PERSONAL_INFO:
                 return <InfoProfileComponent/>
-            case CHAPTER.CREATE_SCHOOL_EVENT:
-                return <SchoolOrEventProfileComponent/>
             case CHAPTER.MY_SCHOOLS:
                 return <MySchoolsProfileComponent/>
             case CHAPTER.MY_EVENTS:

@@ -2,9 +2,7 @@ import React, {useEffect, useState} from "react";
 import Spinner from "../spinner/Spinner";
 import {getSchools} from "../../api/SchoolApi";
 import CardList from "../cardcontainer/CardList";
-import CardContainerDeprecated from "../cardcontainer/CardContainerDeprecated";
-import {TYPE_OPTIONS} from "../dancer/profile/SchoolEventForm";
-import Pagination from "../pagination/Pagination";
+import PaginationComponent from "../pagination/PaginationComponent";
 import {useValues} from "../../hooks/useValues";
 import {MagnifyingGlassIcon} from "@heroicons/react/20/solid";
 import ComboboxElement from "../forms/elements/ComboboxElement";
@@ -21,7 +19,7 @@ const SchoolsComponent = () => {
     const [city, setCity] = useState()
     const [country, setCountry] = useState()
     const {request} = useHttp();
-    const {eventSchoolPageSizeOptions} = useValues()
+    const {eventOrSchoolPageSizeOptions, TYPE_OPTIONS} = useValues()
 
     useEffect(() => {
         setLoading(true);
@@ -116,13 +114,13 @@ const SchoolsComponent = () => {
                 typeOption={TYPE_OPTIONS.SCHOOL}
                 optionObjects={schools}
             />
-            <Pagination
+            <PaginationComponent
                 page={page}
                 size={size}
                 total={total}
                 setPage={setPage}
                 setSize={setSize}
-                pageSizeOptions={eventSchoolPageSizeOptions}
+                pageSizeOptions={eventOrSchoolPageSizeOptions}
             />
         </div>
     )
