@@ -39,3 +39,12 @@ export const deleteDancerImage = (id) => {
         }
     })
 }
+
+export const deleteDancer = (id) => {
+    return requestWrapper({
+        axiosConfig: {
+            method: 'DELETE',
+            url: DELETE.deleteDancer(id),
+        }
+    })
+}

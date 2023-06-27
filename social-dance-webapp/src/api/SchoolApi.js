@@ -1,11 +1,11 @@
 import requestWrapper from "./requestWrapper";
 import {DELETE, GET, POST} from "./Endpoints";
 
-export const getSchools = (page, size) => {
+export const getSchools = (name, country, city, page, size) => {
     return requestWrapper({
         axiosConfig: {
             method: 'GET',
-            url: GET.getSchools(page, size)
+            url: GET.getSchools(name, country, city, page, size)
         }
     })
 };

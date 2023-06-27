@@ -136,45 +136,53 @@ const RatingComponent = ({rerender, setRerender}) => {
             </dl>
         </div>
         <div className="mt-2 flex-col">
-            <button
-                className={classNamesJoin(showRate ?
-                        "text-white bg-indigo-500 hover:bg-indigo-600" : "text-gray-900 bg-white hover:bg-gray-50",
-                    "flex mt-6 inline-flex w-full items-center justify-center rounded-md border border-gray-300 px-8 py-2 text-sm font-medium sm:w-auto lg:w-full"
-                )}
-                onClick={() => saveRating()}
-            >
-                {showRate ? "Save rating" : "Rate the school"}
-            </button>
-            {showRate && (
+            {isAuthenticated ? (
                 <>
-                    <p className="mt-1 text-sm text-gray-600">
-                        {ratingId !== null ? "You have already rated this school, but you can change your rating."
-                            : "You have not rated this school yet. Please rate if you have reason."}
-                    </p>
-                    <div className="flex mt-2 justify-center">
-                        <fieldset className="mt-2">
-                            <legend className="sr-only">Notification method</legend>
-                            <div className="space-y-4 sm:flex sm:items-center sm:space-x-6 sm:space-y-0">
-                                {ratingButtons.map((button) => (
-                                    <div key={button.id} className="flex items-center">
-                                        <input
-                                            id={button.id}
-                                            name="notification-method"
-                                            type="radio"
-                                            defaultChecked={button.id === String(rating)}
-                                            className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                                            value={button.id}
-                                            onClick={event => setRating(event.target.value)}
-                                        />
-                                        <label htmlFor={button.id} className="ml-2 block text-sm font-medium leading-6 text-gray-900">
-                                            {button.title}
-                                        </label>
+                    <button
+                        className={classNamesJoin(showRate ?
+                                "text-white bg-indigo-500 hover:bg-indigo-600" : "text-gray-900 bg-white hover:bg-gray-50",
+                            "flex mt-6 inline-flex w-full items-center justify-center rounded-md border border-gray-300 px-8 py-2 text-sm font-medium sm:w-auto lg:w-full"
+                        )}
+                        onClick={() => saveRating()}
+                    >
+                        {showRate ? "Save rating" : "Rate the school"}
+                    </button>
+                    {showRate && (
+                        <>
+                            <p className="mt-1 text-sm text-gray-600">
+                                {ratingId !== null ? "You have already rated this school, but you can change your rating."
+                                    : "You have not rated this school yet. Please rate if you have reason."}
+                            </p>
+                            <div className="flex mt-2 justify-center">
+                                <fieldset className="mt-2">
+                                    <legend className="sr-only">Notification method</legend>
+                                    <div className="space-y-4 sm:flex sm:items-center sm:space-x-6 sm:space-y-0">
+                                        {ratingButtons.map((button) => (
+                                            <div key={button.id} className="flex items-center">
+                                                <input
+                                                    id={button.id}
+                                                    name="notification-method"
+                                                    type="radio"
+                                                    defaultChecked={button.id === String(rating)}
+                                                    className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                                                    value={button.id}
+                                                    onClick={event => setRating(event.target.value)}
+                                                />
+                                                <label htmlFor={button.id} className="ml-2 block text-sm font-medium leading-6 text-gray-900">
+                                                    {button.title}
+                                                </label>
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
+                                </fieldset>
                             </div>
-                        </fieldset>
-                    </div>
+                        </>
+                    )}
                 </>
+            ) : (
+                <p className="mt-3 text-sm flex justify-center text-gray-600">
+                    If you want to rate the school, please log in!
+                </p>
             )}
         </div>
     </>

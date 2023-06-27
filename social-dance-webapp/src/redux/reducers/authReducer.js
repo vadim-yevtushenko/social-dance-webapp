@@ -1,5 +1,5 @@
 import initialState from "../initialState";
-import {DANCER_LOGIN, DANCER_LOGOUT, UPDATE_DANCER} from "../actions/authActions";
+import {UPDATE_PASSWORD, DANCER_LOGIN, DANCER_LOGOUT, UPDATE_DANCER} from "../actions/authActions";
 
 const authReducer = (
     state = initialState().auth,
@@ -24,6 +24,11 @@ const authReducer = (
             return {
                 ...state,
                 dancer: action.payload
+            }
+        case UPDATE_PASSWORD:
+            return {
+                ...state,
+                password: action.payload
             }
         default:
             return state

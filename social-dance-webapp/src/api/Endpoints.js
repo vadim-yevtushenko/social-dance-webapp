@@ -17,8 +17,11 @@ export const GET = {
     getDancer: (dancerId) => `${API_BASE_URL}/dancers/${dancerId}`,
 
     // Schools
-    getSchools: (page, size) => {
+    getSchools: (name, country, city, page, size) => {
         let url = `${API_BASE_URL}/schools?`
+        if (!!name) url = url.concat(`name=${name}&`)
+        if (!!country) url = url.concat(`country=${country}&`)
+        if (!!city) url = url.concat(`city=${city}&`)
         if (!!page) url = url.concat(`pageNumber=${page}&`)
         if (!!size) url = url.concat(`size=${size}`)
         return url
@@ -26,8 +29,11 @@ export const GET = {
     getSchool: (schoolId) => `${API_BASE_URL}/schools/${schoolId}`,
 
     // Events
-    getEvents: (page, size) => {
+    getEvents: (name, country, city, page, size) => {
         let url = `${API_BASE_URL}/events?`
+        if (!!name) url = url.concat(`name=${name}&`)
+        if (!!country) url = url.concat(`country=${country}&`)
+        if (!!city) url = url.concat(`city=${city}&`)
         if (!!page) url = url.concat(`pageNumber=${page}&`)
         if (!!size) url = url.concat(`size=${size}`)
         return url
@@ -78,6 +84,8 @@ export const POST = {
     // Credential
     login: (email, password) => `${API_BASE_URL}/credential/login?email=${email}&password=${password}`,
     registration: (email, password) => `${API_BASE_URL}/credential/registration?email=${email}&password=${password}`,
+    changePassword: (email, password) => `${API_BASE_URL}/credential/change-password?email=${email}&password=${password}`,
+    changeEmail: (email, newEmail) => `${API_BASE_URL}/credential/change-email?email=${email}&newEmail=${newEmail}`,
 
     // Rating
     saveRating: () => `${API_BASE_URL}/ratings`,

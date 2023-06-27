@@ -34,3 +34,12 @@ export const signup = (email, password, formData) => {
     })
 }
 
+export const changePassword = (email, password) => {
+    return requestWrapper({
+        axiosConfig: {
+            method: 'POST',
+            url: POST.changePassword(email, password)
+        }
+    })
+}
+

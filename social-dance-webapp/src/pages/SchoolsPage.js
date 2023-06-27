@@ -1,10 +1,13 @@
 import MainLayout from "../components/layouts/MainLayout";
-import SchoolsComponent from "../components/school/SchoolsComponent";
+import {useValues} from "../hooks/useValues";
+import EventsOrSchoolsComponent from "../components/events-schools/EventsOrSchoolsComponent";
 
 const SchoolsPage = () => {
+    const { TYPE_OPTIONS } = useValues()
+
     return  <>
         <MainLayout>
-            <SchoolsComponent/>
+            <EventsOrSchoolsComponent typeOption={TYPE_OPTIONS.SCHOOL}/>
         </MainLayout>
     </>
 }

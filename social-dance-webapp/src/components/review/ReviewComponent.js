@@ -74,8 +74,10 @@ export default function ReviewComponent({rerender}) {
                 <p className="mt-1 text-sm text-gray-600">
                     Share your thoughts about this school with other dancers
                 </p>
-                {showWriteReview && (
-                    <div>
+                {isAuthenticated ? (
+                    <>
+                        {showWriteReview && (
+                            <div>
                         <textarea
                             id="description"
                             name="description"
@@ -84,30 +86,36 @@ export default function ReviewComponent({rerender}) {
                             ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             onChange={event => setReview(event.target.value)}
                         />
-                        <div className="mt-2 flex h-6 items-center">
-                            <input
-                                id="1"
-                                name="incognito"
-                                type="checkbox"
-                                checked={incognito}
-                                onChange={(event) => setIncognito(!incognito)}
-                                className="h-5 w-5 rounded border-gray-400 text-indigo-600 focus:ring-indigo-600"
-                            />
-                            <p className="ml-3 text-sm text-gray-600">
-                                - incognito mode
-                            </p>
-                        </div>
-                    </div>
-                )}
-                <button
-                    className={classNamesJoin(showWriteReview ?
-                        "text-white bg-indigo-500 hover:bg-indigo-600" : "text-gray-900 bg-white hover:bg-gray-50",
-                        "mt-6 inline-flex w-full items-center justify-center rounded-md border border-gray-300 px-8 py-2 text-sm font-medium sm:w-auto lg:w-full"
+                                <div className="mt-2 flex h-6 items-center">
+                                    <input
+                                        id="1"
+                                        name="incognito"
+                                        type="checkbox"
+                                        checked={incognito}
+                                        onChange={(event) => setIncognito(!incognito)}
+                                        className="h-5 w-5 rounded border-gray-400 text-indigo-600 focus:ring-indigo-600"
+                                    />
+                                    <p className="ml-3 text-sm text-gray-600">
+                                        - incognito mode
+                                    </p>
+                                </div>
+                            </div>
                         )}
-                    onClick={() => createReview()}
-                >
-                    Write a review
-                </button>
+                        <button
+                            className={classNamesJoin(showWriteReview ?
+                                    "text-white bg-indigo-500 hover:bg-indigo-600" : "text-gray-900 bg-white hover:bg-gray-50",
+                                "mt-6 inline-flex w-full items-center justify-center rounded-md border border-gray-300 px-8 py-2 text-sm font-medium sm:w-auto lg:w-full"
+                            )}
+                            onClick={() => createReview()}
+                        >
+                            Write a review
+                        </button>
+                    </>
+                ) : (
+                    <p className="mt-1 text-sm text-gray-600">
+                        If you want to write a review, please log in!
+                    </p>
+                )}
             </div>
 
             <div className="flow-root">

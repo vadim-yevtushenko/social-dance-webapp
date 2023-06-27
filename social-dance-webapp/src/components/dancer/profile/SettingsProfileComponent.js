@@ -1,16 +1,46 @@
 import { useForm } from "react-hook-form";
 import React from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {useState} from "react";
+import {deleteDancer} from "../../../api/DancerApi";
+import {getOrganizedEvent} from "../../../redux/actions/eventActions";
+import {getAdministratedSchool} from "../../../redux/actions/schoolActions";
+import {dancerLogout, updatePassword} from "../../../redux/actions/authActions";
+import {changePassword} from "../../../api/CredentialApi";
 
 const SettingsProfileComponent = () => {
-
+    const [loading, setLoading] = useState(false);
+    const {email, password, dancer} = useSelector(state => state.auth)
     const { register, handleSubmit, formState: { errors }, getValues } = useForm()
+    const { register: deleteRegister, handleSubmit: deleteHandleSubmit, formState: { errors: deleteErrors }, getValues: deleteGetValues } = useForm()
+    const dispatch = useDispatch();
 
-    function onChangeSubmit() {
-
+    function onChangeSubmit(data) {
+        setLoading(true)
+        changePassword(email, data.newPassword)
+            .then(() => {
+                dispatch(updatePassword(data.newPassword))
+                setLoading(false)
+            })
+            .catch(error => {
+                console.log("error", error)
+                setLoading(false);
+            })
     }
 
     function onDeleteSubmit() {
-
+        setLoading(true)
+        deleteDancer(dancer.id)
+            .then(() => {
+                dispatch(getOrganizedEvent({}))
+                dispatch(getAdministratedSchool({}))
+                dispatch(dancerLogout())
+                setLoading(false)
+            })
+            .catch(error => {
+                console.log("error", error)
+                setLoading(false);
+            })
     }
 
     return (
@@ -41,9 +71,15 @@ const SettingsProfileComponent = () => {
                                             autoComplete="currentPassword"
                                             className="block w-full rounded-md border-1 bg-white/5 py-1.5 text-black shadow-md
                                             ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                                            {...register('currentPassword', { required: true })}
+                                            {...register('currentPassword', { required: true,
+                                                validate: (value) => {
+                                                    if (getValues().currentPassword !== password) {
+                                                        return "Current password is incorrect.";
+                                                    }
+                                                }})}
                                         />
                                         {errors?.currentPassword?.type === "required" && <p className="text-xs leading-5 text-red-700">Password is required.</p>}
+                                        {errors?.currentPassword?.type === "validate" && <p className="text-xs leading-5 text-red-700">{errors.currentPassword.message}</p>}
                                     </div>
                                 </div>
 
@@ -85,6 +121,7 @@ const SettingsProfileComponent = () => {
                                                 },})}
                                         />
                                         {errors?.confirmPassword?.type === "required" && <p className="text-xs leading-5 text-red-700">Confirm password is required.</p>}
+                                        {errors?.confirmPassword?.type === "validate" && <p className="text-xs leading-5 text-red-700">{errors.confirmPassword.message}</p>}
                                     </div>
                                 </div>
                             </div>
@@ -110,7 +147,7 @@ const SettingsProfileComponent = () => {
                             </p>
                         </div>
 
-                        <form className="md:col-span-2" onSubmit={handleSubmit(onDeleteSubmit)}>
+                        <form className="md:col-span-2" onSubmit={deleteHandleSubmit(onDeleteSubmit)}>
                             <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
                                 <div className="col-span-full">
                                     <label htmlFor="logout-password" className="block text-sm font-medium leading-6 text-black">
@@ -124,9 +161,15 @@ const SettingsProfileComponent = () => {
                                             autoComplete="deletePassword"
                                             className="block w-full rounded-md border-1 bg-white/5 py-1.5 text-black shadow-md ring-1
                                             ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                                            {...register('deletePassword', { required: true })}
+                                            {...deleteRegister('deletePassword', { required: true,
+                                                validate: (value) => {
+                                                    if (deleteGetValues().deletePassword !== password) {
+                                                        return "Your password is incorrect.";
+                                                    }
+                                                }})}
                                         />
-                                        {errors?.deletePassword?.type === "required" && <p className="text-xs leading-5 text-red-700">Password is required.</p>}
+                                        {deleteErrors?.deletePassword?.type === "required" && <p className="text-xs leading-5 text-red-700">Password is required.</p>}
+                                        {deleteErrors?.deletePassword?.type === "validate" && <p className="text-xs leading-5 text-red-700">{errors.deletePassword.message}</p>}
                                     </div>
                                 </div>
                             </div>

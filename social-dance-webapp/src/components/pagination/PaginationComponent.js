@@ -40,7 +40,7 @@ export default function PaginationComponent({page, size, total, setPage, setSize
                     {shortMode || (
                         <div>
                             <p className="text-sm text-gray-700">
-                                {size === 0 ? "0 results" :
+                                {total === 0 ? "0 results" :
                                     <>Showing < span className="font-medium">{getFirstIndex()}</span> to <span className="font-medium">{getLastIndex()}</span> of{' '}
                                         <span className="font-medium">{total}</span> results</>
                                 }
@@ -73,7 +73,7 @@ export default function PaginationComponent({page, size, total, setPage, setSize
 
                         {shortMode || (
                             <span className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300 focus:outline-offset-0">
-                            Current page {page} of {getTotalPages()}
+                            {total !== 0 && <>Current page {page} of {getTotalPages()}</>}
                         </span>
                         )}
 

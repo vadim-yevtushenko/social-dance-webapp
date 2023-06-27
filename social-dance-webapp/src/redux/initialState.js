@@ -22,10 +22,6 @@ const initialState = () => ({
     //     teacher: null,
     //     school: null
     // },
-    danceList: {
-        dances: [],
-        loading: false
-    },
     mySchools: {
         administratedSchool: {
             contactInfo:{}

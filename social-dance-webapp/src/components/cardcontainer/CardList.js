@@ -8,7 +8,6 @@ import {useValues} from "../../hooks/useValues";
 export default function CardList({typeOption, optionObjects}) {
 
     const { TYPE_OPTIONS } = useValues()
-    console.log("events", optionObjects)
 
     return (
         <div className="bg-gray-50">
@@ -79,7 +78,7 @@ export default function CardList({typeOption, optionObjects}) {
                                                         <StarIcon
                                                             key={rating}
                                                             className={classNamesJoin(
-                                                                4 > rating ? 'text-yellow-400' : 'text-gray-300',
+                                                                obj.generalRating?.average > rating ? 'text-yellow-400' : 'text-gray-300',
                                                                 'h-5 w-5 flex-shrink-0'
                                                             )}
                                                             aria-hidden="true"
@@ -88,7 +87,7 @@ export default function CardList({typeOption, optionObjects}) {
                                                 </div>
                                                 <p className="sr-only"> out of 5 stars</p>
                                             </div>
-                                            <p className="ml-4 text-sm text-gray-900">Based on  reviews</p>
+                                            <p className="ml-4 text-sm text-gray-900">Based on {obj.generalRating?.totalCount} ratings</p>
                                         </div>
                                     </div>
                                 )}

@@ -3,7 +3,6 @@ import storage from 'redux-persist/lib/storage'
 import {persistReducer, persistStore} from "redux-persist";
 import { configureStore } from "@reduxjs/toolkit";
 import { combineReducers } from 'redux'
-import danceReducer from "./reducers/danceReducer";
 import storageSession from 'redux-persist/lib/storage/session'
 import schoolReducer from "./reducers/schoolReducer";
 import eventReducer from "./reducers/eventReducer";
@@ -21,7 +20,6 @@ const dancerPersistConfig = {
 
 const combineReducer = combineReducers({
     auth: authReducer,
-    danceList: danceReducer,
     mySchools: schoolReducer,
     myEvents: eventReducer,
 })
