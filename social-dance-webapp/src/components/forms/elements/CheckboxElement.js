@@ -1,5 +1,4 @@
 import {useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
 import {useValues} from "../../../hooks/useValues";
 
 export default function CheckboxElement({label, checkedDances, setDances}) {
@@ -12,9 +11,7 @@ export default function CheckboxElement({label, checkedDances, setDances}) {
         setCheckedDancerDances(checkedDances)
         if (checkedDances?.length > 0){
             socialDances?.forEach((element, i) => {
-                if (checkedDances.includes(element.name)){
-                    checkedState[i] = true
-                }
+                checkedState[i] = !!checkedDances.includes(element.name);
             })
         }else {
             setCheckedState(new Array(socialDances?.length).fill(false))

@@ -1,14 +1,11 @@
-import React, {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {dancerLogin, updateDancer} from "../../redux/actions/authActions";
-import Spinner from "../spinner/Spinner";
 import RadioGroupElement from "./elements/RadioGroupElement";
 import DropDownListElement from "./elements/DropDownListElement";
-import {useHttp} from "../../hooks/http.hook";
-import {POST} from "../../api/Endpoints";
-import {useValues} from "../../hooks/useValues";
-import {useForm} from "react-hook-form";
+import { useValues } from "../../hooks/useValues";
+import { useForm } from "react-hook-form";
+import { signup } from "../../api/CredentialApi";
 
 const RegistrationForm = () => {
     const [loading, setLoading] = useState(false);
@@ -17,7 +14,6 @@ const RegistrationForm = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const {isAuthenticated} = useSelector(state => state.auth)
-    const {request} = useHttp();
     const {levelOptions, genderButtons} = useValues()
     const { register, handleSubmit, formState: { errors }, getValues } = useForm()
 
@@ -27,36 +23,15 @@ const RegistrationForm = () => {
         }
     },[isAuthenticated])
 
-    const onSubmit = ({name, email, password}) => {
-
-        setLoading(true)
-        const signup = () => request(POST.registration(email, password), "POST", JSON.stringify({name, gender, level}))
-        signup()
-            .then(res => {
-                console.log("res", res)
-                const isAuth = res != null
-                dispatch(dancerLogin(email, password, isAuth))
-                dispatch(updateDancer(res))
-                setLoading(false);
-            })
+    const onSubmit = ({name, lastName, email, password}) => {
+        const newDancer = {name, lastName, gender, level}
+        dispatch(signup(email, password, newDancer))
             .then(() => navigate("/profile"))
-            .catch(error => {
-                console.log("error", error)
-                setLoading(false);
-            })
-    }
-
-    if (loading){
-        return (
-            <div className="min-h-full flex items-center">
-                <Spinner/>
-            </div>
-        )
     }
 
     return (
         <>
-            <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
+            <div className="grow flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-md">
                     <img
                         className="mx-auto h-10 w-auto"
@@ -91,6 +66,26 @@ const RegistrationForm = () => {
                                         placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     />
                                     {errors?.name?.type === "required" && <p className="text-xs leading-5 text-red-700">Name is required.</p>}
+                                </div>
+                            </div>
+
+                            <div>
+                                <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+                                    Last name
+                                </label>
+                                <div className="mt-2">
+                                    <input
+                                        id="lastName"
+                                        name="lastName"
+                                        type="text"
+                                        autoComplete="lastName"
+                                        required
+                                        {...register('lastName', { required: true, maxLength: 60 })}
+                                        placeholder='last name'
+                                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300
+                                        placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    />
+                                    {errors?.name?.type === "required" && <p className="text-xs leading-5 text-red-700">Last name is required.</p>}
                                 </div>
                             </div>
 

@@ -1,20 +1,16 @@
-import {useEffect, useState} from "react";
-import Spinner from "../spinner/Spinner";
+import {useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import React from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {dancerLogin, updateDancer} from "../../redux/actions/authActions";
 import {useForm} from "react-hook-form";
-import {POST} from "../../api/Endpoints";
-import {useHttp} from "../../hooks/http.hook";
+import {loadingRequest} from "../../redux/actions/requestActions";
+import { login } from "../../api/CredentialApi";
 
 const LoginForm = () => {
-    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const {isAuthenticated} = useSelector(state => state.auth)
     const { register, handleSubmit, formState: { errors } } = useForm()
-    const {request} = useHttp();
 
     useEffect(() => {
         if (isAuthenticated){
@@ -23,33 +19,12 @@ const LoginForm = () => {
     },[isAuthenticated])
 
     const onSubmit = ({email, password}) => {
-        setLoading(true)
-        const login = () => request(POST.login(email, password), "POST")
-        login(email, password)
-            .then(res => {
-                console.log("res", res)
-                const isAuth = res != null
-                dispatch(dancerLogin(email, password, isAuth))
-                dispatch(updateDancer(res))
-                setLoading(false);
-            })
-            .catch(error => {
-                console.log("error", error)
-                setLoading(false);
-            })
-    }
-
-    if (loading){
-        return (
-            <div className="min-h-full flex items-center">
-                <Spinner/>
-            </div>
-        )
+        dispatch(login(email, password))
     }
 
         return (
             <>
-                <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
+                <div className="grow flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
                     <div className="sm:mx-auto sm:w-full sm:max-w-md">
                         <img
                             className="mx-auto h-10 w-auto"

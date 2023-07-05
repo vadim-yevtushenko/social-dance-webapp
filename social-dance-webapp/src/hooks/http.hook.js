@@ -1,4 +1,6 @@
 import {useCallback} from "react";
+import React from "react";
+import {errorHandling} from "../api/notificationHandling";
 
 export const useHttp = () => {
 
@@ -12,8 +14,9 @@ export const useHttp = () => {
             }
 
             return await response.json();
-        } catch(e) {
-            throw e;
+        } catch(error) {
+            console.log("useHttp er", error)
+            errorHandling(error)
         }
     }, []);
 

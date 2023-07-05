@@ -4,10 +4,13 @@ import {PhotoIcon, StarIcon} from "@heroicons/react/20/solid";
 import {classNamesJoin} from "../../util/classNameUtils";
 import {NavLink} from "react-router-dom";
 import {useValues} from "../../hooks/useValues";
+import React from "react";
+import {useSelector} from "react-redux";
 
-export default function CardList({typeOption, optionObjects}) {
+export default function CardList({ typeOption }) {
 
     const { TYPE_OPTIONS } = useValues()
+    const { results } = useSelector(state => state.lists)
 
     return (
         <div className="bg-gray-50">
@@ -15,7 +18,7 @@ export default function CardList({typeOption, optionObjects}) {
                 <h2 className="sr-only">{typeOption === TYPE_OPTIONS.EVENT ? 'Events' : 'Schools'}</h2>
 
                 <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-3 lg:gap-x-8">
-                    {optionObjects.map((obj) => (
+                    {results.map((obj) => (
                         <div
                             key={obj.id}
                             className="relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white"
@@ -33,7 +36,7 @@ export default function CardList({typeOption, optionObjects}) {
                                     )}
                                 </div>
                             </div>
-                            <div className="flex flex-1 flex-col space-y-2 p-4">
+                            <div className="flex flex-1 flex-col justify-end space-y-2 p-4">
                                 <div className="flex justify-between">
                                     <h3 className="text-2xl font-bold text-gray-900 hover:text-indigo-600 flex">
                                         <NavLink to={obj.id}>
@@ -51,22 +54,34 @@ export default function CardList({typeOption, optionObjects}) {
                                     {/*</button>*/}
                                 </div>
                                 <p className="text-sm italic text-gray-500">{obj.contactInfo && getFullAddress(obj.contactInfo)}</p>
-                                <div className="flex">
-                                    {obj.dances.map(dance => (
-                                        <>
-                                            <p className="text-sm text-gray-500">{dance.name}  &nbsp;{'|'}&nbsp;</p>
-                                        </>
-
-                                    ))}
+                                <div className="prose prose-sm mt-4 text-gray-500">
+                                    {obj?.dances.map(d => d.name).join(", ")}
+                                    {/*<ul className="columns-2">*/}
+                                    {/*    {obj?.dances.map((dance) => (*/}
+                                    {/*        <li key={dance.id}>{dance.name}</li>*/}
+                                    {/*    ))}*/}
+                                    {/*</ul>*/}
                                 </div>
                                 {typeOption === TYPE_OPTIONS.EVENT ? (
-                                    <div className="flex flex-1 flex-col justify-end">
-                                        <p className="text-base font-medium text-gray-900">Start: {parseFullDateTimeString(obj.dateEvent)}</p>
-                                        <p className="text-base font-medium text-gray-900">Finish: {parseFullDateTimeString(obj.dateFinishEvent)}</p>
-                                        <p className="text-sm italic text-gray-500 mt-5 text-end">{parseFullDateTimeString(obj.created)}</p>
-                                    </div>
+                                    <>
+                                        {obj.description && (
+                                            <textarea
+                                            id="description"
+                                            name="description"
+                                            rows={2}
+                                            disabled={true}
+                                            value={obj.description}
+                                            className="block w-full max-w-2xl rounded-md py-1.5 text-gray-900 sm:text-sm sm:leading-6 border-0 resize-none"
+                                            />
+                                        )}
+                                        <div className="flex flex-1 flex-col justify-end">
+                                            <p className="text-base font-medium text-gray-900">Start: {parseFullDateTimeString(obj.dateEvent)}</p>
+                                            <p className="text-base font-medium text-gray-900">Finish: {parseFullDateTimeString(obj.dateFinishEvent)}</p>
+                                            <p className="text-sm italic text-gray-500 mt-5 text-end">{parseFullDateTimeString(obj.created)}</p>
+                                        </div>
+                                    </>
                                 ) : (
-                                    <div>
+                                    <div className="flex flex-1 flex-col justify-end">
                                         <div className="flex-col text-lg my-2">
                                             <p className="text-base font-medium text-gray-900">email: {obj.contactInfo?.email}</p>
                                             <p className="text-base font-medium text-gray-900">phone: {obj.contactInfo?.phoneNumber}</p>

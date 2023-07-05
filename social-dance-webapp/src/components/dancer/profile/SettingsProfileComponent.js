@@ -1,46 +1,21 @@
 import { useForm } from "react-hook-form";
 import React from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {useState} from "react";
-import {deleteDancer} from "../../../api/DancerApi";
-import {getOrganizedEvent} from "../../../redux/actions/eventActions";
-import {getAdministratedSchool} from "../../../redux/actions/schoolActions";
-import {dancerLogout, updatePassword} from "../../../redux/actions/authActions";
-import {changePassword} from "../../../api/CredentialApi";
+import { deleteDancer } from "../../../api/DancerApi";
+import { changePassword } from "../../../api/CredentialApi";
 
 const SettingsProfileComponent = () => {
-    const [loading, setLoading] = useState(false);
     const {email, password, dancer} = useSelector(state => state.auth)
     const { register, handleSubmit, formState: { errors }, getValues } = useForm()
     const { register: deleteRegister, handleSubmit: deleteHandleSubmit, formState: { errors: deleteErrors }, getValues: deleteGetValues } = useForm()
     const dispatch = useDispatch();
 
     function onChangeSubmit(data) {
-        setLoading(true)
-        changePassword(email, data.newPassword)
-            .then(() => {
-                dispatch(updatePassword(data.newPassword))
-                setLoading(false)
-            })
-            .catch(error => {
-                console.log("error", error)
-                setLoading(false);
-            })
+        dispatch(changePassword(email, data.newPassword, data.currentPassword))
     }
 
     function onDeleteSubmit() {
-        setLoading(true)
-        deleteDancer(dancer.id)
-            .then(() => {
-                dispatch(getOrganizedEvent({}))
-                dispatch(getAdministratedSchool({}))
-                dispatch(dancerLogout())
-                setLoading(false)
-            })
-            .catch(error => {
-                console.log("error", error)
-                setLoading(false);
-            })
+        dispatch(deleteDancer(dancer.id))
     }
 
     return (
@@ -71,15 +46,9 @@ const SettingsProfileComponent = () => {
                                             autoComplete="currentPassword"
                                             className="block w-full rounded-md border-1 bg-white/5 py-1.5 text-black shadow-md
                                             ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                                            {...register('currentPassword', { required: true,
-                                                validate: (value) => {
-                                                    if (getValues().currentPassword !== password) {
-                                                        return "Current password is incorrect.";
-                                                    }
-                                                }})}
+                                            {...register('currentPassword', { required: true })}
                                         />
                                         {errors?.currentPassword?.type === "required" && <p className="text-xs leading-5 text-red-700">Password is required.</p>}
-                                        {errors?.currentPassword?.type === "validate" && <p className="text-xs leading-5 text-red-700">{errors.currentPassword.message}</p>}
                                     </div>
                                 </div>
 
@@ -169,7 +138,7 @@ const SettingsProfileComponent = () => {
                                                 }})}
                                         />
                                         {deleteErrors?.deletePassword?.type === "required" && <p className="text-xs leading-5 text-red-700">Password is required.</p>}
-                                        {deleteErrors?.deletePassword?.type === "validate" && <p className="text-xs leading-5 text-red-700">{errors.deletePassword.message}</p>}
+                                        {deleteErrors?.deletePassword?.type === "validate" && <p className="text-xs leading-5 text-red-700">{deleteErrors?.deletePassword?.message}</p>}
                                     </div>
                                 </div>
                             </div>

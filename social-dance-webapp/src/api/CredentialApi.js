@@ -1,45 +1,69 @@
 import requestWrapper from "./requestWrapper";
 import {POST} from "./Endpoints";
-import {dancerLogin} from "../redux/actions/authActions";
+import {dancerLogin, updateDancer, updatePassword} from "../redux/actions/authActions";
+import {loadingRequest} from "../redux/actions/requestActions";
+import {errorHandling} from "./notificationHandling";
 
-export const login = (email, password) => {
+// export const login = (email, password) => {
+//     return requestWrapper({
+//         axiosConfig: {
+//             method: 'POST',
+//             url: POST.login(email, password)
+//         }
+//     })
+// }
+
+export const login = (email, password) => (dispatch) => {
+    dispatch(loadingRequest(true))
     return requestWrapper({
         axiosConfig: {
             method: 'POST',
             url: POST.login(email, password)
         }
+    }).then(res => {
+        const isAuth = res.data != null
+        dispatch(dancerLogin(email, password, isAuth))
+        dispatch(updateDancer(res.data))
+        dispatch(loadingRequest(false))
+    }).catch(error => {
+        dispatch(loadingRequest(false))
+        errorHandling(error)
     })
 }
 
-// export const login = ({email, password}) => (dispatch) => {
-//     console.log("login")
-//     return requestWrapper(POST.login(email, password), "POST")
-//         .then(res => {
-//                         console.log("res", res)
-//                         dispatch(userLogin({email, password}, res))
-//                     })
-//                     .catch(error => {
-//                         console.log("error", error)
-//                     })
-// }
-
-export const signup = (email, password, formData) => {
-    return requestWrapper({
-        axiosConfig: {
-            method: 'post',
-            url: POST.registration(email, password),
-            data: formData,
-            headers: {'Content-Type': 'multipart/form-data'}
-        }
-    })
-}
-
-export const changePassword = (email, password) => {
+export const signup = (email, password, dancer) => (dispatch) => {
+    dispatch(loadingRequest(true))
     return requestWrapper({
         axiosConfig: {
             method: 'POST',
-            url: POST.changePassword(email, password)
+            url: POST.registration(email, password),
+            data: dancer,
+            headers: {'Content-Type': 'application/json' }
         }
+    }).then(res => {
+        const isAuth = res.data != null
+        dispatch(dancerLogin(email, password, isAuth))
+        dispatch(updateDancer(res.data))
+        dispatch(loadingRequest(false))
+    }).catch(error => {
+        dispatch(loadingRequest(false))
+        errorHandling(error)
+    })
+}
+
+export const changePassword = (email, newPassword, oldPassword) => (dispatch) => {
+    dispatch(loadingRequest(true))
+    return requestWrapper({
+        axiosConfig: {
+            method: 'POST',
+            url: POST.changePassword(email, newPassword, oldPassword)
+        }
+    }).then(() => {
+        dispatch(updatePassword(newPassword))
+        dispatch(loadingRequest(false))
+    }).catch(error => {
+        dispatch(loadingRequest(false))
+        errorHandling(error)
     })
 }
 

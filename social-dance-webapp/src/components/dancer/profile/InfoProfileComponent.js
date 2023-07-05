@@ -1,28 +1,23 @@
-import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
-import {useValues} from "../../../hooks/useValues";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useValues } from "../../../hooks/useValues";
 import RadioGroupElement from "../../forms/elements/RadioGroupElement";
 import DropDownListElement from "../../forms/elements/DropDownListElement";
-import {joinDateString} from "../../../util/dateTimeUtils";
+import { joinDateString } from "../../../util/dateTimeUtils";
 import ComboboxElement from "../../forms/elements/ComboboxElement";
 import CheckboxElement from "../../forms/elements/CheckboxElement";
-import {useHttp} from "../../../hooks/http.hook";
-import {useForm} from "react-hook-form";
-import {GET, POST} from "../../../api/Endpoints";
-import {updateDancer} from "../../../redux/actions/authActions";
-import {dancerMapper} from "../../../util/mapper";
-import DateTimeForm from "../../forms/DateTimeForm";
-import Spinner from "../../spinner/Spinner";
-import {useUpload} from "../../../hooks/useUpload";
-import {deleteDancerImage, fetchDancer, uploadDancerImage} from "../../../api/DancerApi";
-import LoadingSpinner from "../../spinner/LoadingSpinner";
+import { useHttp } from "../../../hooks/http.hook";
+import { useForm } from "react-hook-form";
+import { GET } from "../../../api/Endpoints";
+import { dancerMapper } from "../../../util/mapper";
+import { useUpload } from "../../../hooks/useUpload";
+import { deleteDancerImage, fetchDancer, saveDancer, uploadDancerImage } from "../../../api/DancerApi";
 
 const InfoProfileComponent = () => {
-    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const {isAuthenticated, email, dancer} = useSelector(state => state.auth)
+    const { isAuthenticated, email, dancer } = useSelector(state => state.auth)
     const [level, setLevel] = useState(dancer.level)
     const [gender, setGender] = useState(dancer.gender)
     const [city, setCity] = useState(dancer.contactInfo?.city)
@@ -30,11 +25,11 @@ const InfoProfileComponent = () => {
     const [bMonth, setMonth] = useState("");
     const [dances, setDances] = useState(dancer.dances);
     const {request} = useHttp();
-    const { register, handleSubmit, formState: { errors }, getValues, setValue} = useForm()
-    const {levelOptions, genderButtons, months} = useValues()
+    const { register, handleSubmit, formState: { errors }, setValue} = useForm()
+    const { levelOptions, genderButtons, months } = useValues()
     const [photo, setPhoto] = useState()
     const [photoUrl, setPhotoUrl] = useState(dancer.image)
-    const {checkSize} = useUpload()
+    const { checkSize } = useUpload()
 
     useEffect(() => {
         if (!isAuthenticated){
@@ -45,29 +40,11 @@ const InfoProfileComponent = () => {
         }
     }, [isAuthenticated])
 
-    useEffect(() => {
-        fetchDancer(dancer.id)
-            .then(res => dispatch(updateDancer(res.data)))
-
-    }, [photoUrl])
-
     const onSubmit = (data) => {
-        setLoading(true)
         const contactInfo = { email: data.email, phoneNumber: data.phoneNumber, country, city }
         const updatedDancer = dancerMapper(dancer.id, data.name, data.lastName, gender,
             joinDateString(data.year, bMonth, data.day, months), data.description, level, dances, contactInfo, photoUrl)
-        console.log("updatedDancer", updatedDancer)
-        const update = () => request(POST.saveDancer(), "POST", JSON.stringify(updatedDancer))
-        update()
-            .then(res => {
-                // console.log("res", res)
-                dispatch(updateDancer(res))
-                setLoading(false);
-            })
-            .catch(error => {
-                console.log("error", error)
-                setLoading(false);
-            })
+        dispatch(saveDancer(updatedDancer))
     }
 
     const selectPhoto = (img) => {
@@ -80,17 +57,11 @@ const InfoProfileComponent = () => {
             if (!checkSize(1024, photo)){
                 const formData = new FormData();
                 formData.append('file', photo);
-                setLoading(true)
-                uploadDancerImage(dancer.id, formData)
-                    .then(res => {
-                        console.log(res.data)
-                        setPhotoUrl(res.data)
+                dispatch(uploadDancerImage(dancer.id, formData))
+                    .then(() => dispatch(fetchDancer(dancer.id)))
+                    .then(() => {
+                        setPhotoUrl(dancer.image)
                         setPhoto(null)
-                        setLoading(false);
-                    })
-                    .catch(error => {
-                        console.log("error", error)
-                        setLoading(false);
                     })
             }
         }
@@ -98,16 +69,10 @@ const InfoProfileComponent = () => {
 
     const deletePhoto = () => {
         if (dancer.image){
-            setLoading(true)
-            deleteDancerImage(dancer.id)
+            dispatch(deleteDancerImage(dancer.id))
                 .then(() => {
                     setPhotoUrl(null)
                     setPhoto(null)
-                    setLoading(false);
-                })
-                .catch(error => {
-                    console.log("error", error)
-                    setLoading(false);
                 })
         }else {
             setPhotoUrl(null)
@@ -126,7 +91,6 @@ const InfoProfileComponent = () => {
 
     return (
     <div>
-        {loading && <Spinner/>}
         <main>
             <div className="divide-y divide-white/5">
                 <div className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">

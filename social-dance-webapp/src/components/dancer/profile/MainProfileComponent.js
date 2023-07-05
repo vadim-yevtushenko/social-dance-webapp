@@ -1,8 +1,8 @@
-import {useSelector} from "react-redux";
-import Sidebar, {chapterData} from "./Sidebar";
+import { useSelector } from "react-redux";
+import Sidebar from "./Sidebar";
 import InfoProfileComponent from "./InfoProfileComponent";
-import {useNavigate} from "react-router-dom";
-import {useEffect, useState} from "react";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import MySchoolsProfileComponent from "./MySchoolsProfileComponent";
 import MyEventsProfileComponent from "./MyEventsProfileComponent";
 import SettingsProfileComponent from "./SettingsProfileComponent";
@@ -17,7 +17,7 @@ const CHAPTER = {
 const MainProfileComponent = () => {
 
     const navigate = useNavigate()
-    const {isAuthenticated, dancer} = useSelector(state => state.auth)
+    const { isAuthenticated } = useSelector(state => state.auth)
     const [currentChapter, setCurrentChapter] = useState(CHAPTER.PERSONAL_INFO)
 
     useEffect(() => {
@@ -40,7 +40,7 @@ const MainProfileComponent = () => {
     }
 
     return (
-        <div className="xl:flex min-h-screen">
+        <div className="grow xl:flex min-h-screen">
             <Sidebar
                 onChange={chapter => setCurrentChapter(chapter)}
             />

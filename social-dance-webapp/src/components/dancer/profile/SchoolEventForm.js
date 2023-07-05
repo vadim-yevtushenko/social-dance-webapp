@@ -3,44 +3,53 @@ import ComboboxElement from "../../forms/elements/ComboboxElement";
 import CheckboxElement from "../../forms/elements/CheckboxElement";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useValues } from "../../../hooks/useValues";
 import { useHttp } from "../../../hooks/http.hook";
 import { useForm } from "react-hook-form";
 import { eventMapper, schoolMapper } from "../../../util/mapper";
-import { GET, POST } from "../../../api/Endpoints";
-import {joinDateString, joinDateTimeString} from "../../../util/dateTimeUtils";
-import { getAdministratedSchool } from "../../../redux/actions/schoolActions";
-import { getOrganizedEvent } from "../../../redux/actions/eventActions";
-import { updateDancer } from "../../../redux/actions/authActions";
-import {deleteSchoolImage, uploadSchoolImage} from "../../../api/SchoolApi";
-import {useUpload} from "../../../hooks/useUpload";
-import {deleteEventImage, uploadEventImage} from "../../../api/EventApi";
-import {PhotoIcon} from "@heroicons/react/24/solid";
+import { GET } from "../../../api/Endpoints";
+import { joinDateTimeString } from "../../../util/dateTimeUtils";
+import {deleteSchoolImage, fetchAdministratedSchool, saveSchool, uploadSchoolImage} from "../../../api/SchoolApi";
+import { useUpload } from "../../../hooks/useUpload";
+import {deleteEventImage, fetchOrganizedEvent, saveEvent, uploadEventImage} from "../../../api/EventApi";
+import { PhotoIcon } from "@heroicons/react/24/solid";
+import React from "react";
+import {fetchDancer} from "../../../api/DancerApi";
 
-const SchoolEventForm = ({typeOption, optionObject}) => {
+const SchoolEventForm = ({ typeOption }) => {
 
-    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const {isAuthenticated, dancer} = useSelector(state => state.auth)
+    const { months, TYPE_OPTIONS } = useValues()
+    const { isAuthenticated, dancer } = useSelector(state => state.auth)
+    const { administratedSchool } = useSelector(state => state.mySchools)
+    const { organizedEvent } = useSelector(state => state.myEvents)
+    const [optionObject, setOptionObject] = useState(typeOption === TYPE_OPTIONS.EVENT ? organizedEvent : administratedSchool)
     const [city, setCity] = useState(optionObject.contactInfo?.city)
     const [country, setCountry] = useState(optionObject.contactInfo?.country)
     const [dances, setDances] = useState(optionObject.dances);
     const [sMonth, setSMonth] = useState("");
     const [fMonth, setFMonth] = useState("");
-    const { months, TYPE_OPTIONS } = useValues()
-    const {request} = useHttp();
+    const { request } = useHttp();
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const [image, setImage] = useState()
     const [imageUrl, setImageUrl] = useState(optionObject.image)
-    const {checkSize} = useUpload()
+    const { checkSize } = useUpload()
 
     useEffect(() => {
         if (!isAuthenticated){
             navigate("/events")
         }
     }, [isAuthenticated])
+
+    useEffect(() => {
+        if (typeOption === TYPE_OPTIONS.EVENT){
+            setOptionObject(organizedEvent)
+        }else {
+            setOptionObject(administratedSchool)
+        }
+    }, [administratedSchool, organizedEvent])
 
     useEffect(() => {
         setValue('name', optionObject.name)
@@ -72,92 +81,40 @@ const SchoolEventForm = ({typeOption, optionObject}) => {
     }, [optionObject])
 
     const onSubmit = (data) => {
-
-        setLoading(true)
         const contactInfo = { email: data.email, phoneNumber: data.phoneNumber, country, city }
         if (typeOption === TYPE_OPTIONS.SCHOOL){
-            const newSchool = schoolMapper(null, data.name, data.description, dances, contactInfo, imageUrl, [dancer])
-            const save = () => request(POST.saveSchool(), "POST", JSON.stringify(newSchool))
-            save()
-                .then(res => {
-                    console.log(res)
-                    dispatch(getAdministratedSchool(res))
-                    setLoading(false);
-                })
-                .catch(error => {
-                    console.log("error", error)
-                    setLoading(false);
-                })
+            const newSchool = schoolMapper(optionObject?.id, data.name, data.description, dances, contactInfo, imageUrl, [dancer])
+            dispatch(saveSchool(newSchool))
         }else {
             const startDate = joinDateTimeString(data.sYear, sMonth, data.sDay, data.sHour, data.sMinute, months)
             const finishDate = joinDateTimeString(data.fYear, fMonth, data.fDay, data.fHour, data.fMinute, months)
-            const newEvent = eventMapper(null, data.name, data.description, dances, contactInfo, imageUrl,
+            const newEvent = eventMapper(optionObject?.id, data.name, data.description, dances, contactInfo, imageUrl,
                 startDate, finishDate, [dancer])
-            console.log("newEvent", newEvent)
-            const save = () => request(POST.saveEvent(), "POST", JSON.stringify(newEvent))
-            save()
-                .then(res => {
-                    console.log(res)
-                    dispatch(getOrganizedEvent(res))
-                    setLoading(false);
-                })
+            dispatch(saveEvent(newEvent))
                 .then(() => {
-                    refreshDancer()
-                })
-                .catch(error => {
-                    console.log("error", error)
-                    setLoading(false);
+                    dispatch(fetchDancer(dancer.id))
                 })
         }
-
-    }
-
-    const refreshDancer = () => {
-        setLoading(true);
-        const getDancer = () => request(GET.getDancer(dancer.id))
-        getDancer()
-            .then(res => {
-                dispatch(updateDancer(res))
-                setLoading(false);
-            })
-            .catch(error => {
-                console.log("error", error)
-                setLoading(false);
-            })
     }
 
     const uploadImage = () => {
         if (!!image) {
             if (!checkSize(1024, image)) {
-                setLoading(true)
                 const formData = new FormData();
                 formData.append('file', image);
                 if (typeOption === TYPE_OPTIONS.SCHOOL) {
-                    uploadSchoolImage(optionObject.id, formData)
-                        .then(res => {
-                            setImageUrl(res.data)
+                    dispatch(uploadSchoolImage(optionObject.id, formData))
+                        .then(() => {
+                            dispatch(fetchAdministratedSchool(optionObject.id))
                             setImage(null)
-                            console.log(res);
-                            setLoading(false)
                         })
-                        .catch(res => {
-                            //handle error
-                            console.log(res);
-                            setLoading(false)
-                        });
+
                 }else {
-                    uploadEventImage(optionObject.id, formData)
-                        .then(res => {
-                            setImageUrl(res.data)
+                    dispatch(uploadEventImage(optionObject.id, formData))
+                        .then(() => {
+                            dispatch(fetchOrganizedEvent(optionObject.id))
                             setImage(null)
-                            console.log(res);
-                            setLoading(false)
                         })
-                        .catch(res => {
-                            //handle error
-                            console.log(res);
-                            setLoading(false)
-                        });
                 }
             }
         }
@@ -165,31 +122,24 @@ const SchoolEventForm = ({typeOption, optionObject}) => {
 
     const deleteImage = () => {
         if (optionObject.image){
-            setLoading(true)
             if (typeOption === TYPE_OPTIONS.SCHOOL){
-                deleteSchoolImage(optionObject.id)
+                dispatch(deleteSchoolImage(optionObject.id))
                     .then(() => {
+                        dispatch(fetchAdministratedSchool(optionObject.id))
                         setImageUrl(null)
                         setImage(null)
                         setValue('file-upload', null)
-                        setLoading(false)
                     })
-                    .catch(error => {
-                        console.log("error", error)
-                        setLoading(false);
-                    })
+
             }else {
-                deleteEventImage(optionObject.id)
+                dispatch(deleteEventImage(optionObject.id))
                     .then(() => {
+                        dispatch(fetchOrganizedEvent(optionObject.id))
                         setImageUrl(null)
                         setImage(null)
                         setValue('file-upload', null)
-                        setLoading(false)
                     })
-                    .catch(error => {
-                        console.log("error", error)
-                        setLoading(false);
-                    })
+
             }
 
         }else {
@@ -204,7 +154,6 @@ const SchoolEventForm = ({typeOption, optionObject}) => {
         setImageUrl(URL.createObjectURL(image))
     }
 
-
     const getCountries = (countryName) => request(GET.getCountries(countryName))
 
     const getCities = (cityName) => request(GET.getCities(cityName, country))
@@ -212,61 +161,63 @@ const SchoolEventForm = ({typeOption, optionObject}) => {
     return(
         <form className="md:col-span-2" onSubmit={handleSubmit(onSubmit)}>
             <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
-                <div className="sm:col-span-full">
-                    <label htmlFor="cover-photo" className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5">
-                        Photo
-                    </label>
-                    <div className="mt-2 sm:col-span-2 sm:mt-0">
-                        <div className="flex max-w-2xl justify-center rounded-lg border border-1 border-gray-900 shadow-md ">
-                            <div className="text-center">
-                                <div className="flex text-sm leading-6 text-gray-600">
-                                    <label
-                                        htmlFor="file-upload"
-                                        className="relative cursor-pointer rounded-md  font-semibold text-indigo-600 focus-within:outline-none
+                {optionObject.id && (
+                    <div className="sm:col-span-full">
+                        <label htmlFor="cover-photo" className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5">
+                            Photo
+                        </label>
+                        <div className="mt-2 sm:col-span-2 sm:mt-0">
+                            <div className="flex max-w-2xl justify-center rounded-lg border border-1 border-gray-900 shadow-md ">
+                                <div className="text-center">
+                                    <div className="flex text-sm leading-6 text-gray-600">
+                                        <label
+                                            htmlFor="file-upload"
+                                            className="relative cursor-pointer rounded-md  font-semibold text-indigo-600 focus-within:outline-none
                                                         focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
-                                    >
-                                        {imageUrl ? (
-                                            <img
-                                                src={imageUrl}
-                                                alt="Photo"
-                                                className="max-w-xl flex-none rounded-lg bg-gray-300 object-cover"
+                                        >
+                                            {imageUrl ? (
+                                                <img
+                                                    src={imageUrl}
+                                                    alt="Photo"
+                                                    className="max-w-xl flex-none rounded-lg bg-gray-300 object-cover"
+                                                />
+                                            ) : (
+                                                <PhotoIcon className="h-40 w-40 text-gray-300 hover:text-indigo-500" aria-hidden="true" />
+                                            )}
+                                            <input
+                                                id="file-upload"
+                                                name="file-upload"
+                                                type="file"
+                                                className="sr-only"
+                                                {...register('file-upload')}
+                                                onChange={(e) => selectImage(e.target.files[0])}
                                             />
-                                        ) : (
-                                            <PhotoIcon className="h-40 w-40 text-gray-300 hover:text-indigo-500" aria-hidden="true" />
-                                        )}
-                                        <input
-                                            id="file-upload"
-                                            name="file-upload"
-                                            type="file"
-                                            className="sr-only"
-                                            {...register('file-upload')}
-                                            onChange={(e) => selectImage(e.target.files[0])}
-                                        />
-                                    </label>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className="flex justify-around mt-3">
-                            <button
-                                type="button"
-                                className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
-                                onClick={uploadImage}
-                            >
-                                Change image
-                            </button>
-                            <p className="my-1 text-xs leading-5 text-gray-400">JPG, GIF or PNG. 10MB max.</p>
-                            {imageUrl && (
+                            <div className="flex justify-around mt-3">
                                 <button
                                     type="button"
-                                    className="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500"
-                                    onClick={deleteImage}
+                                    className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
+                                    onClick={uploadImage}
                                 >
-                                    Delete image
+                                    Change image
                                 </button>
-                            )}
+                                <p className="my-1 text-xs leading-5 text-gray-400">JPG, GIF or PNG. 10MB max.</p>
+                                {imageUrl && (
+                                    <button
+                                        type="button"
+                                        className="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500"
+                                        onClick={deleteImage}
+                                    >
+                                        Delete image
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     </div>
-                </div>
+                )}
 
                 <div className="sm:col-span-full">
                     <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-black">
@@ -306,7 +257,7 @@ const SchoolEventForm = ({typeOption, optionObject}) => {
                                 <div className="flex">
                                     <DropDownListElement
                                         disabled={false}
-                                        startOption={sMonth}
+                                        startOption={optionObject.id !== null ? sMonth : ""}
                                         setOption={setSMonth}
                                         options={months.map(month => month.name)}
                                     />

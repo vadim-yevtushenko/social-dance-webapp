@@ -1,5 +1,5 @@
 import MainLayout from "../components/layouts/MainLayout";
-import OverViewComponent from "../components/page/OverViewComponent";
+import OverViewComponent from "../components/events-schools/OverViewComponent";
 import {useValues} from "../hooks/useValues";
 
 const EventPage = () => {

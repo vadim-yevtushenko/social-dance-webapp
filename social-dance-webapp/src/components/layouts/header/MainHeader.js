@@ -7,6 +7,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {dancerLogout} from "../../../redux/actions/authActions";
 import {getOrganizedEvent} from "../../../redux/actions/eventActions";
 import {getAdministratedSchool} from "../../../redux/actions/schoolActions";
+import {loadingRequest} from "../../../redux/actions/requestActions";
+import {successHandling} from "../../../api/notificationHandling";
 
 const navigation = [
   { name: 'Events', href: '/events' },
@@ -31,9 +33,12 @@ export default function MainHeader() {
   console.log("state", state)
 
   const logout = () => {
+    dispatch(loadingRequest(true))
     dispatch(getOrganizedEvent({}))
     dispatch(getAdministratedSchool({}))
     dispatch(dancerLogout())
+    dispatch(loadingRequest(false))
+    successHandling("Good luck. Come back!")
   }
 
   return (

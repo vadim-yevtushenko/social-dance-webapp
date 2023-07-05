@@ -8,7 +8,6 @@ const authReducer = (
     switch (action.type){
         case DANCER_LOGIN:
             const {email, password, isAuth} = action.payload
-            console.log("authReducer", email)
             return {
                 ...state,
                 email: email,

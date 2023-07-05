@@ -5,10 +5,11 @@ const API_BASE_URL='http://localhost:8080';
 
 export const GET = {
     // Dancers
-    getDancers: (page, size, name, lastName, city) => {
+    getDancers: (name, lastName, country, city, page, size) => {
         let url = `${API_BASE_URL}/dancers?`
         if (!!name) url = url.concat(`name=${name}&`)
         if (!!lastName) url = url.concat(`lastName=${lastName}&`)
+        if (!!country) url = url.concat(`country=${country}&`)
         if (!!city) url = url.concat(`city=${city}&`)
         if (!!page) url = url.concat(`pageNumber=${page}&`)
         if (!!size) url = url.concat(`size=${size}`)
@@ -82,9 +83,9 @@ export const POST = {
     uploadEventImage: (id) => `${API_BASE_URL}/events/upload-image?id=${id}`,
 
     // Credential
-    login: (email, password) => `${API_BASE_URL}/credential/login?email=${email}&password=${password}`,
+    login: (email, password, oldPassword) => `${API_BASE_URL}/credential/login?email=${email}&password=${password}`,
     registration: (email, password) => `${API_BASE_URL}/credential/registration?email=${email}&password=${password}`,
-    changePassword: (email, password) => `${API_BASE_URL}/credential/change-password?email=${email}&password=${password}`,
+    changePassword: (email, newPassword, oldPassword) => `${API_BASE_URL}/credential/change-password?email=${email}&newPassword=${newPassword}&oldPassword=${oldPassword}`,
     changeEmail: (email, newEmail) => `${API_BASE_URL}/credential/change-email?email=${email}&newEmail=${newEmail}`,
 
     // Rating

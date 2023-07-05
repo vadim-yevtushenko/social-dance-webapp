@@ -1,14 +1,14 @@
 import axios from "axios";
+import React from "react";
 
 export async function requestWrapper ({ axiosConfig }) {
-
+    console.log("axiosConfig", axiosConfig)
     try {
         return await axios.request(axiosConfig);
     }
-    catch (e){
-        console.log(e)
-        throw e
-        // throw new Error(`Could not fetch ${url}, status ${res.status}`)
+    catch (error){
+        console.error(error)
+        throw error
     }
 
 }

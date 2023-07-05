@@ -1,19 +1,23 @@
 import dayjs from "dayjs";
 
 export const parseFullDateString = (fullDateString) => {
-    return dayjs(fullDateString, 'utc').format('DD MMM YYYY');
+    return dayjs(fullDateString, 'utc').format('DD MMMM YYYY');
 };
 
 export const parseFullDateTimeString = (fullDateString) => {
     return dayjs(fullDateString, 'utc').format('DD MMM YYYY HH:mm');
 };
 
-export const splitDateString = (fullDateString) => {
-    const dateArr = fullDateString.split("-")
+export const splitDateTimeString = (fullDateTimeString) => {
+    const fullDateTimeSplit = fullDateTimeString.split('T')
+    const dateSplit = fullDateTimeSplit[0].split("-")
+    const timeSplit = fullDateTimeSplit[1].split(":")
     return {
-        year: dateArr[0],
-        month: dateArr[1],
-        day: dateArr[2],
+        year: dateSplit[0],
+        month: dateSplit[1],
+        day: dateSplit[2],
+        hour: timeSplit[0],
+        minute: timeSplit[1].substring(0,2),
     }
 }
 
@@ -33,5 +37,5 @@ export const joinDateTimeString = (year, month, day, hour, minute, months) => {
         return null
     }
 
-    return date + "T" + hour + ":" + minute
+    return date + "T" + hour + ":" + minute + "+00:00"
 }

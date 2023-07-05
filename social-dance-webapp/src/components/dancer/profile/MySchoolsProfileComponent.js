@@ -1,13 +1,8 @@
 import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
-import {useHttp} from "../../../hooks/http.hook";
-import {useForm} from "react-hook-form";
-import {GET} from "../../../api/Endpoints";
+import { useDispatch, useSelector } from "react-redux";
 import SchoolEventForm from "./SchoolEventForm";
-import {getAdministratedSchool} from "../../../redux/actions/schoolActions";
-import Spinner from "../../spinner/Spinner";
-import {useValues} from "../../../hooks/useValues";
+import { useValues } from "../../../hooks/useValues";
+import {deleteSchool, fetchAdministratedSchool} from "../../../api/SchoolApi";
 
 const SUBTITLE = {
     EXIST_ADMINISTRATED_SCHOOL: "You already have a school for administrate.",
@@ -18,35 +13,24 @@ const SUBTITLE = {
 
 const MySchoolsProfileComponent = () => {
 
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
     const dispatch = useDispatch();
-    const {isAuthenticated, dancer} = useSelector(state => state.auth)
-    const {administratedSchool} = useSelector(state => state.mySchools)
-    const {request} = useHttp();
+    const { dancer } = useSelector(state => state.auth)
+    const { administratedSchool } = useSelector(state => state.mySchools)
     const [administratedSchoolExist, setAdministratedSchoolExist] = useState(!!dancer.administrator)
     const { TYPE_OPTIONS } = useValues()
 
     useEffect(() => {
-        if (administratedSchoolExist){
-            setLoading(true);
-            const getSchool = () => request(GET.getSchool(dancer.administrator?.id))
-            getSchool()
-                .then(res => {
-                    // console.log("res", res)
-                    dispatch(getAdministratedSchool(res))
-                    setLoading(false);
-                })
-                .catch(error => {
-                    console.log("error", error)
-                    setLoading(false);
-                })
+        if (!!dancer.administrator){
+            dispatch(fetchAdministratedSchool(dancer.administrator?.id))
         }
     }, [])
 
+    const deleteCurrentSchool = () => {
+        dispatch(deleteSchool(administratedSchool.id))
+    }
+
     return (
         <div className="divide-y divide-white/5">
-            {loading && <Spinner/>}
             <div className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
                 <div>
                     <h2 className="text-lg font-semibold leading-7 text-black">School Information</h2>
@@ -77,6 +61,7 @@ const MySchoolsProfileComponent = () => {
                             <button
                                 type="button"
                                 className="rounded-md bg-red-500 mt-8 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-400"
+                                onClick={() => deleteCurrentSchool()}
                             >
                                 Delete school
                             </button>

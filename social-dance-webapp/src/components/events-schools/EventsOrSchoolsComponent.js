@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import Spinner from "../spinner/Spinner";
 import {getEvents} from "../../api/EventApi";
-import CardList from "../cardcontainer/CardList";
+import CardList from "./CardList";
 import PaginationComponent from "../pagination/PaginationComponent";
 import {useValues} from "../../hooks/useValues";
 import {MagnifyingGlassIcon} from "@heroicons/react/20/solid";
@@ -9,12 +9,13 @@ import ComboboxElement from "../forms/elements/ComboboxElement";
 import {GET} from "../../api/Endpoints";
 import {useHttp} from "../../hooks/http.hook";
 import {getSchools} from "../../api/SchoolApi";
+import {useDispatch, useSelector} from "react-redux";
+import {loadingRequest} from "../../redux/actions/requestActions";
 
 const EventsOrSchoolsComponent = ({ typeOption }) => {
 
-    const [optionObjects, setOptionObjects] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [total, setTotal] = useState();
+    const dispatch = useDispatch();
+    const { total } = useSelector(state => state.lists)
     const [page, setPage] = useState(1);
     const [size, setSize] = useState(6);
     const {eventOrSchoolPageSizeOptions, TYPE_OPTIONS} = useValues()
@@ -23,33 +24,11 @@ const EventsOrSchoolsComponent = ({ typeOption }) => {
     const [country, setCountry] = useState()
     const {request} = useHttp();
 
-    console.log("city", city)
-
-
     useEffect(() => {
-        setLoading(true);
         if (typeOption === TYPE_OPTIONS.EVENT){
-            getEvents(name, country, city, page, size)
-                .then(res => {
-                    setOptionObjects(res.data.results);
-                    setTotal(res.data.total)
-                    setLoading(false);
-                })
-                .catch(error => {
-                    setLoading(false);
-                    console.log("error", error)
-                });
+            dispatch(getEvents(name, country, city, page, size))
         }else {
-            getSchools(name, country, city, page, size)
-                .then(res => {
-                    setOptionObjects(res.data.results);
-                    setTotal(res.data.total)
-                    setLoading(false);
-                })
-                .catch(error => {
-                    setLoading(false);
-                    console.log("error", error)
-                });
+            dispatch(getSchools(name, country, city, page, size))
         }
     }, [name, country, city, page, size]);
 
@@ -58,8 +37,7 @@ const EventsOrSchoolsComponent = ({ typeOption }) => {
     const getCities = (cityName) => request(GET.getCities(cityName, country))
 
     return (
-        <div className="px-4 sm:px-6 lg:px-6 my-5">
-            {loading && <Spinner/>}
+        <div className="grow px-4 sm:px-6 lg:px-6 my-5">
             <div className="xl:flex sm:items-center">
                 <div className="sm:flex-none">
                     <h1 className="text-2xl font-semibold leading-6 text-gray-900 ml-2">
@@ -115,7 +93,6 @@ const EventsOrSchoolsComponent = ({ typeOption }) => {
             </div>
             <CardList
                 typeOption={typeOption}
-                optionObjects={optionObjects}
             />
             <PaginationComponent
                 page={page}

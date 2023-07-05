@@ -1,52 +1,41 @@
-import {useEffect, useState} from 'react'
+import { useEffect, useState } from 'react'
 import { ChevronLeftIcon } from '@heroicons/react/24/outline'
-import {PhotoIcon} from "@heroicons/react/24/solid";
-import {useNavigate, useParams} from "react-router-dom";
-import {getSchool} from "../../api/SchoolApi";
-import {useValues} from "../../hooks/useValues";
-import {getEvent} from "../../api/EventApi";
+import { PhotoIcon } from "@heroicons/react/24/solid";
+import { useNavigate, useParams } from "react-router-dom";
+import { fetchViewSchool } from "../../api/SchoolApi";
+import { useValues } from "../../hooks/useValues";
+import { fetchViewEvent } from "../../api/EventApi";
 import ReviewComponent from "../review/ReviewComponent";
-import {parseFullDateTimeString} from "../../util/dateTimeUtils";
-import {getFullAddress} from "../../util/addressUtils";
+import { parseFullDateTimeString } from "../../util/dateTimeUtils";
+import { getFullAddress } from "../../util/addressUtils";
 import RatingComponent from "../rating/RatingComponent";
+import MapsComponent from "./MapsComponent";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-const OverViewComponent = ({typeOption}) => {
-    const [loading, setLoading] = useState(false);
+const OverViewComponent = ({ typeOption }) => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const params = useParams();
-    const [optionObject, setOptionObject] = useState()
+    const { viewObject } = useSelector(state => state.lists)
     const { TYPE_OPTIONS } = useValues()
     const [rerenderReview, setRerenderReview] = useState(false)
+    const [openMap, setOpenMap] = useState(false)
 
     useEffect(() => {
         if (typeOption === TYPE_OPTIONS.SCHOOL){
-            setLoading(true)
-            getSchool(params.id)
-                .then(res => {
-                    setOptionObject(res.data)
-                    setLoading(false);
-                })
-                .catch(error => {
-                    console.log("error", error)
-                    setLoading(false);
-                })
+            dispatch(fetchViewSchool(params.id))
         }else {
-            setLoading(true)
-            getEvent(params.id)
-                .then(res => {
-                    setOptionObject(res.data)
-                    setLoading(false);
-                })
-                .catch(error => {
-                    console.log("error", error)
-                    setLoading(false);
-                })
+            dispatch(fetchViewEvent(params.id))
         }
     }, [])
 
-
+    const showMap = () => {
+        setOpenMap(false)
+        setOpenMap(true)
+    }
     return (
-        <div className="bg-white">
+        <div className="grow bg-white">
             <div className="pb-16 pt-6 sm:pb-24">
                 <nav aria-label="Back" className="flex mx-auto w-sm px-4 sm:px-6 lg:px-8">
                     <a
@@ -61,8 +50,7 @@ const OverViewComponent = ({typeOption}) => {
                     <div className="lg:grid lg:auto-rows-min lg:grid-cols-12 lg:gap-x-8">
                         <div className="lg:col-span-5 lg:col-start-8">
                             <div className="flex justify-between">
-                                <h1 className="text-xl font-bold text-gray-900">{optionObject?.name}</h1>
-                                {/*<p className="text-xl font-medium text-gray-900">{product.price}</p>*/}
+                                <h1 className="text-xl font-bold text-gray-900">{viewObject?.name}</h1>
                             </div>
                             {/* Reviews */}
                             {typeOption === TYPE_OPTIONS.EVENT && (
@@ -70,10 +58,10 @@ const OverViewComponent = ({typeOption}) => {
                                     <h2 className="text-sm font-medium text-gray-900">Dates</h2>
                                     <div className="items-center">
                                         <p className="text-sm text-gray-700">
-                                            Start time: {parseFullDateTimeString(optionObject?.dateEvent)}
+                                            Start time: {parseFullDateTimeString(viewObject?.dateEvent)}
                                         </p>
                                         <p className="text-sm text-gray-700">
-                                            Finish time: {parseFullDateTimeString(optionObject?.dateFinishEvent)}
+                                            Finish time: {parseFullDateTimeString(viewObject?.dateFinishEvent)}
                                         </p>
 
                                     </div>
@@ -86,11 +74,11 @@ const OverViewComponent = ({typeOption}) => {
                             <h2 className="sr-only">Images</h2>
 
                             <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-2 lg:gap-8 rounded-lg border border-1 border-gray-900 shadow-md ">
-                                {optionObject?.image ? (
+                                {viewObject?.image ? (
                                     <img
-                                        key={optionObject.id}
-                                        src={optionObject.image}
-                                        alt={optionObject.name}
+                                        key={viewObject.id}
+                                        src={viewObject.image}
+                                        alt={viewObject.name}
                                         className='lg:col-span-2 lg:row-span-2 justify-self-center'
 
                                     />
@@ -110,20 +98,23 @@ const OverViewComponent = ({typeOption}) => {
                                 <h2 className="text-sm font-medium text-gray-900">Phone:</h2>
                             </div>
                             <div className="flex items-center justify-between">
-                                <h2 className="text-md font-medium text-gray-900">{optionObject?.contactInfo?.email}</h2>
-                                <h2 className="text-md font-medium text-gray-900">{optionObject?.contactInfo?.phoneNumber}</h2>
+                                <h2 className="text-md font-medium text-gray-900">{viewObject?.contactInfo?.email}</h2>
+                                <h2 className="text-md font-medium text-gray-900">{viewObject?.contactInfo?.phoneNumber}</h2>
                             </div>
 
                             {/* Location */}
                             <div className="mt-8">
                                 <div className="flex items-center justify-between">
                                     <h2 className="text-sm font-medium text-gray-900">Location:</h2>
-                                    <a href="#" className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                                    <a
+                                        className="text-sm font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer"
+                                        onClick={() => setOpenMap(true)}
+                                    >
                                         See on the map
                                     </a>
                                 </div>
                                 <div className="flex items-center justify-between">
-                                    <h2 className="text-md font-medium text-gray-900">{getFullAddress(optionObject?.contactInfo)}</h2>
+                                    <h2 className="text-md font-medium text-gray-900">{getFullAddress(viewObject?.contactInfo)}</h2>
 
                                 </div>
                             </div>
@@ -141,17 +132,17 @@ const OverViewComponent = ({typeOption}) => {
 
                                 <div
                                     className="prose prose-sm text-gray-500"
-                                    // dangerouslySetInnerHTML={{ __html: optionObject?.description }}
+                                    // dangerouslySetInnerHTML={{ __html: viewObject?.description }}
                                 />
-                                {optionObject?.description}
+                                {viewObject?.description}
                             </div>
 
                             <div className="mt-8 border-t border-gray-200 pt-8">
                                 <h2 className="text-sm font-medium text-gray-900">Dances</h2>
 
                                 <div className="prose prose-sm mt-4 text-gray-500">
-                                    <ul role="list">
-                                        {optionObject?.dances.map((dance) => (
+                                    <ul role="list" className="columns-2">
+                                        {viewObject?.dances?.map((dance) => (
                                             <li key={dance.id}>{dance.name}</li>
                                         ))}
                                     </ul>
@@ -165,7 +156,7 @@ const OverViewComponent = ({typeOption}) => {
 
                                         <div className="prose prose-sm mt-4 text-gray-500">
                                             <ul role="list">
-                                                {optionObject?.administrators.map((dancer) => (
+                                                {viewObject?.administrators?.map((dancer) => (
                                                     <li key={dancer.id}>
                                                         <a className="cursor-pointer">
                                                             {dancer.name} {dancer.lastName}
@@ -175,13 +166,13 @@ const OverViewComponent = ({typeOption}) => {
                                             </ul>
                                         </div>
                                     </div>
-                                    {optionObject?.teachers?.length > 0 && (
+                                    {viewObject?.teachers?.length > 0 && (
                                         <div className="mt-8 border-b border-gray-200 py-8">
                                             <h2 className="text-sm font-medium text-gray-900">Teachers</h2>
 
                                             <div className="prose prose-sm mt-4 text-gray-500">
                                                 <ul role="list">
-                                                    {optionObject.teachers.map((dancer) => (
+                                                    {viewObject.teachers?.map((dancer) => (
                                                         <li key={dancer.id}>
                                                             <a className="cursor-pointer">
                                                                 {dancer.name} {dancer.lastName}
@@ -200,7 +191,7 @@ const OverViewComponent = ({typeOption}) => {
 
                                         <div className="prose prose-sm mt-4 text-gray-500">
                                             <ul role="list">
-                                                {optionObject?.organizers.map((dancer) => (
+                                                {viewObject?.organizers?.map((dancer) => (
                                                     <li key={dancer.id}>
                                                         <a className="cursor-pointer">
                                                             {dancer.name} {dancer.lastName}
@@ -210,11 +201,11 @@ const OverViewComponent = ({typeOption}) => {
                                             </ul>
                                         </div>
                                     </div>
-                                    {optionObject?.schoolOrganizerId && (
+                                    {viewObject?.schoolOrganizerId && (
                                         <div className="mt-8 border-y border-gray-200 pt-8">
                                             <h2 className="text-sm font-medium text-gray-900">School organizer:</h2>
                                             <a className="cursor-pointer">
-                                                {optionObject.schoolOrganizerId}
+                                                {viewObject.schoolOrganizerId}
                                             </a>
                                         </div>
                                     )}
@@ -232,6 +223,10 @@ const OverViewComponent = ({typeOption}) => {
                                 <div className="mt-6 lg:col-span-7 lg:col-start-6 lg:mt-0">
                                     <ReviewComponent rerender={rerenderReview}/>
                                 </div>
+                                <MapsComponent
+                                    openMap={openMap}
+                                    setOpenMap={setOpenMap}
+                                />
                             </div>
 
                         )}

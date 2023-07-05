@@ -3,37 +3,35 @@ const initialState = () => ({
         email: '',
         password: '',
         isAuthenticated: false,
-        dancer: {dancer: {
-            contactInfo:{}
-            }}
+        dancer: {
+            contactInfo: {}
+        }
     },
-    // dancer: {
-    //     id: null,
-    //     name: '',
-    //     lastName: '',
-    //     gender: '',
-    //     birthday: '',
-    //     description: '',
-    //     image: '',
-    //     contactInfo: null,
-    //     level: '',
-    //     dances: [],
-    //     administrator: null,
-    //     teacher: null,
-    //     school: null
-    // },
+    request: {
+        loading: false,
+    },
     mySchools: {
         administratedSchool: {
             contactInfo:{}
         },
-        loading: false
     },
     myEvents: {
         organizedEvent: {
             contactInfo:{}
         },
-        loading: false
     },
+    lists: {
+        results: [],
+        total: 0,
+        viewObject: {
+            contactInfo: {}
+        }
+    },
+    feedback: {
+        rating: 0,
+        generalRating: {},
+        reviews: {}
+    }
 })
 
 export default initialState

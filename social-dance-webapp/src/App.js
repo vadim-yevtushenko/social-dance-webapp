@@ -4,13 +4,18 @@ import {
     ProfilePage, RegistrationPage, SchoolPage, SchoolsPage
 } from "./pages";
 import {BrowserRouter,Route, Routes} from "react-router-dom";
-import QuickViewPage from "./components/page/QuickViewPage";
-import OverViewComponent from "./components/page/OverViewComponent";
+import {Toaster} from "react-hot-toast";
+import React from "react";
+import Spinner from "./components/spinner/Spinner";
+import {useSelector} from "react-redux";
+import cors from "cors";
 
 const App = () => {
+    const { loading } = useSelector(state => state.request)
 
-  return (
+    return (
       <BrowserRouter>
+          {loading && <Spinner/>}
           <main>
             <Routes>
               <Route path="/" element={<EventsPage/>}/>
@@ -29,6 +34,7 @@ const App = () => {
               <Route path="*" element={<Page404/>}/>
             </Routes>
           </main>
+          <Toaster/>
       </BrowserRouter>
   )
 }

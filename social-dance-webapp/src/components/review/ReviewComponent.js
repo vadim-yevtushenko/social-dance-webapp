@@ -1,66 +1,41 @@
 import { StarIcon } from '@heroicons/react/20/solid'
-import {classNamesJoin} from "../../util/classNameUtils";
-import {useParams} from "react-router-dom";
-import {useEffect, useState} from "react";
-import {getReviews} from "../../api/ReviewApi";
-import {parseFullDateTimeString} from "../../util/dateTimeUtils";
-import {reviewMapper} from "../../util/mapper";
-import {useSelector} from "react-redux";
-import {POST} from "../../api/Endpoints";
-import {useHttp} from "../../hooks/http.hook";
+import { classNamesJoin } from "../../util/classNameUtils";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { fetchReviews, saveReview } from "../../api/ReviewApi";
+import { parseFullDateTimeString } from "../../util/dateTimeUtils";
+import { reviewMapper } from "../../util/mapper";
+import { useDispatch, useSelector } from "react-redux";
 import PaginationComponent from "../pagination/PaginationComponent";
 import React from "react";
-import {useValues} from "../../hooks/useValues";
+import { useValues } from "../../hooks/useValues";
 
-export default function ReviewComponent({rerender}) {
-    const [loading, setLoading] = useState(false);
+export default function ReviewComponent({ rerender }) {
+    const dispatch = useDispatch();
     const {isAuthenticated, dancer} = useSelector(state => state.auth)
+    const {results, total} = useSelector(state => state.feedback.reviews)
     const params = useParams();
     const [schoolId, setSchoolId] = useState(params.id)
-    const[reviews, setReviews] = useState()
     const[review, setReview] = useState('')
     const[incognito, setIncognito] = useState()
     const[showWriteReview, setShowWriteReview] = useState(false)
-    const {request} = useHttp();
     const[page, setPage] = useState(1)
     const[size, setSize] = useState(5)
-    const [total, setTotal] = useState();
     const {dancerPageSizeOptions} = useValues()
 
     useEffect(() => {
-        setLoading(true)
-        getReviews(schoolId)
-            .then(res => {
-                console.log("res", res.data)
-                setReviews(res.data.results)
-                setTotal(res.data.total)
-                setLoading(false)
-            })
-            .catch(error => {
-                console.log("error", error)
-                setLoading(false);
-            })
-    }, [showWriteReview, rerender])
+        dispatch(fetchReviews(schoolId, page, size))
+    }, [showWriteReview, rerender, page, size])
 
     const createReview = () => {
         if (showWriteReview && review.trim() !== ''){
-            setLoading(true)
             const newReview = reviewMapper(null, schoolId, dancer.id, review, incognito)
-            console.log("newReview", newReview)
-            const save = () => request(POST.saveReview(), "POST", JSON.stringify(newReview))
-            save()
-                .then(res => {
-                    console.log(res)
-                    setLoading(false);
-            })
+            dispatch(saveReview(newReview))
                 .then(() => {
                     setReview('')
                     setShowWriteReview(false)
                 })
-                .catch(error => {
-                    console.log("error", error)
-                    setLoading(false);
-                })
+
         }else {
             setShowWriteReview(true)
         }
@@ -120,7 +95,7 @@ export default function ReviewComponent({rerender}) {
 
             <div className="flow-root">
                 <div className="my-12 pt-3 border-t divide-y divide-gray-200">
-                    {reviews?.map((review) => (
+                    {results?.map((review) => (
                         <div
                             key={review.id}
                             className="py-2"

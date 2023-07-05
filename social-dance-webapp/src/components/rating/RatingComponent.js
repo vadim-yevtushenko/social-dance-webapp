@@ -2,72 +2,38 @@ import {StarIcon} from "@heroicons/react/20/solid";
 import {classNamesJoin} from "../../util/classNameUtils";
 import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
-import {getGeneralRating} from "../../api/RatingApi";
+import {fetchGeneralRating, fetchRating, saveRating} from "../../api/RatingApi";
 import {ratingMapper} from "../../util/mapper";
-import {useSelector} from "react-redux";
-import {useHttp} from "../../hooks/http.hook";
-import {GET, POST} from "../../api/Endpoints";
+import {useDispatch, useSelector} from "react-redux";
 import {useValues} from "../../hooks/useValues";
 
-const RatingComponent = ({rerender, setRerender}) => {
-    const [loading, setLoading] = useState(false);
+const RatingComponent = ({ rerender, setRerender }) => {
+    const dispatch = useDispatch();
     const {isAuthenticated, dancer} = useSelector(state => state.auth)
     const params = useParams();
     const [schoolId, setSchoolId] = useState(params.id)
-    const[generalRating, setGeneralRating] = useState({counts: []})
-    const[ratingId, setRatingId] = useState()
-    const[rating, setRating] = useState(0)
-    const[showRate, setShowRate] = useState(false)
-    const { request } = useHttp();
+    const { generalRating } = useSelector(state => state.feedback)
+    const { id, rating } = useSelector(state => state.feedback.rating)
+    const [changedRating, setChangedRating] = useState(0)
+    const [showRate, setShowRate] = useState(false)
     const { ratingButtons } = useValues()
 
-    console.log("rating", generalRating)
-
     useEffect(() => {
-        setLoading(true)
-        getGeneralRating(params.id)
-            .then(res => {
-                setGeneralRating(res.data)
-                setLoading(false)
-            })
-            .catch(error => {
-                console.log("error", error)
-                setLoading(false);
-            })
+        dispatch(fetchGeneralRating(params.id))
     }, [showRate])
 
-    const saveRating = () => {
-        if (showRate && rating > 0){
-            setLoading(true)
-            const newRating = ratingMapper(ratingId, schoolId, dancer.id, rating)
-            console.log("newRating", newRating)
-            const save = () => request(POST.saveRating(), "POST", JSON.stringify(newRating))
-            save()
-                .then(res => {
-                    console.log("rating", res)
-                    setRating(res.rating)
+    const save = () => {
+        if (showRate && changedRating > 0){
+            const newRating = ratingMapper(id, schoolId, dancer.id, changedRating)
+            dispatch(saveRating(newRating))
+                .then(() => {
                     setRerender(!rerender)
-                    setLoading(false);
-                })
-                .then(() => setShowRate(false))
-                .catch(error => {
-                    console.log("error", error)
-                    setLoading(false);
+                    setShowRate(false)
                 })
         }else {
-            setLoading(true)
-            request(GET.getRating(schoolId, dancer.id))
-                .then(res => {
-                    setRating(res.rating)
-                    setRatingId(res.id)
-                    setLoading(false)
-                })
+            dispatch(fetchRating(schoolId, dancer.id))
                 .then(() => {
                     setShowRate(true)
-                })
-                .catch(error => {
-                    console.log("error", error)
-                    setLoading(false);
                 })
 
         }
@@ -76,7 +42,6 @@ const RatingComponent = ({rerender, setRerender}) => {
     return (
     <>
         <h2 className="text-xl font-bold tracking-tight text-gray-900">School Rating</h2>
-
         <div className="mt-3 flex items-center">
             <div>
                 <div className="flex items-center">
@@ -121,7 +86,7 @@ const RatingComponent = ({rerender, setRerender}) => {
                                     {count > 0 ? (
                                         <div
                                             className="absolute inset-y-0 rounded-full border border-yellow-400 bg-yellow-400"
-                                            style={{ width: `calc(${count} / ${generalRating.totalCount} * 100%)` }}
+                                            style={{ width: `calc(${count} / ${generalRating?.totalCount} * 100%)` }}
                                         />
                                     ) : null}
                                 </div>
@@ -129,7 +94,7 @@ const RatingComponent = ({rerender, setRerender}) => {
                         </dt>
 
                         <dd className="ml-3 w-10 text-right text-sm tabular-nums text-gray-900">
-                            {generalRating.totalCount ? Math.round((count / generalRating.totalCount) * 100) : 0}%
+                            {generalRating?.totalCount ? Math.round((count / generalRating.totalCount) * 100) : 0}%
                         </dd>
                     </div>
                 ))}
@@ -143,14 +108,14 @@ const RatingComponent = ({rerender, setRerender}) => {
                                 "text-white bg-indigo-500 hover:bg-indigo-600" : "text-gray-900 bg-white hover:bg-gray-50",
                             "flex mt-6 inline-flex w-full items-center justify-center rounded-md border border-gray-300 px-8 py-2 text-sm font-medium sm:w-auto lg:w-full"
                         )}
-                        onClick={() => saveRating()}
+                        onClick={() => save()}
                     >
                         {showRate ? "Save rating" : "Rate the school"}
                     </button>
                     {showRate && (
                         <>
                             <p className="mt-1 text-sm text-gray-600">
-                                {ratingId !== null ? "You have already rated this school, but you can change your rating."
+                                {id !== null ? "You have already rated this school, but you can change your rating."
                                     : "You have not rated this school yet. Please rate if you have reason."}
                             </p>
                             <div className="flex mt-2 justify-center">
@@ -166,7 +131,7 @@ const RatingComponent = ({rerender, setRerender}) => {
                                                     defaultChecked={button.id === String(rating)}
                                                     className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
                                                     value={button.id}
-                                                    onClick={event => setRating(event.target.value)}
+                                                    onClick={event => setChangedRating(event.target.value)}
                                                 />
                                                 <label htmlFor={button.id} className="ml-2 block text-sm font-medium leading-6 text-gray-900">
                                                     {button.title}

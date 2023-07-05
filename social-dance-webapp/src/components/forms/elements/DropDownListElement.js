@@ -1,6 +1,11 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 
 const DropDownListElement = ({ disabled=false, startOption, setOption, options , font}) => {
+    // const [value, setValue] = useState(startOption)
+    //
+    // useEffect(() => {
+    //     setValue(setOption)
+    // }, [startOption])
 
   return (
     <div className="inline-block gap-x-2">

@@ -1,13 +1,11 @@
-import {useState} from "react";
-import {useNavigate} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
-import {useHttp} from "../../../hooks/http.hook";
-import {useEffect} from "react";
-import {useValues} from "../../../hooks/useValues";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useValues } from "../../../hooks/useValues";
 import SchoolEventForm from "./SchoolEventForm";
-import {getOrganizedEvent} from "../../../redux/actions/eventActions";
-import {GET} from "../../../api/Endpoints";
-import Spinner from "../../spinner/Spinner";
+import { getOrganizedEvent } from "../../../redux/actions/eventActions";
+import {deleteEvent, fetchOrganizedEvent} from "../../../api/EventApi";
+import {fetchDancer} from "../../../api/DancerApi";
+import {classNamesJoin} from "../../../util/classNameUtils";
 
 const SUBTITLE = {
     EXIST_EVENTS: "All your active events.",
@@ -20,46 +18,39 @@ const SUBTITLE = {
 
 const MyEventsProfileComponent = () => {
 
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
     const dispatch = useDispatch();
-    const {isAuthenticated, dancer} = useSelector(state => state.auth)
-    const {organizedEvent} = useSelector(state => state.myEvents)
+    const { dancer } = useSelector(state => state.auth)
+    const { organizedEvent } = useSelector(state => state.myEvents)
     const { TYPE_OPTIONS } = useValues()
-    const {request} = useHttp();
     const [openEditForm, setOpenEditForm] = useState(false);
 
-    useEffect(() => {
-        if (!isAuthenticated){
-            navigate("/events")
-        }
-
-    }, [isAuthenticated])
-
     const openEmptyEditForm = () => {
+        setOpenEditForm(false)
         dispatch(getOrganizedEvent({}))
         setOpenEditForm(true)
     }
 
     const setEventForUpdate = (id) => {
-        setLoading(true);
-        const getEvent = () => request(GET.getEvent(id))
-        getEvent()
-            .then(res => {
-                console.log("res", res)
-                dispatch(getOrganizedEvent(res))
-                setLoading(false);
+        dispatch(fetchOrganizedEvent(id))
+            .then(() => {
                 setOpenEditForm(true)
             })
-            .catch(error => {
-                console.log("error", error)
-                setLoading(false);
+
+    }
+
+    const deleteCurrentEvent = () => {
+        dispatch(deleteEvent(organizedEvent.id))
+            .then(() => {
+                dispatch(getOrganizedEvent({}))
+                setOpenEditForm(false)
+            })
+            .then(() => {
+                dispatch(fetchDancer(dancer.id))
             })
     }
 
     return (
         <div className="divide-y divide-white/5">
-            {loading && <Spinner/>}
             <div className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
                 <div>
                     <h2 className="text-base font-semibold leading-7 text-black">Your created events</h2>
@@ -80,7 +71,7 @@ const MyEventsProfileComponent = () => {
                                     className="hover:text-indigo-600 cursor-pointer"
                                     onClick={() => setEventForUpdate(item.id)}
                                 >
-                                    {item.name}
+                                    <p className={classNamesJoin(item.id === organizedEvent.id && "underline underline-offset-2 text-orange-500")}>{item.name}</p>
                                 </li>
                             ))}
                         </ul>
@@ -110,9 +101,8 @@ const MyEventsProfileComponent = () => {
                         </div>
                         <SchoolEventForm
                             typeOption={TYPE_OPTIONS.EVENT}
-                            optionObject={organizedEvent}
                         />
-                        {!!organizedEvent && (
+                        {!organizedEvent.id || (
                             <>
                                 <div>
                                     <h2 className="text-base font-semibold leading-7 text-black">Delete event</h2>
@@ -125,6 +115,7 @@ const MyEventsProfileComponent = () => {
                                     <button
                                         type="button"
                                         className="rounded-md bg-red-500 mt-8 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-400"
+                                        onClick={() => deleteCurrentEvent()}
                                     >
                                         Delete event
                                     </button>
