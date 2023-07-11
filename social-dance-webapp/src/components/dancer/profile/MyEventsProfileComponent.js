@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { useValues } from "../../../hooks/useValues";
 import SchoolEventForm from "./SchoolEventForm";
 import { getOrganizedEvent } from "../../../redux/actions/eventActions";
-import {deleteEvent, fetchOrganizedEvent} from "../../../api/EventApi";
-import {fetchDancer} from "../../../api/DancerApi";
-import {classNamesJoin} from "../../../util/classNameUtils";
+import { deleteEvent, fetchOrganizedEvent } from "../../../api/EventApi";
+import { fetchDancer } from "../../../api/DancerApi";
+import { classNamesJoin } from "../../../util/classNameUtils";
 
 const SUBTITLE = {
     EXIST_EVENTS: "All your active events.",
@@ -25,7 +25,6 @@ const MyEventsProfileComponent = () => {
     const [openEditForm, setOpenEditForm] = useState(false);
 
     const openEmptyEditForm = () => {
-        setOpenEditForm(false)
         dispatch(getOrganizedEvent({}))
         setOpenEditForm(true)
     }
@@ -47,6 +46,10 @@ const MyEventsProfileComponent = () => {
             .then(() => {
                 dispatch(fetchDancer(dancer.id))
             })
+    }
+
+    const highlightActiveEvent = (id) => {
+        return id === organizedEvent.id && openEditForm
     }
 
     return (
@@ -71,7 +74,7 @@ const MyEventsProfileComponent = () => {
                                     className="hover:text-indigo-600 cursor-pointer"
                                     onClick={() => setEventForUpdate(item.id)}
                                 >
-                                    <p className={classNamesJoin(item.id === organizedEvent.id && "underline underline-offset-2 text-orange-500")}>{item.name}</p>
+                                    <p className={classNamesJoin(highlightActiveEvent(item.id)  && "underline underline-offset-2 text-orange-500")}>{item.name}</p>
                                 </li>
                             ))}
                         </ul>

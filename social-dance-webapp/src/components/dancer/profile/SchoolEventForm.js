@@ -10,12 +10,13 @@ import { useForm } from "react-hook-form";
 import { eventMapper, schoolMapper } from "../../../util/mapper";
 import { GET } from "../../../api/Endpoints";
 import { joinDateTimeString } from "../../../util/dateTimeUtils";
-import {deleteSchoolImage, fetchAdministratedSchool, saveSchool, uploadSchoolImage} from "../../../api/SchoolApi";
+import { deleteSchoolImage, fetchAdministratedSchool, saveSchool, uploadSchoolImage } from "../../../api/SchoolApi";
 import { useUpload } from "../../../hooks/useUpload";
 import {deleteEventImage, fetchOrganizedEvent, saveEvent, uploadEventImage} from "../../../api/EventApi";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import React from "react";
-import {fetchDancer} from "../../../api/DancerApi";
+import { fetchDancer } from "../../../api/DancerApi";
+import MapComponent from "../../events-schools/MapComponent";
 
 const SchoolEventForm = ({ typeOption }) => {
 
@@ -26,8 +27,10 @@ const SchoolEventForm = ({ typeOption }) => {
     const { administratedSchool } = useSelector(state => state.mySchools)
     const { organizedEvent } = useSelector(state => state.myEvents)
     const [optionObject, setOptionObject] = useState(typeOption === TYPE_OPTIONS.EVENT ? organizedEvent : administratedSchool)
-    const [city, setCity] = useState(optionObject.contactInfo?.city)
-    const [country, setCountry] = useState(optionObject.contactInfo?.country)
+    const [city, setCity] = useState(optionObject?.contactInfo?.city)
+    const [country, setCountry] = useState(optionObject?.contactInfo?.country)
+    const [lat, setLat] = useState(optionObject?.contactInfo?.latitude)
+    const [lng, setLng] = useState(optionObject?.contactInfo?.latitude)
     const [dances, setDances] = useState(optionObject.dances);
     const [sMonth, setSMonth] = useState("");
     const [fMonth, setFMonth] = useState("");
@@ -35,6 +38,7 @@ const SchoolEventForm = ({ typeOption }) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const [image, setImage] = useState()
     const [imageUrl, setImageUrl] = useState(optionObject.image)
+    const [enableSetLocation, setEnableSetLocation] = useState(optionObject?.contactInfo?.latitude && optionObject?.contactInfo?.latitude)
     const { checkSize } = useUpload()
 
     useEffect(() => {
@@ -59,6 +63,8 @@ const SchoolEventForm = ({ typeOption }) => {
         setDances(optionObject.dances)
         setCountry(optionObject.contactInfo?.country)
         setCity(optionObject.contactInfo?.city)
+        setLat(optionObject?.contactInfo?.latitude)
+        setLng(optionObject?.contactInfo?.longitude)
         setImageUrl(optionObject.image)
         if (typeOption === TYPE_OPTIONS.EVENT){
             const sDate = optionObject?.dateEvent?.split("T")[0]
@@ -81,9 +87,12 @@ const SchoolEventForm = ({ typeOption }) => {
     }, [optionObject])
 
     const onSubmit = (data) => {
-        const contactInfo = { email: data.email, phoneNumber: data.phoneNumber, country, city }
+        const latitude = enableSetLocation ? lat : null
+        const longitude = enableSetLocation ? lng : null
+        const contactInfo = { email: data.email, phoneNumber: data.phoneNumber, country, city, address: data.address, latitude, longitude }
         if (typeOption === TYPE_OPTIONS.SCHOOL){
             const newSchool = schoolMapper(optionObject?.id, data.name, data.description, dances, contactInfo, imageUrl, [dancer])
+            console.log(" newSchool", newSchool)
             dispatch(saveSchool(newSchool))
         }else {
             const startDate = joinDateTimeString(data.sYear, sMonth, data.sDay, data.sHour, data.sMinute, months)
@@ -108,7 +117,6 @@ const SchoolEventForm = ({ typeOption }) => {
                             dispatch(fetchAdministratedSchool(optionObject.id))
                             setImage(null)
                         })
-
                 }else {
                     dispatch(uploadEventImage(optionObject.id, formData))
                         .then(() => {
@@ -141,7 +149,6 @@ const SchoolEventForm = ({ typeOption }) => {
                     })
 
             }
-
         }else {
             setImageUrl(null)
             setImage(null)
@@ -404,16 +411,16 @@ const SchoolEventForm = ({ typeOption }) => {
                     </div>
                 </div>
 
-                <div className="col-span-full">
+                <div className="col-span-full max-h-md">
                     <label htmlFor="location" className="block text-sm font-medium leading-6 text-black">
                         Location
                     </label>
 
                     <div className="mt-2 flex justify-between">
                         <div className="flex">
-                                        <span className="inline-flex items-center px-3 text-gray-500 sm:text-sm">
-                                          country:
-                                        </span>
+                            <span className="inline-flex items-center px-3 text-gray-500 sm:text-sm">
+                              country:
+                            </span>
                             <ComboboxElement
                                 value={country}
                                 setValue={setCountry}
@@ -422,17 +429,51 @@ const SchoolEventForm = ({ typeOption }) => {
                         </div>
 
                         <div className="flex">
-                                        <span className="inline-flex items-center px-3 text-gray-500 sm:text-sm">
-                                          city:
-                                        </span>
+                            <span className="inline-flex items-center px-3 text-gray-500 sm:text-sm">
+                              city:
+                            </span>
                             <ComboboxElement
                                 value={city}
                                 setValue={setCity}
                                 request={getCities}
-                                // isDisable={country === null || country === ""}
+                                setLat={setLat}
+                                setLng={setLng}
                             />
                         </div>
                     </div>
+                    <div className="flex mt-5">
+                        <span className="inline-flex items-center px-3 text-gray-500 sm:text-sm">
+                            address:
+                        </span>
+                        <input
+                            type="text"
+                            name="address"
+                            id="address"
+                            autoComplete="address"
+                            {...register('address', { value: optionObject?.contactInfo?.address, required: true, maxLength: 160 })}
+                            className="block w-full rounded-md border-1 bg-white py-1.5 text-black shadow-md ring-1 ring-inset
+                                        ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                        />
+                        {errors?.address?.type === "required" && <p className="text-xs leading-5 text-red-700">Address is required</p>}
+                    </div>
+                    {lat && lng && (
+                        <div className="mt-5">
+                            <a
+                                className="flex text-sm font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer pb-1"
+                                onClick={() => setEnableSetLocation(!enableSetLocation)}
+                            >
+                                {!enableSetLocation ? "Set geolocation" : "Disable geolocation"}
+                            </a>
+                            {enableSetLocation && (
+                                <MapComponent
+                                    position={[lat, lng]}
+                                    isSetLocation={true}
+                                    setLat={setLat}
+                                    setLng={setLng}
+                                />
+                            )}
+                        </div>
+                    )}
                 </div>
 
                 <div className="col-span-full">

@@ -13,10 +13,8 @@ const DateTimeForm = ({date, setDateTime, time = false}) => {
     const [hour, setHour] = useState("");
     const [minute, setMinute] = useState("");
     const { register, formState: { errors } } = useForm()
-    console.log("DateTimeForm", )
 
     useEffect(() => {
-console.log("DateTimeForm", )
         const numMonth = date.split("-")[1]
         setMonth(months.find(mon => mon.id === numMonth)?.name);
         setDay(date.split("-")[2])

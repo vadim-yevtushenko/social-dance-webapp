@@ -7,6 +7,7 @@ export const useHttp = () => {
     const request = useCallback(async (url, method = 'GET', body = null, headers = {'Content-Type': 'application/json'}) => {
 
         try {
+
             const response = await fetch(url, {method, body, headers});
 
             if (!response.ok) {
@@ -15,8 +16,8 @@ export const useHttp = () => {
 
             return await response.json();
         } catch(error) {
-            console.log("useHttp er", error)
-            errorHandling(error)
+            console.log("error", error)
+            errorHandling(error.message)
         }
     }, []);
 

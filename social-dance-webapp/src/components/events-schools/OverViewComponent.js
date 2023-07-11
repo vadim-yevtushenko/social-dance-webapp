@@ -9,9 +9,9 @@ import ReviewComponent from "../review/ReviewComponent";
 import { parseFullDateTimeString } from "../../util/dateTimeUtils";
 import { getFullAddress } from "../../util/addressUtils";
 import RatingComponent from "../rating/RatingComponent";
-import MapsComponent from "./MapsComponent";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import MapComponent from "./MapComponent";
 
 const OverViewComponent = ({ typeOption }) => {
     const dispatch = useDispatch();
@@ -30,10 +30,6 @@ const OverViewComponent = ({ typeOption }) => {
         }
     }, [])
 
-    const showMap = () => {
-        setOpenMap(false)
-        setOpenMap(true)
-    }
     return (
         <div className="grow bg-white">
             <div className="pb-16 pt-6 sm:pb-24">
@@ -73,21 +69,31 @@ const OverViewComponent = ({ typeOption }) => {
                         <div className="mt-8 lg:col-span-7 lg:col-start-1 lg:row-span-3 lg:row-start-1 lg:mt-0 ">
                             <h2 className="sr-only">Images</h2>
 
-                            <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-2 lg:gap-8 rounded-lg border border-1 border-gray-900 shadow-md ">
-                                {viewObject?.image ? (
-                                    <img
-                                        key={viewObject.id}
-                                        src={viewObject.image}
-                                        alt={viewObject.name}
-                                        className='lg:col-span-2 lg:row-span-2 justify-self-center'
+                            {!openMap ? (
+                                <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-2 lg:gap-8 rounded-lg border border-1 border-gray-900 shadow-md ">
+                                    {viewObject?.image ? (
+                                        <img
+                                            key={viewObject.id}
+                                            src={viewObject.image}
+                                            alt={viewObject.name}
+                                            className='lg:col-span-2 lg:row-span-2 justify-self-center'
 
+                                        />
+                                    ) : (
+                                        <div className="grid grid-cols-1 lg:col-span-2 lg:row-span-2">
+                                            <PhotoIcon className="h-80 w-80 text-gray-300 justify-self-center" />
+                                        </div>
+                                    )}
+                                </div>
+                            ) : (
+                                <div className="mt-2 rounded-lg border border-1 border-gray-900 shadow-md">
+                                    <MapComponent
+                                        position={[viewObject?.contactInfo?.latitude, viewObject?.contactInfo?.longitude]}
+                                        name={viewObject?.name}
                                     />
-                                ) : (
-                                    <div className="grid grid-cols-1 lg:col-span-2 lg:row-span-2">
-                                        <PhotoIcon className="h-80 w-80 text-gray-300 justify-self-center" />
-                                    </div>
-                                )}
-                            </div>
+                                </div>
+                            )}
+
                         </div>
 
                         <div className="mt-8 lg:col-span-5">
@@ -106,12 +112,14 @@ const OverViewComponent = ({ typeOption }) => {
                             <div className="mt-8">
                                 <div className="flex items-center justify-between">
                                     <h2 className="text-sm font-medium text-gray-900">Location:</h2>
-                                    <a
-                                        className="text-sm font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer"
-                                        onClick={() => setOpenMap(true)}
-                                    >
-                                        See on the map
-                                    </a>
+                                    {viewObject?.contactInfo?.latitude && viewObject?.contactInfo?.longitude && (
+                                        <a
+                                            className="text-sm font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer"
+                                            onClick={() => setOpenMap(!openMap)}
+                                        >
+                                            {!openMap ? "See on the map": "Close map"}
+                                        </a>
+                                    )}
                                 </div>
                                 <div className="flex items-center justify-between">
                                     <h2 className="text-md font-medium text-gray-900">{getFullAddress(viewObject?.contactInfo)}</h2>
@@ -126,16 +134,17 @@ const OverViewComponent = ({ typeOption }) => {
                             {/*    Join*/}
                             {/*</button>*/}
 
-                            {/* Product details */}
-                            <div className="mt-10">
-                                <h2 className="text-sm font-medium text-gray-900">Description:</h2>
+                            {viewObject?.description && (
+                                <div className="mt-10">
+                                    <h2 className="text-sm font-medium text-gray-900">Description:</h2>
 
-                                <div
-                                    className="prose prose-sm text-gray-500"
-                                    // dangerouslySetInnerHTML={{ __html: viewObject?.description }}
-                                />
-                                {viewObject?.description}
-                            </div>
+                                    <div
+                                        className="prose prose-sm text-gray-500"
+                                        // dangerouslySetInnerHTML={{ __html: viewObject?.description }}
+                                    />
+                                    {viewObject?.description}
+                                </div>
+                            )}
 
                             <div className="mt-8 border-t border-gray-200 pt-8">
                                 <h2 className="text-sm font-medium text-gray-900">Dances</h2>
@@ -223,10 +232,6 @@ const OverViewComponent = ({ typeOption }) => {
                                 <div className="mt-6 lg:col-span-7 lg:col-start-6 lg:mt-0">
                                     <ReviewComponent rerender={rerenderReview}/>
                                 </div>
-                                <MapsComponent
-                                    openMap={openMap}
-                                    setOpenMap={setOpenMap}
-                                />
                             </div>
 
                         )}

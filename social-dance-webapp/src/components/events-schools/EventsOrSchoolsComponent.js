@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import Spinner from "../spinner/Spinner";
 import {getEvents} from "../../api/EventApi";
 import CardList from "./CardList";
 import PaginationComponent from "../pagination/PaginationComponent";
@@ -10,7 +9,6 @@ import {GET} from "../../api/Endpoints";
 import {useHttp} from "../../hooks/http.hook";
 import {getSchools} from "../../api/SchoolApi";
 import {useDispatch, useSelector} from "react-redux";
-import {loadingRequest} from "../../redux/actions/requestActions";
 
 const EventsOrSchoolsComponent = ({ typeOption }) => {
 
@@ -41,7 +39,7 @@ const EventsOrSchoolsComponent = ({ typeOption }) => {
             <div className="xl:flex sm:items-center">
                 <div className="sm:flex-none">
                     <h1 className="text-2xl font-semibold leading-6 text-gray-900 ml-2">
-                        {typeOption === TYPE_OPTIONS.EVENT ? "Events" : "School"}
+                        {typeOption === TYPE_OPTIONS.EVENT ? "Events" : "Schools"}
                     </h1>
                 </div>
                 <div className="flex flex-1 xl:justify-center my-3">

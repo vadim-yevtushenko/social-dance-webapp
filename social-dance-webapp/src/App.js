@@ -8,7 +8,6 @@ import {Toaster} from "react-hot-toast";
 import React from "react";
 import Spinner from "./components/spinner/Spinner";
 import {useSelector} from "react-redux";
-import cors from "cors";
 
 const App = () => {
     const { loading } = useSelector(state => state.request)

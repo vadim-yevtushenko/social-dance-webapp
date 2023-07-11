@@ -6,7 +6,7 @@ export const useValues = () => {
 
     const eventOrSchoolPageSizeOptions = [6, 12, 24]
 
-    const levelOptions = ["JUNIOR", "MIDDLE", "ADVANCED", "TEACHER"]
+    const levelOptions = ["", "JUNIOR", "MIDDLE", "ADVANCED", "TEACHER"]
 
     const ratingButtons = [
         { id: '1', title: <div className="flex items-center">

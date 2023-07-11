@@ -1,16 +1,15 @@
-import {classNamesJoin} from "../../../util/classNameUtils";
-import {Cog6ToothIcon, FolderIcon, GlobeAltIcon, ServerIcon, ChartBarSquareIcon} from "@heroicons/react/24/outline";
-import {useState} from "react";
+import { classNamesJoin } from "../../../util/classNameUtils";
+import { Cog6ToothIcon, FolderIcon, GlobeAltIcon, ServerIcon } from "@heroicons/react/24/outline";
+import { useState } from "react";
 
 export const chapterData = [
     { id: 'PERSONAL_INFO', name: 'Personal Information', href: '#', icon: FolderIcon, current: true },
-    // { id: 'CREATE_SCHOOL_EVENT', name: 'Create school or event', href: '#', icon: ChartBarSquareIcon, current: false },
     { id: 'MY_SCHOOLS', name: 'My schools', href: '#', icon: ServerIcon, current: false },
     { id: 'MY_EVENTS', name: 'My events', href: '#', icon: GlobeAltIcon, current: false },
     { id: 'SETTINGS', name: 'Settings', href: '#', icon: Cog6ToothIcon, current: false },
 ]
 
-const Sidebar = ({onChange}) => {
+const Sidebar = ({ onChange }) => {
     const [chapters, serChapters] = useState(chapterData)
 
     const handleChangeChapter = (currentChapter) => {

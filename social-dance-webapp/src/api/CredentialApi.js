@@ -4,15 +4,6 @@ import {dancerLogin, updateDancer, updatePassword} from "../redux/actions/authAc
 import {loadingRequest} from "../redux/actions/requestActions";
 import {errorHandling} from "./notificationHandling";
 
-// export const login = (email, password) => {
-//     return requestWrapper({
-//         axiosConfig: {
-//             method: 'POST',
-//             url: POST.login(email, password)
-//         }
-//     })
-// }
-
 export const login = (email, password) => (dispatch) => {
     dispatch(loadingRequest(true))
     return requestWrapper({

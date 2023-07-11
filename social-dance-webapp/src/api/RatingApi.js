@@ -6,7 +6,6 @@ import {getGeneralRating, getRating} from "../redux/actions/feedbackActions";
 
 export const fetchGeneralRating = (schoolId) => (dispatch) => {
     dispatch(loadingRequest(true))
-    console.log("fetchGeneralRating", schoolId)
     return RequestWrapper({
         axiosConfig: {
             method: 'GET',

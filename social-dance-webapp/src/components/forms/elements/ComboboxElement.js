@@ -2,19 +2,13 @@ import {useEffect, useState} from "react";
 import {CheckIcon, ChevronUpDownIcon} from "@heroicons/react/20/solid";
 import {classNamesJoin} from "../../../util/classNameUtils";
 import { Combobox } from '@headlessui/react'
-import Spinner from "../../spinner/Spinner";
-import {set} from "react-hook-form";
 
-export default function ComboboxElement({ label, value, setValue, request, isDisable = false }) {
+export default function ComboboxElement({ label, value, setValue, request, setLat, setLng }) {
 
-    const [loading, setLoading] = useState(false);
     const [filteredValues, setFilteredValues] = useState([])
     const [currentValue, setCurrentValue] = useState(value)
-    const [disable, setDisable] = useState(isDisable)
+    // const [disable, setDisable] = useState(false)
 
-    useEffect(() => {
-        setDisable(isDisable)
-    }, [isDisable])
 
     useEffect(() => {
         setCurrentValue(value)
@@ -22,23 +16,31 @@ export default function ComboboxElement({ label, value, setValue, request, isDis
 
     const onChange = (changedValue) => {
         if (changedValue.length > 0) {
-            setLoading(true)
             request(changedValue)
                 .then(res => {
-                    setFilteredValues(res)
-                    setLoading(false)
+                    if (res !== undefined){
+                        setFilteredValues(res)
+                    }
                 })
                 .catch(error => {
                     console.log("error", error)
-                    setLoading(false);
                 })
         }else {
             setValue(changedValue)
         }
     }
 
+    const setSelectedValue = (selectedValue) => {
+        setValue(selectedValue)
+        if(setLat && setLng){
+            const cityObj = filteredValues.filter(city => city.name === selectedValue)[0]
+            setLat(cityObj?.lat)
+            setLng(cityObj?.lng)
+        }
+    }
+
     return (
-        <Combobox as="div" value={currentValue} onChange={setValue}>
+        <Combobox as="div" value={currentValue} onChange={setSelectedValue}>
             <Combobox.Label className="block text-sm font-medium leading-6 text-gray-900">{label}</Combobox.Label>
             <div className="relative mt-2">
                 <Combobox.Input
@@ -46,7 +48,7 @@ export default function ComboboxElement({ label, value, setValue, request, isDis
                     ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     onChange={(event) => onChange(event.target.value)}
                     displayValue={() => currentValue}
-                    onFocus={(event) => event.target.disabled=disable}
+                    // onFocus={(event) => event.target.disabled=disable}
                 />
                 <Combobox.Button className="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
                     <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
@@ -55,7 +57,6 @@ export default function ComboboxElement({ label, value, setValue, request, isDis
                 {filteredValues.length > 0 && (
                     <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1
                     text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                        {loading && <Spinner/>}
                         {filteredValues.map((value) => (
                             <Combobox.Option
                                 key={value.id}

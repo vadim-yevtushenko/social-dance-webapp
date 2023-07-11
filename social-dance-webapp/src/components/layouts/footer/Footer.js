@@ -1,3 +1,7 @@
+import DialogComponent from "./DialogComponent";
+import { useState } from "react";
+import React from "react";
+
 const navigation = {
     main: [
         { name: 'About', href: '#' },
@@ -71,26 +75,49 @@ const navigation = {
 }
 
 export default function Footer() {
+    const [openDialog, setOpenDialog] = useState(false)
+
+    function handleClick(name) {
+        switch (name){
+            case 'About': {
+                setOpenDialog(true)
+            }
+        }
+    }
+
     return (
-        <footer className="bg-gray-800 xl:z-51">
+        <footer className="bg-gray-800 xl:z-51 justify-center">
+            <DialogComponent openDialog={openDialog} setOpenDialog={setOpenDialog}>
+                <p className="text-2xl">
+                    Social Dance is a web application. Created for the dance community.
+                    Here you can create school or event for easy search for dancers,
+                    or just looking for school or event in any city.<br/><br/>
+                    If you find a bug or want to leave a wish, what would you like to add to this app,
+                    for example add dance to list dances, write to <a href='#' className='font-bold hover:text-indigo-700'>support</a> in footer, please!
+                </p>
+            </DialogComponent>
             <div className="mx-auto max-w-7xl overflow-hidden px-6 py-20 sm:py-8 lg:px-8">
                 <nav className="-mb-6 columns-2 sm:flex sm:justify-center sm:space-x-12" aria-label="Footer">
                     {navigation.main.map((item) => (
                         <div key={item.name} className="pb-6">
-                            <a href={item.href} className="text-md leading-6 text-gray-100 hover:text-gray-900 sm:mx-4">
+                            <a
+                                href={item.href}
+                                className="text-md leading-6 text-gray-100 hover:text-gray-300 sm:mx-4"
+                                onClick={() => handleClick(item.name)}
+                            >
                                 {item.name}
                             </a>
                         </div>
                     ))}
                 </nav>
-                <div className="mt-10 flex justify-center space-x-10">
-                    {navigation.social.map((item) => (
-                        <a key={item.name} href={item.href} className="text-gray-400 hover:text-gray-500">
-                            <span className="sr-only">{item.name}</span>
-                            <item.icon className="h-8 w-8 sm:mx-4" aria-hidden="true" />
-                        </a>
-                    ))}
-                </div>
+                {/*<div className="mt-10 flex justify-center space-x-10">*/}
+                {/*    {navigation.social.map((item) => (*/}
+                {/*        <a key={item.name} href={item.href} className="text-gray-400 hover:text-gray-500">*/}
+                {/*            <span className="sr-only">{item.name}</span>*/}
+                {/*            <item.icon className="h-8 w-8 sm:mx-4" aria-hidden="true" />*/}
+                {/*        </a>*/}
+                {/*    ))}*/}
+                {/*</div>*/}
                 <p className="mt-10 text-center text-xs leading-5 text-gray-200">
                     &copy; 2023 Social Dance Web App, Inc. All rights reserved.
                 </p>
