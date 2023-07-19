@@ -9,7 +9,7 @@ export const successHandling = (message) => {
         message={message}
     />, {
         position: "top-right",
-        duration: 1000,
+        duration: 2000,
         className: 'my-3 mx-3'
     })
     // toast.success(message, {
@@ -21,11 +21,12 @@ export const successHandling = (message) => {
 
 export const errorHandling = (error) => {
     console.log("error1", error)
-    if (error.response){
+    if (error){
+        const message = error.response?.data?.message ? error.response.data.message : error.message
         toast.custom(<NotificationComponent
             showNotification={true}
             isError={true}
-            message={error.response.data.message}
+            message={message}
         />, {
                     position: "top-right",
                     duration: 3000,

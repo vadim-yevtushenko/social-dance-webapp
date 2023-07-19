@@ -12,7 +12,7 @@ const initialState = () => ({
     },
     mySchools: {
         administratedSchool: {
-            contactInfo:{}
+            contactInfo: {}
         },
     },
     myEvents: {
@@ -21,7 +21,9 @@ const initialState = () => ({
         },
     },
     lists: {
-        results: [],
+        events: [],
+        schools: [],
+        dancers: [],
         total: 0,
         viewObject: {
             contactInfo: {}

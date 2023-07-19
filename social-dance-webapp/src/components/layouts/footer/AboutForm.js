@@ -1,0 +1,17 @@
+import React from "react";
+
+const AboutForm = () => {
+    return (
+        <div>
+            <p className="text-2xl">
+                Social Dance is a web application. Created for the dance community.
+                Here you can create school or event for easy search for dancers,
+                or just looking for school or event in any city.<br/><br/>
+                If you find a bug or want to leave a wish, what would you like to add to this app,
+                for example add dance to list dances, write to <a href='#' className='font-bold hover:text-indigo-700'>support</a> in footer, please!
+            </p>
+        </div>
+    )
+}
+
+export default AboutForm

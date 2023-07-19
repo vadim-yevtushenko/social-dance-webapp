@@ -5,9 +5,10 @@ import { errorHandling, successHandling } from "./notificationHandling";
 import { dancerLogout, updateDancer } from "../redux/actions/authActions";
 import { getOrganizedEvent } from "../redux/actions/eventActions";
 import { getAdministratedSchool } from "../redux/actions/schoolActions";
-import { getList } from "../redux/actions/listsActions";
+import {getDancers} from "../redux/actions/ListsActions";
 
-export const getDancers = (name, lastName, country, city, page, size) => (dispatch) => {
+
+export const fetchDancers = (name, lastName, country, city, page, size) => (dispatch) => {
     dispatch(loadingRequest(true))
     return requestWrapper({
         axiosConfig: {
@@ -15,7 +16,7 @@ export const getDancers = (name, lastName, country, city, page, size) => (dispat
             url: GET.getDancers(name, lastName, country, city, page, size)
         }
     }).then(res => {
-        dispatch(getList(res.data))
+        dispatch(getDancers(res.data))
         dispatch(loadingRequest(false))
     }).catch(error => {
         dispatch(loadingRequest(false))

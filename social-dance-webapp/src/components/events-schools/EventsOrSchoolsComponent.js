@@ -1,32 +1,32 @@
-import React, {useEffect, useState} from "react";
-import {getEvents} from "../../api/EventApi";
+import React, { useEffect, useState } from "react";
+import { fetchEvents } from "../../api/EventApi";
 import CardList from "./CardList";
 import PaginationComponent from "../pagination/PaginationComponent";
-import {useValues} from "../../hooks/useValues";
-import {MagnifyingGlassIcon} from "@heroicons/react/20/solid";
+import { useValues } from "../../hooks/useValues";
+import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import ComboboxElement from "../forms/elements/ComboboxElement";
-import {GET} from "../../api/Endpoints";
-import {useHttp} from "../../hooks/http.hook";
-import {getSchools} from "../../api/SchoolApi";
-import {useDispatch, useSelector} from "react-redux";
+import { GET } from "../../api/Endpoints";
+import { useHttp } from "../../hooks/http.hook";
+import { fetchSchools } from "../../api/SchoolApi";
+import { useDispatch, useSelector } from "react-redux";
 
 const EventsOrSchoolsComponent = ({ typeOption }) => {
 
+    const { eventOrSchoolPageSizeOptions, TYPE_OPTIONS } = useValues()
     const dispatch = useDispatch();
     const { total } = useSelector(state => state.lists)
     const [page, setPage] = useState(1);
     const [size, setSize] = useState(6);
-    const {eventOrSchoolPageSizeOptions, TYPE_OPTIONS} = useValues()
     const [name, setName] = useState()
     const [city, setCity] = useState()
     const [country, setCountry] = useState()
-    const {request} = useHttp();
+    const { request } = useHttp();
 
     useEffect(() => {
         if (typeOption === TYPE_OPTIONS.EVENT){
-            dispatch(getEvents(name, country, city, page, size))
+            dispatch(fetchEvents(name, country, city, page, size))
         }else {
-            dispatch(getSchools(name, country, city, page, size))
+            dispatch(fetchSchools(name, country, city, page, size))
         }
     }, [name, country, city, page, size]);
 

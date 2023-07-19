@@ -1,7 +1,6 @@
-import {parseFullDateString} from "../../util/dateTimeUtils";
 import DancerQuickViewComponent from "./DancerQuickViewComponent";
-import { useEffect, useState } from "react";
-import {useSelector} from "react-redux";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 
 // const columns = [
 //     {id: 1, name: "Name"},
@@ -13,7 +12,7 @@ import {useSelector} from "react-redux";
 const DancerTable = () => {
     const [openQuickViewDancer, setOpenQuickViewDancer] = useState(false)
     const [chosenDancer, setChosenDancer] = useState()
-    const { results } = useSelector(state => state.lists)
+    const { dancers } = useSelector(state => state.lists)
 
     const dancesStr = (dances) => {
         return dances.map(d => d.name).join(", ")
@@ -50,7 +49,7 @@ const DancerTable = () => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200 bg-white">
-                            {results.map((dancer) => (
+                            {dancers.map((dancer) => (
                                 <tr
                                     className="cursor-pointer hover:bg-gray-100"
                                     key={dancer.id}

@@ -6,12 +6,15 @@ import { changePassword } from "../../../api/CredentialApi";
 
 const SettingsProfileComponent = () => {
     const {email, password, dancer} = useSelector(state => state.auth)
-    const { register, handleSubmit, formState: { errors }, getValues } = useForm()
+    const { register, handleSubmit, formState: { errors }, getValues, setValue } = useForm()
     const { register: deleteRegister, handleSubmit: deleteHandleSubmit, formState: { errors: deleteErrors }, getValues: deleteGetValues } = useForm()
     const dispatch = useDispatch();
 
     function onChangeSubmit(data) {
         dispatch(changePassword(email, data.newPassword, data.currentPassword))
+        setValue("currentPassword", "")
+        setValue("newPassword", "")
+        setValue("confirmPassword", "")
     }
 
     function onDeleteSubmit() {
@@ -28,7 +31,7 @@ const SettingsProfileComponent = () => {
                         <div>
                             <h2 className="text-lg font-semibold leading-7 text-black">Change password</h2>
                             <p className="mt-1 text-sm leading-6 text-gray-400">
-                                Update your password associated with your account.
+                                Update your password associated with your account. The password must contain uppercase and lowercase letters and numbers.
                             </p>
                         </div>
 
@@ -64,7 +67,7 @@ const SettingsProfileComponent = () => {
                                             autoComplete="newPassword"
                                             className="block w-full rounded-md border-1 bg-white/5 py-1.5 text-black shadow-md
                                             ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                                            {...register('newPassword', { required: true })}
+                                            {...register('newPassword', { required: true, minLength: 8 })}
                                         />
                                         {errors?.newPassword?.type === "required" && <p className="text-xs leading-5 text-red-700">New password is required.</p>}
                                     </div>

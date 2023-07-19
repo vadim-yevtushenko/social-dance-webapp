@@ -12,6 +12,7 @@ import RatingComponent from "../rating/RatingComponent";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import MapComponent from "./MapComponent";
+import DancerQuickViewComponent from "../dancer/DancerQuickViewComponent";
 
 const OverViewComponent = ({ typeOption }) => {
     const dispatch = useDispatch();
@@ -21,6 +22,8 @@ const OverViewComponent = ({ typeOption }) => {
     const { TYPE_OPTIONS } = useValues()
     const [rerenderReview, setRerenderReview] = useState(false)
     const [openMap, setOpenMap] = useState(false)
+    const [openQuickViewDancer, setOpenQuickViewDancer] = useState(false)
+    const [chosenDancer, setChosenDancer] = useState()
 
     useEffect(() => {
         if (typeOption === TYPE_OPTIONS.SCHOOL){
@@ -30,8 +33,18 @@ const OverViewComponent = ({ typeOption }) => {
         }
     }, [])
 
+    const openDancerInfo = (dancer) => {
+        setChosenDancer(dancer)
+        setOpenQuickViewDancer(true)
+    }
+
     return (
         <div className="grow bg-white">
+            <DancerQuickViewComponent
+                openView={openQuickViewDancer}
+                setOpenView={setOpenQuickViewDancer}
+                dancer={chosenDancer}
+            />
             <div className="pb-16 pt-6 sm:pb-24">
                 <nav aria-label="Back" className="flex mx-auto w-sm px-4 sm:px-6 lg:px-8">
                     <a
@@ -167,7 +180,10 @@ const OverViewComponent = ({ typeOption }) => {
                                             <ul role="list">
                                                 {viewObject?.administrators?.map((dancer) => (
                                                     <li key={dancer.id}>
-                                                        <a className="cursor-pointer">
+                                                        <a
+                                                            className="cursor-pointer"
+                                                            onClick={() => openDancerInfo(dancer)}
+                                                        >
                                                             {dancer.name} {dancer.lastName}
                                                         </a>
                                                     </li>
@@ -183,7 +199,10 @@ const OverViewComponent = ({ typeOption }) => {
                                                 <ul role="list">
                                                     {viewObject.teachers?.map((dancer) => (
                                                         <li key={dancer.id}>
-                                                            <a className="cursor-pointer">
+                                                            <a
+                                                                className="cursor-pointer"
+                                                                onClick={() => openDancerInfo(dancer)}
+                                                            >
                                                                 {dancer.name} {dancer.lastName}
                                                             </a>
                                                         </li>
@@ -202,7 +221,10 @@ const OverViewComponent = ({ typeOption }) => {
                                             <ul role="list">
                                                 {viewObject?.organizers?.map((dancer) => (
                                                     <li key={dancer.id}>
-                                                        <a className="cursor-pointer">
+                                                        <a
+                                                            className="cursor-pointer"
+                                                            onClick={() => openDancerInfo(dancer)}
+                                                        >
                                                             {dancer.name} {dancer.lastName}
                                                         </a>
                                                     </li>

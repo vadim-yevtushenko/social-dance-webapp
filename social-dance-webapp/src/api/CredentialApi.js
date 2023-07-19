@@ -2,7 +2,7 @@ import requestWrapper from "./requestWrapper";
 import {POST} from "./Endpoints";
 import {dancerLogin, updateDancer, updatePassword} from "../redux/actions/authActions";
 import {loadingRequest} from "../redux/actions/requestActions";
-import {errorHandling} from "./notificationHandling";
+import {errorHandling, successHandling} from "./notificationHandling";
 
 export const login = (email, password) => (dispatch) => {
     dispatch(loadingRequest(true))
@@ -52,6 +52,23 @@ export const changePassword = (email, newPassword, oldPassword) => (dispatch) =>
     }).then(() => {
         dispatch(updatePassword(newPassword))
         dispatch(loadingRequest(false))
+        successHandling("Password changed successful.")
+    }).catch(error => {
+        dispatch(loadingRequest(false))
+        errorHandling(error)
+    })
+}
+
+export const resetPassword = (email) => (dispatch) => {
+    dispatch(loadingRequest(true))
+    return requestWrapper({
+        axiosConfig: {
+            method: 'POST',
+            url: POST.resetPassword(email)
+        }
+    }).then(() => {
+        dispatch(loadingRequest(false))
+        successHandling("Check your email.\nYou can change password in your profile settings.")
     }).catch(error => {
         dispatch(loadingRequest(false))
         errorHandling(error)

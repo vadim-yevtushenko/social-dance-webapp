@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getDancers } from "../../api/DancerApi";
+import { fetchDancers } from "../../api/DancerApi";
 import DancerTable from "./DancerTable";
 import PaginationComponent from "../pagination/PaginationComponent";
 import { useValues } from "../../hooks/useValues";
@@ -14,10 +14,10 @@ const DancersComponent = () => {
     const [lastName, setLastName] = useState()
     const [page, setPage] = useState(1);
     const [size, setSize] = useState(10);
-    const {dancerPageSizeOptions} = useValues()
+    const { dancerPageSizeOptions } = useValues()
 
     useEffect(() => {
-        dispatch(getDancers(name, lastName, null, null, page, Number(size)))
+        dispatch(fetchDancers(name, lastName, null, null, page, Number(size)))
     }, [name, lastName, page, size]);
 
     return (

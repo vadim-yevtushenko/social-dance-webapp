@@ -17,7 +17,7 @@ export const useHttp = () => {
             return await response.json();
         } catch(error) {
             console.log("error", error)
-            errorHandling(error.message)
+            errorHandling(error)
         }
     }, []);
 

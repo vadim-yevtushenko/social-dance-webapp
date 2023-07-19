@@ -1,24 +1,35 @@
-import {parseFullDateTimeString} from "../../util/dateTimeUtils";
-import {getFullAddress} from "../../util/addressUtils";
-import {PhotoIcon, StarIcon} from "@heroicons/react/20/solid";
-import {classNamesJoin} from "../../util/classNameUtils";
-import {NavLink} from "react-router-dom";
-import {useValues} from "../../hooks/useValues";
-import React from "react";
-import {useSelector} from "react-redux";
+import { parseFullDateTimeString } from "../../util/dateTimeUtils";
+import { getFullAddress } from "../../util/addressUtils";
+import { PhotoIcon, StarIcon } from "@heroicons/react/20/solid";
+import { classNamesJoin } from "../../util/classNameUtils";
+import { NavLink } from "react-router-dom";
+import { useValues } from "../../hooks/useValues";
+import React, {useEffect, useState} from "react";
+import { useSelector } from "react-redux";
 
 export default function CardList({ typeOption }) {
 
     const { TYPE_OPTIONS } = useValues()
-    const { results } = useSelector(state => state.lists)
+    const { events } = useSelector(state => state.lists)
+    const { schools } = useSelector(state => state.lists)
+    const [results, setResults] = useState(typeOption === TYPE_OPTIONS.EVENT ? events : schools)
 
+    useEffect(() => {
+        if (typeOption === TYPE_OPTIONS.EVENT){
+            setResults(events)
+        }else {
+            setResults(schools)
+        }
+    }, [])
+console.log("events", events)
+console.log("schools", schools)
     return (
         <div className="bg-gray-50">
             <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-16 lg:max-w-7xl lg:px-8">
                 <h2 className="sr-only">{typeOption === TYPE_OPTIONS.EVENT ? 'Events' : 'Schools'}</h2>
 
                 <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-3 lg:gap-x-8">
-                    {results.map((obj) => (
+                    {(typeOption === TYPE_OPTIONS.EVENT ? events : schools).map((obj) => (
                         <div
                             key={obj.id}
                             className="relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white"

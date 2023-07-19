@@ -1,15 +1,15 @@
-import {StarIcon} from "@heroicons/react/20/solid";
-import {classNamesJoin} from "../../util/classNameUtils";
-import {useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
-import {fetchGeneralRating, fetchRating, saveRating} from "../../api/RatingApi";
-import {ratingMapper} from "../../util/mapper";
-import {useDispatch, useSelector} from "react-redux";
-import {useValues} from "../../hooks/useValues";
+import { StarIcon } from "@heroicons/react/20/solid";
+import { classNamesJoin } from "../../util/classNameUtils";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { fetchGeneralRating, fetchRating, saveRating } from "../../api/RatingApi";
+import { ratingMapper } from "../../util/mapper";
+import { useDispatch, useSelector } from "react-redux";
+import { useValues } from "../../hooks/useValues";
 
 const RatingComponent = ({ rerender, setRerender }) => {
     const dispatch = useDispatch();
-    const {isAuthenticated, dancer} = useSelector(state => state.auth)
+    const { isAuthenticated, dancer } = useSelector(state => state.auth)
     const params = useParams();
     const [schoolId, setSchoolId] = useState(params.id)
     const { generalRating } = useSelector(state => state.feedback)

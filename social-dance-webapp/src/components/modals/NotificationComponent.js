@@ -38,7 +38,7 @@ const NotificationComponent = ({showNotification, isError, message}) => {
                                     </div>
                                     <div className="ml-3 w-0 flex-1 pt-0.5">
                                         {isError ? <p className="text-sm font-medium text-gray-900">Error!</p>
-                                        : <p className="text-sm font-medium text-gray-900">Successfully done!</p>}
+                                        : <p className="text-sm font-medium text-gray-900">Successfully!</p>}
 
                                         <p className="mt-1 text-sm text-gray-500">{message}</p>
                                     </div>

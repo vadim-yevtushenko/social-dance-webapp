@@ -9,7 +9,7 @@ import { useHttp } from "../../../hooks/http.hook";
 import { useForm } from "react-hook-form";
 import { eventMapper, schoolMapper } from "../../../util/mapper";
 import { GET } from "../../../api/Endpoints";
-import { joinDateTimeString } from "../../../util/dateTimeUtils";
+import {getMonthNumber, joinDateTimeString} from "../../../util/dateTimeUtils";
 import { deleteSchoolImage, fetchAdministratedSchool, saveSchool, uploadSchoolImage } from "../../../api/SchoolApi";
 import { useUpload } from "../../../hooks/useUpload";
 import {deleteEventImage, fetchOrganizedEvent, saveEvent, uploadEventImage} from "../../../api/EventApi";
@@ -35,17 +35,37 @@ const SchoolEventForm = ({ typeOption }) => {
     const [sMonth, setSMonth] = useState("");
     const [fMonth, setFMonth] = useState("");
     const { request } = useHttp();
-    const { register, handleSubmit, formState: { errors }, setValue } = useForm()
+    const { register, handleSubmit, formState: { errors }, getValues, setValue, setError } = useForm()
     const [image, setImage] = useState()
     const [imageUrl, setImageUrl] = useState(optionObject.image)
-    const [enableSetLocation, setEnableSetLocation] = useState(optionObject?.contactInfo?.latitude && optionObject?.contactInfo?.latitude)
+    const [enableSetLocation, setEnableSetLocation] = useState(optionObject?.contactInfo?.latitude && optionObject?.contactInfo?.longitude)
     const { checkSize } = useUpload()
+
+    useEffect(() => {
+        if (errors?.sDate?.type === "validate"
+            && new Date(getValues().sYear, getMonthNumber(sMonth), getValues().sDay, getValues().sHour, getValues().sMinute) > new Date()){
+            setError('sDate', null)
+        }
+        if (errors?.fDate?.type === "validate"
+            && new Date(getValues().sYear, getMonthNumber(sMonth), getValues().sDay, getValues().sHour, getValues().sMinute) < new Date(new Date(getValues().fYear, getMonthNumber(fMonth), getValues().fDay, getValues().fHour, getValues().fMinute))){
+            setError('fDate', null)
+        }
+    }, [useValues(), sMonth, fMonth])
 
     useEffect(() => {
         if (!isAuthenticated){
             navigate("/events")
         }
     }, [isAuthenticated])
+
+    useEffect(() => {
+        if (!city){
+            setLat(null)
+            setLng(null)
+        }else if (city && lat && lng) {
+            setEnableSetLocation(true)
+        }
+    }, [city])
 
     useEffect(() => {
         if (typeOption === TYPE_OPTIONS.EVENT){
@@ -92,7 +112,6 @@ const SchoolEventForm = ({ typeOption }) => {
         const contactInfo = { email: data.email, phoneNumber: data.phoneNumber, country, city, address: data.address, latitude, longitude }
         if (typeOption === TYPE_OPTIONS.SCHOOL){
             const newSchool = schoolMapper(optionObject?.id, data.name, data.description, dances, contactInfo, imageUrl, [dancer])
-            console.log(" newSchool", newSchool)
             dispatch(saveSchool(newSchool))
         }else {
             const startDate = joinDateTimeString(data.sYear, sMonth, data.sDay, data.sHour, data.sMinute, months)
@@ -159,6 +178,24 @@ const SchoolEventForm = ({ typeOption }) => {
     const selectImage = (image) => {
         setImage(image)
         setImageUrl(URL.createObjectURL(image))
+    }
+
+    const toggleEnableGeolocation = () => {
+        if(enableSetLocation){
+            setLat(null)
+            setLng(null)
+        }
+        if (!enableSetLocation && city && country && !lat && !lng){
+            getCities(city)
+                .then(res => {
+                    const cityObj = res[0]
+                    setLat(cityObj.lat)
+                    setLng(cityObj.lng)
+                })
+                .then(() => setEnableSetLocation(!enableSetLocation))
+        }else {
+            setEnableSetLocation(!enableSetLocation)
+        }
     }
 
     const getCountries = (countryName) => request(GET.getCountries(countryName))
@@ -249,14 +286,28 @@ const SchoolEventForm = ({ typeOption }) => {
                             <label htmlFor="birthday" className="block text-sm font-medium leading-6 text-black">
                                 Start event
                             </label>
-                            <div className="flex mt-2 justify-around">
+                            <div
+                                className="flex mt-2 justify-around"
+                                {...register('sDate', {
+                                    validate: (value) => {
+                                        if (new Date(getValues().sYear, getMonthNumber(sMonth), getValues().sDay, getValues().sHour, getValues().sMinute) < new Date()){
+                                            return "Start event date must be later then current date time.";
+                                        }
+                                    },
+                                })}
+                            >
                                 <div className="flex w-10 rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
                                     <input
                                         type="text"
                                         name="sDay"
                                         id="sDay"
                                         autoComplete="sDay"
-                                        {...register('sDay', { maxLength: 2, minLength: 2, min: 1, max: 31 })}
+                                        {...register('sDay', { required: true, minLength: 2, min: 1, max: 31,
+                                            validate: (value) => {
+                                                if (!sMonth) {
+                                                    return "Month is required.";
+                                                }
+                                            },})}
                                         className="flex-1 w-10 rounded-md shadow-md border-1 bg-transparent py-1.5 pl-1 text-black focus:ring-0 sm:text-sm sm:leading-6"
                                         placeholder="day"
                                     />
@@ -275,7 +326,7 @@ const SchoolEventForm = ({ typeOption }) => {
                                         name="sYear"
                                         id="sYear"
                                         autoComplete="sYear"
-                                        {...register('sYear', { maxLength: 4, minLength: 4, min: 1900, max: 2100 })}
+                                        {...register('sYear', { required: true, maxLength: 4, minLength: 4 })}
                                         className="flex-1 w-20 rounded-md shadow-md border-1 bg-transparent py-1.5 pl-1 text-black focus:ring-0 sm:text-sm sm:leading-6"
                                         placeholder="year"
                                     />
@@ -287,7 +338,7 @@ const SchoolEventForm = ({ typeOption }) => {
                                             name="sHour"
                                             id="sHour"
                                             autoComplete="sHour"
-                                            {...register('sHour', { maxLength: 2, minLength: 2, min: 0, max: 23 })}
+                                            {...register('sHour', { required: true, maxLength: 2, minLength: 2, min: 0, max: 23 })}
                                             className="flex-1 w-10 rounded-md shadow-md border-1 bg-transparent py-1.5 pl-1 text-black focus:ring-0 sm:text-sm sm:leading-6"
                                             placeholder="h"
                                         />
@@ -296,15 +347,29 @@ const SchoolEventForm = ({ typeOption }) => {
                                     <div className="flex w-10 rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
                                         <input
                                             type="text"
-                                            name="sMinute"
                                             id="sMinute"
+                                            name="sMinute"
                                             autoComplete="sMinute"
-                                            {...register('sMinute', { maxLength: 2, minLength: 2, min: 0, max: 59 })}
+                                            {...register('sMinute', { required: true, maxLength: 2, minLength: 2, min: 0, max: 59 })}
                                             className="flex-1 w-10 rounded-md shadow-md border-1 bg-transparent py-1.5 pl-1 text-black focus:ring-0 sm:text-sm sm:leading-6"
                                             placeholder="m"
                                         />
                                     </div>
                                 </div>
+                            </div>
+                            <div className="grid mt-1">
+                                {errors?.sDay?.type === "required"
+                                    || errors?.sYear?.type === "required"
+                                    || errors?.sHour?.type === "required"
+                                    || errors?.sMinute?.type === "required"
+                                    && <p className="text-xs leading-5 text-red-700">Field is required.</p>}
+                                {errors?.sDay?.type === "minLength" && <p className="text-xs leading-5 text-red-700">Day format: 01 ... 09.</p>}
+                                {errors?.sDay?.type === "max" || errors?.fDay?.type === "min" &&  <p className="text-xs leading-5 text-red-700">Input number from 01 to 31.</p>}
+                                {errors?.sDay?.type === "validate" && <p className="text-xs leading-5 text-red-700">{errors.sDay.message}</p>}
+                                {errors?.sYear?.type === "minLength" && <p className="justify-self-center translate-x-12 pl-12 text-xs leading-5 text-red-700">Year format: yyyy.</p>}
+                                {errors?.sHour?.type === "minLength" && <p className="justify-self-end text-xs leading-5 text-red-700">Hour format: 01 ... 09.</p>}
+                                {errors?.sMinute?.type === "minLength" && <p className="justify-self-end text-xs leading-5 text-red-700">Minute format: 01 ... 09.</p>}
+                                {errors?.sDate?.type === "validate" && <p className="text-xs leading-5 text-red-700">{errors.sDate.message}</p>}
                             </div>
                         </div>
 
@@ -312,14 +377,28 @@ const SchoolEventForm = ({ typeOption }) => {
                             <label htmlFor="birthday" className="block text-sm font-medium leading-6 text-black">
                                 Finish event
                             </label>
-                            <div className="flex mt-2 justify-around">
+                            <div
+                                className="flex mt-2 justify-around"
+                                {...register('fDate', {
+                                    validate: (value) => {
+                                        if (new Date(getValues().sYear, getMonthNumber(sMonth), getValues().sDay, getValues().sHour, getValues().sMinute) > new Date(new Date(getValues().fYear, getMonthNumber(fMonth), getValues().fDay, getValues().fHour, getValues().fMinute))){
+                                            return "Finish event date must be later then start event date.";
+                                        }
+                                    },
+                                })}
+                            >
                                 <div className="flex w-10 rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
                                     <input
                                         type="text"
                                         name="fDay"
                                         id="fDay"
                                         autoComplete="fDay"
-                                        {...register('fDay', { maxLength: 2, minLength: 2, min: 1, max: 31 })}
+                                        {...register('fDay', { required: true, minLength: 2, min: 1, max: 31,
+                                            validate: (value) => {
+                                                if (!fMonth) {
+                                                    return "Month is required.";
+                                                }
+                                            },})}
                                         className="flex-1 w-10 rounded-md shadow-md border-1 bg-transparent py-1.5 pl-1 text-black focus:ring-0 sm:text-sm sm:leading-6"
                                         placeholder="day"
                                     />
@@ -338,7 +417,7 @@ const SchoolEventForm = ({ typeOption }) => {
                                         name="fYear"
                                         id="fYear"
                                         autoComplete="fYear"
-                                        {...register('fYear', { maxLength: 4, minLength: 4, min: 1900, max: 2100 })}
+                                        {...register('fYear', { maxLength: 4, minLength: 4 })}
                                         className="flex-1 w-20 rounded-md shadow-md border-1 bg-transparent py-1.5 pl-1 text-black focus:ring-0 sm:text-sm sm:leading-6"
                                         placeholder="year"
                                     />
@@ -350,7 +429,7 @@ const SchoolEventForm = ({ typeOption }) => {
                                             name="fHour"
                                             id="fHour"
                                             autoComplete="fHour"
-                                            {...register('fHour', { maxLength: 2, minLength: 2, min: 0, max: 23 })}
+                                            {...register('fHour', { required: true, minLength: 2, min: 0, max: 23 })}
                                             className="flex-1 w-10 rounded-md shadow-md border-1 bg-transparent py-1.5 pl-1 text-black focus:ring-0 sm:text-sm sm:leading-6"
                                             placeholder="h"
                                         />
@@ -362,14 +441,28 @@ const SchoolEventForm = ({ typeOption }) => {
                                             name="fMinute"
                                             id="fMinute"
                                             autoComplete="fMinute"
-                                            {...register('fMinute', { maxLength: 2, minLength: 2, min: 0, max: 59 })}
+                                            {...register('fMinute', { required: true, minLength: 2, min: 0, max: 59 })}
                                             className="flex-1 w-10 rounded-md shadow-md border-1 bg-transparent py-1.5 pl-1 text-black focus:ring-0 sm:text-sm sm:leading-6"
                                             placeholder="m"
                                         />
                                     </div>
                                 </div>
-
                             </div>
+                            <div className="grid mt-1">
+                                {errors?.fDay?.type === "required"
+                                    || errors?.fYear?.type === "required"
+                                    || errors?.fHour?.type === "required"
+                                    || errors?.fMinute?.type === "required"
+                                    && <p className="text-xs leading-5 text-red-700">Field is required.</p>}
+                                {errors?.fDay?.type === "minLength" && <p className="text-xs leading-5 text-red-700">Day format: 01 ... 09.</p>}
+                                {errors?.fDay?.type === "max" || errors?.fDay?.type === "min" &&  <p className="text-xs leading-5 text-red-700">Input number from 01 to 31.</p>}
+                                {errors?.fDay?.type === "validate" && <p className="text-xs leading-5 text-red-700">{errors.fDay.message}</p>}
+                                {errors?.fYear?.type === "minLength" && <p className="justify-self-center translate-x-12 pl-12 text-xs leading-5 text-red-700">Year format: yyyy.</p>}
+                                {errors?.fHour?.type === "minLength" && <p className="justify-self-end text-xs leading-5 text-red-700">Hour format: 01 ... 09.</p>}
+                                {errors?.fMinute?.type === "minLength" && <p className="justify-self-end text-xs leading-5 text-red-700">Minute format: 01 ... 09.</p>}
+                                {errors?.fDate?.type === "validate" && <p className="text-xs leading-5 text-red-700">{errors.fDate.message}</p>}
+                            </div>
+
                         </div>
                     </>
 
@@ -456,11 +549,11 @@ const SchoolEventForm = ({ typeOption }) => {
                         />
                         {errors?.address?.type === "required" && <p className="text-xs leading-5 text-red-700">Address is required</p>}
                     </div>
-                    {lat && lng && (
+                    {city && (
                         <div className="mt-5">
                             <a
                                 className="flex text-sm font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer pb-1"
-                                onClick={() => setEnableSetLocation(!enableSetLocation)}
+                                onClick={() => toggleEnableGeolocation()}
                             >
                                 {!enableSetLocation ? "Set geolocation" : "Disable geolocation"}
                             </a>

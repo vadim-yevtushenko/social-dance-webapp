@@ -1,7 +1,6 @@
-const API_BASE_URL='http://localhost:8080';
-// const API_BASE_URL='https://jsonplaceholder.typicode.com/todos/1';
-
-// import {API_BASE_URL} from "./config/runTimeConfig";
+// const API_BASE_URL=process.env.API_BASE_URL
+const API_BASE_URL='http://localhost:8080'
+// const API_BASE_URL='https://social-dance-a9e93f560bda.herokuapp.com'
 
 export const GET = {
     // Dancers
@@ -54,14 +53,14 @@ export const GET = {
         return url
     },
 
-    // Utils
+    // Location
     getCountries: (name) => {
-        let url = `${API_BASE_URL}/utils/countries?`
+        let url = `${API_BASE_URL}/location/countries?`
         if (!!name) url = url.concat(`name=${name}`)
         return url
     },
     getCities: (name, country) => {
-        let url = `${API_BASE_URL}/utils/cities?`
+        let url = `${API_BASE_URL}/location/cities?`
         if (!!name) url = url.concat(`name=${name}&`)
         if (!!country) url = url.concat(`country=${country}`)
         return url
@@ -87,6 +86,10 @@ export const POST = {
     registration: (email, password) => `${API_BASE_URL}/credential/registration?email=${email}&password=${password}`,
     changePassword: (email, newPassword, oldPassword) => `${API_BASE_URL}/credential/change-password?email=${email}&newPassword=${newPassword}&oldPassword=${oldPassword}`,
     changeEmail: (email, newEmail) => `${API_BASE_URL}/credential/change-email?email=${email}&newEmail=${newEmail}`,
+    resetPassword: (email) => `${API_BASE_URL}/credential/reset_password?email=${email}`,
+
+    // Admin
+    supportEmail: () => `${API_BASE_URL}/admin/support`,
 
     // Rating
     saveRating: () => `${API_BASE_URL}/ratings`,

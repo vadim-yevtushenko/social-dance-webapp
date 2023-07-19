@@ -1,10 +1,10 @@
 import { classNamesJoin } from "../../../util/classNameUtils";
-import { Cog6ToothIcon, FolderIcon, GlobeAltIcon, ServerIcon } from "@heroicons/react/24/outline";
+import { Cog6ToothIcon, FolderIcon, GlobeAltIcon, BuildingOffice2Icon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 
 export const chapterData = [
     { id: 'PERSONAL_INFO', name: 'Personal Information', href: '#', icon: FolderIcon, current: true },
-    { id: 'MY_SCHOOLS', name: 'My schools', href: '#', icon: ServerIcon, current: false },
+    { id: 'MY_SCHOOLS', name: 'My schools', href: '#', icon: BuildingOffice2Icon, current: false },
     { id: 'MY_EVENTS', name: 'My events', href: '#', icon: GlobeAltIcon, current: false },
     { id: 'SETTINGS', name: 'Settings', href: '#', icon: Cog6ToothIcon, current: false },
 ]

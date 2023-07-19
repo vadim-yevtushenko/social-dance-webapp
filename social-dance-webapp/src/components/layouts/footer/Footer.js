@@ -1,6 +1,8 @@
 import DialogComponent from "./DialogComponent";
 import { useState } from "react";
 import React from "react";
+import AboutForm from "./AboutForm";
+import SupportForm from "./SupportForm";
 
 const navigation = {
     main: [
@@ -76,25 +78,31 @@ const navigation = {
 
 export default function Footer() {
     const [openDialog, setOpenDialog] = useState(false)
+    const [navName, setNavName] = useState(false)
 
-    function handleClick(name) {
-        switch (name){
-            case 'About': {
-                setOpenDialog(true)
+    const renderMainNav = () => {
+        switch(navName){
+            case "About":{
+                return <AboutForm/>
+            }
+            case "Support": {
+                return <SupportForm setOpenDialog={setOpenDialog}/>
+            }
+            default: {
+                return <p className="text-2xl">In developing...</p>
             }
         }
+    }
+
+    function handleClick(name) {
+        setNavName(name)
+        setOpenDialog(true)
     }
 
     return (
         <footer className="bg-gray-800 xl:z-51 justify-center">
             <DialogComponent openDialog={openDialog} setOpenDialog={setOpenDialog}>
-                <p className="text-2xl">
-                    Social Dance is a web application. Created for the dance community.
-                    Here you can create school or event for easy search for dancers,
-                    or just looking for school or event in any city.<br/><br/>
-                    If you find a bug or want to leave a wish, what would you like to add to this app,
-                    for example add dance to list dances, write to <a href='#' className='font-bold hover:text-indigo-700'>support</a> in footer, please!
-                </p>
+                {renderMainNav()}
             </DialogComponent>
             <div className="mx-auto max-w-7xl overflow-hidden px-6 py-20 sm:py-8 lg:px-8">
                 <nav className="-mb-6 columns-2 sm:flex sm:justify-center sm:space-x-12" aria-label="Footer">

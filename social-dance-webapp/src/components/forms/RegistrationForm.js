@@ -8,7 +8,6 @@ import { useForm } from "react-hook-form";
 import { signup } from "../../api/CredentialApi";
 
 const RegistrationForm = () => {
-    const [loading, setLoading] = useState(false);
     const [gender, setGender] = useState();
     const [level, setLevel] = useState();
     const navigate = useNavigate();
@@ -131,6 +130,7 @@ const RegistrationForm = () => {
                                 <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
                                     Password
                                 </label>
+                                <p className="text-sm italic text-gray-500">required: uppercase and lowercase letters and numbers.</p>
                                 <div className="mt-2">
                                     <input
                                         id="password"
@@ -138,7 +138,7 @@ const RegistrationForm = () => {
                                         type="password"
                                         autoComplete="password"
                                         required
-                                        {...register('password', { required: true })}
+                                        {...register('password', { required: true, minLength: 8 })}
                                         placeholder='**********'
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     />

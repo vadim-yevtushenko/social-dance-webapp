@@ -1,9 +1,8 @@
 import authReducer from './reducers/authReducer';
 import storage from 'redux-persist/lib/storage'
-import {persistReducer, persistStore} from "redux-persist";
+import { persistReducer, persistStore } from "redux-persist";
 import { configureStore } from "@reduxjs/toolkit";
 import { combineReducers } from 'redux'
-import storageSession from 'redux-persist/lib/storage/session'
 import schoolReducer from "./reducers/schoolReducer";
 import eventReducer from "./reducers/eventReducer";
 import requestReducer from "./reducers/requestReducer";

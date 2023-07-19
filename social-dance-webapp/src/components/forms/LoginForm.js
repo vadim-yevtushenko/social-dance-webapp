@@ -1,16 +1,16 @@
-import {useEffect} from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import React from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {useForm} from "react-hook-form";
-import {loadingRequest} from "../../redux/actions/requestActions";
-import { login } from "../../api/CredentialApi";
+import { useDispatch, useSelector } from "react-redux";
+import { useForm } from "react-hook-form";
+import { login, resetPassword } from "../../api/CredentialApi";
 
 const LoginForm = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const {isAuthenticated} = useSelector(state => state.auth)
+    const { isAuthenticated } = useSelector(state => state.auth)
     const { register, handleSubmit, formState: { errors } } = useForm()
+    const [isForgotPassword, setIsForgotPassword] = useState(false)
 
     useEffect(() => {
         if (isAuthenticated){
@@ -19,7 +19,12 @@ const LoginForm = () => {
     },[isAuthenticated])
 
     const onSubmit = ({email, password}) => {
-        dispatch(login(email, password))
+        if (isForgotPassword){
+            dispatch(resetPassword(email))
+            setIsForgotPassword(false)
+        }else {
+            dispatch(login(email, password))
+        }
     }
 
         return (
@@ -61,28 +66,29 @@ const LoginForm = () => {
                                         {errors?.email?.type === "required" && <p className="text-xs leading-5 text-red-700">Email is required.</p>}
                                     </div>
                                 </div>
-
-                                <div>
-                                    <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
-                                        Password
-                                    </label>
-                                    <div className="mt-2">
-                                        <input
-                                            id="password"
-                                            name="password"
-                                            type="password"
-                                            autoComplete="current-password"
-                                            required
-                                            {...register('password', { required: true })}
-                                            placeholder='**********'
-                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300
+                                {isForgotPassword || (
+                                    <div>
+                                        <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+                                            Password
+                                        </label>
+                                        <div className="mt-2">
+                                            <input
+                                                id="password"
+                                                name="password"
+                                                type="password"
+                                                autoComplete="current-password"
+                                                required
+                                                {...register('password', { required: true })}
+                                                placeholder='**********'
+                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300
                                             placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                        />
-                                        {errors?.password?.type === "required" && <p className="text-xs leading-5 text-red-700">Password is required.</p>}
+                                            />
+                                            {errors?.password?.type === "required" && <p className="text-xs leading-5 text-red-700">Password is required.</p>}
+                                        </div>
                                     </div>
-                                </div>
+                                )}
 
-                                {/*<div className="flex items-center justify-between">*/}
+                                <div className="flex items-center justify-between">
                                 {/*    <div className="flex items-center">*/}
                                 {/*        <input*/}
                                 {/*            id="remember-me"*/}
@@ -95,12 +101,15 @@ const LoginForm = () => {
                                 {/*        </label>*/}
                                 {/*    </div>*/}
 
-                                {/*    <div className="text-sm leading-6">*/}
-                                {/*        <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">*/}
-                                {/*            Forgot password?*/}
-                                {/*        </a>*/}
-                                {/*    </div>*/}
-                                {/*</div>*/}
+                                    <div className="text-sm leading-6">
+                                        <a
+                                            className="font-semibold text-indigo-600 hover:text-indigo-500 cursor-pointer"
+                                            onClick={() => setIsForgotPassword(!isForgotPassword)}
+                                        >
+                                            {isForgotPassword ? "back to sign in" : "Forgot password?"}
+                                        </a>
+                                    </div>
+                                </div>
 
                                 <div>
                                     <button
@@ -109,7 +118,7 @@ const LoginForm = () => {
                                         leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2
                                         focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                     >
-                                        Sign in
+                                        {isForgotPassword ? "Reset Password" : "Sign in"}
                                     </button>
                                 </div>
                             </form>

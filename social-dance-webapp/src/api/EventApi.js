@@ -1,11 +1,11 @@
 import requestWrapper from "./requestWrapper";
-import {DELETE, GET, POST} from "./Endpoints";
-import {getViewObject, getList} from "../redux/actions/listsActions";
-import {loadingRequest} from "../redux/actions/requestActions";
-import {errorHandling, successHandling} from "./notificationHandling";
-import {getOrganizedEvent} from "../redux/actions/eventActions";
+import { DELETE, GET, POST } from "./Endpoints";
+import {getEvents, getViewObject} from "../redux/actions/ListsActions";
+import { loadingRequest } from "../redux/actions/requestActions";
+import { errorHandling, successHandling } from "./notificationHandling";
+import { getOrganizedEvent } from "../redux/actions/eventActions";
 
-export const getEvents = (name, country, city, page, size) => (dispatch) => {
+export const fetchEvents = (name, country, city, page, size) => (dispatch) => {
     dispatch(loadingRequest(true))
     return requestWrapper({
         axiosConfig: {
@@ -13,7 +13,7 @@ export const getEvents = (name, country, city, page, size) => (dispatch) => {
             url: GET.getEvents(name, country, city, page, size)
         }
     }).then(res => {
-        dispatch(getList(res.data))
+        dispatch(getEvents(res.data))
         dispatch(loadingRequest(false))
     }).catch(error => {
         dispatch(loadingRequest(false))
