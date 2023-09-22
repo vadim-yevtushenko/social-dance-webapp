@@ -70,6 +70,7 @@ const SettingsProfileComponent = () => {
                                             {...register('newPassword', { required: true, minLength: 8 })}
                                         />
                                         {errors?.newPassword?.type === "required" && <p className="text-xs leading-5 text-red-700">New password is required.</p>}
+                                        {errors?.newPassword?.type === "minLength" && <p className="text-xs leading-5 text-red-700">Min length must be 8 symbols.</p>}
                                     </div>
                                 </div>
 

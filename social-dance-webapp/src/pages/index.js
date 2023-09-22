@@ -7,7 +7,8 @@ import RegistrationPage from "./RegistrationPage";
 import ProfilePage from "./ProfilePage";
 import SchoolPage from "./SchoolPage";
 import EventPage from "./EventPage";
+import HomePage from "./HomePage";
 
-export {DancersPage, SchoolsPage, EventsPage,
+export {HomePage, DancersPage, SchoolsPage, EventsPage,
     Page404, LoginPage, RegistrationPage, ProfilePage,
     SchoolPage, EventPage}

@@ -46,16 +46,17 @@ export default function MainHeader() {
       {({ open }) => (
         <>
           <div className="mx-auto max-w-7xl px-2 sm:px-4">
+
             <div className="relative flex h-16 items-center justify-between">
-              <div className="flex items-center px-2 lg:px-0">
-                <div className="flex flex-shrink-10 -translate-x-12 mb-2">
-                  <img
-                    className="hidden h-12 w-auto lg:block cursor-pointer"
-                    src="/images/logo/dancing_logo.png"
-                    alt="Your Company"
+              <div className="2xl:-translate-x-12">
+                <h1
+                    className="text-3xl italic font-bold text-center text-white cursor-pointer 2xl:-translate-x-12 ml-5 lg:ml-0"
                     onClick={() => navigate("/")}
-                  />
-                </div>
+                >
+                  SOCIAL DANCE
+                </h1>
+              </div>
+              <div className="flex items-center px-2 lg:px-0">
                 <div className="hidden lg:flex lg:gap-x-12 ml-5">
                   {navigation.map((item) => (
                       <NavLink
@@ -216,11 +217,11 @@ export default function MainHeader() {
               </div>
             </div>
             ) : (
-                <div className="flex flex-1 items-center justify-around gap-x-6 mx-5">
+                <div className="flex flex-1 items-center justify-around gap-x-6 mx-5 border-t border-gray-200 pt-3">
                   <NavLink
                       to="/login"
                       className="block text-xl font-semibold leading-6 text-white"
-                      style={({isActive}) => ({textDecoration: isActive && 'underline'})}
+                      style={({isActive}) => ({textDecoration: isActive && 'underline', color: isActive && 'orange'})}
                   >
                     Log in
                   </NavLink>

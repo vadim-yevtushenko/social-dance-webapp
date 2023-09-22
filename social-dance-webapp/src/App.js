@@ -1,6 +1,6 @@
 import './App.css';
 import {
-    DancersPage, EventPage, EventsPage, LoginPage, Page404,
+    DancersPage, EventPage, EventsPage, HomePage, LoginPage, Page404,
     ProfilePage, RegistrationPage, SchoolPage, SchoolsPage
 } from "./pages";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -17,7 +17,7 @@ const App = () => {
           { loading && <Spinner/> }
           <main>
             <Routes>
-              <Route path="/" element={<EventsPage/>}/>
+              <Route path="/" element={<HomePage/>}/>
               <Route path="events">
                   <Route index element={<EventsPage/>}/>
                   <Route path=":id" element={<EventPage/>}/>
