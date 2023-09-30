@@ -1,6 +1,6 @@
 [[redirects]]
 from = "/*"
-to = "https://social-dances.netlify.app/index.html"
+to = "https://social-dances.netlify.app/*"
 status = 200
 force = true
 headers = {X-From = "Netlify"}
