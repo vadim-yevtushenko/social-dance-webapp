@@ -21,12 +21,12 @@ const DancersComponent = () => {
     }, [name, lastName, page, size]);
 
     return (
-        <div className="max-w-7xl flex-col grow px-4 sm:px-6 lg:px-8 my-5 ml-12 sm:ml-0">
-            <div className="sm:flex sm:items-center ml-5 sm:ml-0">
-                <div className="sm:flex-auto ml-3 sm:ml-0">
+        <div className="max-w-7xl flex-col grow px-4 sm:px-6 lg:px-8 my-5">
+            <div className="sm:flex sm:items-center">
+                <div className="sm:flex-auto">
                     <h1 className="text-base font-semibold leading-6 text-gray-900">Dancers</h1>
                 </div>
-                <div className="flex flex-1 justify-center px-2 lg:ml-6 lg:justify-end">
+                <div className="flex flex-1 justify-center px-2 lg:ml-6 lg:justify-end my-1 sm:my-0">
                     <div className="w-full max-w-lg ">
                         <label htmlFor="search" className="sr-only">
                             Search

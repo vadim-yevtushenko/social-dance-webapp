@@ -39,7 +39,7 @@ const SchoolEventForm = ({ typeOption }) => {
     const [image, setImage] = useState()
     const [imageUrl, setImageUrl] = useState(optionObject.image)
     const [enableSetLocation, setEnableSetLocation] = useState(optionObject?.contactInfo?.latitude && optionObject?.contactInfo?.longitude)
-    const { checkSize } = useUpload()
+    const { resizeImage } = useUpload()
 
     useEffect(() => {
         if (errors?.sDate?.type === "validate"
@@ -127,23 +127,25 @@ const SchoolEventForm = ({ typeOption }) => {
 
     const uploadImage = () => {
         if (!!image) {
-            if (!checkSize(1024, image)) {
-                const formData = new FormData();
-                formData.append('file', image);
-                if (typeOption === TYPE_OPTIONS.SCHOOL) {
-                    dispatch(uploadSchoolImage(optionObject.id, formData))
-                        .then(() => {
-                            dispatch(fetchAdministratedSchool(optionObject.id))
-                            setImage(null)
-                        })
-                }else {
-                    dispatch(uploadEventImage(optionObject.id, formData))
-                        .then(() => {
-                            dispatch(fetchOrganizedEvent(optionObject.id))
-                            setImage(null)
-                        })
-                }
-            }
+            resizeImage(image, 1028000, 600, 600)
+                .then(file => {
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    console.log("image ", file)
+                    if (typeOption === TYPE_OPTIONS.SCHOOL) {
+                        dispatch(uploadSchoolImage(optionObject.id, formData))
+                            .then(() => {
+                                dispatch(fetchAdministratedSchool(optionObject.id))
+                                setImage(null)
+                            })
+                    }else {
+                        dispatch(uploadEventImage(optionObject.id, formData))
+                            .then(() => {
+                                dispatch(fetchOrganizedEvent(optionObject.id))
+                                setImage(null)
+                            })
+                    }
+                })
         }
     }
 
@@ -248,7 +250,7 @@ const SchoolEventForm = ({ typeOption }) => {
                                 >
                                     Change image
                                 </button>
-                                <p className="my-1 text-xs leading-5 text-gray-400">JPG, GIF or PNG. 10MB max.</p>
+                                <p className="my-1 text-xs leading-5 text-gray-400">JPG, JPEG or PNG. 1MB max.</p>
                                 {imageUrl && (
                                     <button
                                         type="button"
