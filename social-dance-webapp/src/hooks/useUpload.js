@@ -10,7 +10,6 @@ export const useUpload = () => {
 
         const compress = new Compress()
         if (!checkSize(maxSize, file)){
-            console.log("!checkSize ", file)
             const resizedImage = await compress.compress([file], {
                 size: 1,
                 quality: 1,
@@ -22,10 +21,8 @@ export const useUpload = () => {
             const base64str = img.data
             const imgExt = img.ext
             const resizedFile = Compress.convertBase64ToFile(base64str, imgExt)
-            console.log("resizedFile ", resizedFile)
             return resizedFile;
         }
-        console.log("file ", file)
         return file
     }
 
