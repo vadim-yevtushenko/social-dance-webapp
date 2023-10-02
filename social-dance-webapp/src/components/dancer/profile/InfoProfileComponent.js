@@ -29,7 +29,7 @@ const InfoProfileComponent = () => {
     const { levelOptions, genderButtons, months } = useValues()
     const [photo, setPhoto] = useState()
     const [photoUrl, setPhotoUrl] = useState(dancer.image)
-    const { checkSize } = useUpload()
+    const { resizeImage } = useUpload()
 
     useEffect(() => {
         if (!isAuthenticated){
@@ -53,17 +53,19 @@ const InfoProfileComponent = () => {
     }
 
     const uploadPhoto = () => {
-        if (!!photo){
-            if (!checkSize(1024, photo)){
-                const formData = new FormData();
-                formData.append('file', photo);
-                dispatch(uploadDancerImage(dancer.id, formData))
-                    .then(() => dispatch(fetchDancer(dancer.id)))
-                    .then(() => {
-                        setPhotoUrl(dancer.image)
-                        setPhoto(null)
-                    })
-            }
+        if (!!photo) {
+            resizeImage(photo, 512000)
+                .then(image => {
+                    const formData = new FormData();
+                    formData.append('file', image);
+                    console.log("image ", image)
+                    dispatch(uploadDancerImage(dancer.id, formData))
+                        .then(() => dispatch(fetchDancer(dancer.id)))
+                        .then(() => {
+                            setPhotoUrl(dancer.image)
+                            setPhoto(null)
+                        })
+                })
         }
     }
 
@@ -128,7 +130,7 @@ const InfoProfileComponent = () => {
                                     >
                                         Change avatar
                                     </button>
-                                    <p className="my-1 text-xs leading-5 text-gray-400">JPG, GIF or PNG. 1MB max.</p>
+                                    <p className="my-1 text-xs leading-5 text-gray-400">JPG, JPEG or PNG. 512KB max.</p>
                                     {photoUrl && (
                                         <button
                                             type="button"

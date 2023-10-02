@@ -1,15 +1,8 @@
 import DancerQuickViewComponent from "./DancerQuickViewComponent";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import {classNamesJoin} from "../../util/classNameUtils";
+import { classNamesJoin } from "../../util/classNameUtils";
 import React from "react";
-
-// const columns = [
-//     {id: 1, name: "Name"},
-//     {id: 2, name: "School / Dances"},
-//     {id: 3, name: "Birthday"},
-//     {id: 4, name: "Level"},
-// ];
 
 const DancerTable = () => {
     const [openQuickViewDancer, setOpenQuickViewDancer] = useState(false)
@@ -32,7 +25,7 @@ const DancerTable = () => {
                 setOpenView={setOpenQuickViewDancer}
                 dancer={chosenDancer}
             />
-            <div className="mt-8 flow-root ml-7 sm:ml-0">
+            <div className="mt-8 flow-root ml-8 sm:ml-0">
                 <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                         <table className="min-w-fit sm:min-w-full divide-y divide-gray-300">
@@ -45,7 +38,7 @@ const DancerTable = () => {
                                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                                         Level
                                     </th>
-                                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                    <th scope="col" className="hidden md:block px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                                         Dances
                                     </th>
                                 </tr>
@@ -81,7 +74,7 @@ const DancerTable = () => {
                                             {dancer.level}
                                         </span>
                                     </td>
-                                    <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                    <td className="hidden md:block whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                                         <div className="mt-1 text-gray-500">
                                             <div className="hidden lg:block">
                                                 {dancer.dances && dancesStr(dancer.dances)}
