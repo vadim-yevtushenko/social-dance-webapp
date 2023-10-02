@@ -72,6 +72,7 @@ const InfoProfileComponent = () => {
     const deletePhoto = () => {
         if (dancer.image){
             dispatch(deleteDancerImage(dancer.id))
+                .then(() => dispatch(fetchDancer(dancer.id)))
                 .then(() => {
                     setPhotoUrl(null)
                     setPhoto(null)
@@ -81,8 +82,6 @@ const InfoProfileComponent = () => {
             setPhoto(null)
         }
 
-        setPhotoUrl(null)
-        setPhoto(null)
         setValue('file-upload', null)
     }
 
