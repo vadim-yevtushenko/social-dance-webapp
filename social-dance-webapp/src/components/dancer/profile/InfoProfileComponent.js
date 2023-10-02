@@ -40,6 +40,11 @@ const InfoProfileComponent = () => {
         }
     }, [isAuthenticated])
 
+    useEffect(() => {
+        console.log("useEffect ", dancer.image)
+        setPhotoUrl(dancer.image)
+    }, [dancer.image])
+
     const onSubmit = (data) => {
         const contactInfo = { email: data.email, phoneNumber: data.phoneNumber, country, city }
         const updatedDancer = dancerMapper(dancer.id, data.name, data.lastName, gender,
@@ -58,11 +63,9 @@ const InfoProfileComponent = () => {
                 .then(image => {
                     const formData = new FormData();
                     formData.append('file', image);
-                    console.log("image ", image)
                     dispatch(uploadDancerImage(dancer.id, formData))
                         .then(() => dispatch(fetchDancer(dancer.id)))
                         .then(() => {
-                            setPhotoUrl(dancer.image)
                             setPhoto(null)
                         })
                 })
