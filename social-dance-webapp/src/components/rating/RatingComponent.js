@@ -65,7 +65,7 @@ const RatingComponent = ({ rerender, setRerender }) => {
             <h3 className="sr-only">Review data</h3>
 
             <dl className="space-y-3">
-                {generalRating && Object.entries(generalRating?.counts).reverse().map(([rating, count]) => (
+                {generalRating.counts && Object.entries(generalRating?.counts).reverse().map(([rating, count]) => (
                     <div key={rating} className="flex items-center text-sm">
                         <dt className="flex flex-1 items-center">
                             <p className="w-3 font-medium text-gray-900">
