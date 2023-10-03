@@ -21,9 +21,7 @@ export const useUpload = () => {
             const img = resizedImage[0];
             const base64str = img.data
             const imgExt = img.ext
-            const resizedFile = Compress.convertBase64ToFile(base64str, imgExt)
-            console.log("resizedFile ", resizedFile)
-            return resizedFile;
+            return Compress.convertBase64ToFile(base64str, imgExt);
         }
         console.log("file ", file)
         return file
