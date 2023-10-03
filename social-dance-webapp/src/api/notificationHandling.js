@@ -32,7 +32,6 @@ export const errorHandling = (error) => {
                     duration: 3000,
                     className: 'my-3 mx-3'
                 })
-
     }
     // if (error){
     //     toast.error(error, {
@@ -41,12 +40,4 @@ export const errorHandling = (error) => {
     //         className: 'my-3 mx-3'
     //     })
     // }
-}
-
-export const loginErrorHandling = () => {
-
-}
-
-export const registrationErrorHandling = () => {
-
 }
