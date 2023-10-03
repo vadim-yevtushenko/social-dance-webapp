@@ -127,11 +127,10 @@ const SchoolEventForm = ({ typeOption }) => {
 
     const uploadImage = () => {
         if (!!image) {
-            resizeImage(image, 1028000, 600, 600)
+            resizeImage(image, 1028000, 700, 700)
                 .then(file => {
                     const formData = new FormData();
                     formData.append('file', file);
-                    console.log("image ", file)
                     if (typeOption === TYPE_OPTIONS.SCHOOL) {
                         dispatch(uploadSchoolImage(optionObject.id, formData))
                             .then(() => {

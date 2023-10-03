@@ -41,7 +41,6 @@ const InfoProfileComponent = () => {
     }, [isAuthenticated])
 
     useEffect(() => {
-        console.log("useEffect ", dancer.image)
         setPhotoUrl(dancer.image)
     }, [dancer.image])
 
