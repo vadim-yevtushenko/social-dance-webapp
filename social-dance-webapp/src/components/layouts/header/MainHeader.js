@@ -145,7 +145,7 @@ export default function MainHeader() {
                   </div>
                 </div>
               ) : (
-                  <div className="hidden lg:flex flex-1 items-center justify-end gap-x-6">
+                  <div className="hidden lg:flex items-center justify-end gap-x-6">
                     <NavLink
                         to="/login"
                         className="hidden lg:block lg:text-xl lg:font-semibold lg:leading-6 lg:text-white"

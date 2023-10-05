@@ -56,6 +56,22 @@ const MyEventsProfileComponent = () => {
         <div className="divide-y divide-white/5">
             <div className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
                 <div>
+                    <h2 className="text-base font-semibold leading-7 text-black">Create event</h2>
+                    <p className="mt-1 text-sm leading-6 text-gray-400">
+                        {SUBTITLE.CREATE_EVENT}
+                    </p>
+                </div>
+                <div className="md:col-span-2 ml-0 md:ml-8">
+                    <button
+                        type="button"
+                        className="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400"
+                        onClick={() => openEmptyEditForm()}
+                    >
+                        Create event
+                    </button>
+                </div>
+
+                <div>
                     <h2 className="text-base font-semibold leading-7 text-black">Your created events</h2>
                     <p className="mt-1 text-sm leading-6 text-gray-400">
                         {dancer.eventsOrganizer?.length > 0 ? (
@@ -79,22 +95,6 @@ const MyEventsProfileComponent = () => {
                             ))}
                         </ul>
                     </div>
-                </div>
-
-                <div>
-                    <h2 className="text-base font-semibold leading-7 text-black">Create event</h2>
-                    <p className="mt-1 text-sm leading-6 text-gray-400">
-                        {SUBTITLE.CREATE_EVENT}
-                    </p>
-                </div>
-                <div className="md:col-span-2">
-                    <button
-                        type="button"
-                        className="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400"
-                        onClick={() => openEmptyEditForm()}
-                    >
-                        Create event
-                    </button>
                 </div>
 
                 {openEditForm && (

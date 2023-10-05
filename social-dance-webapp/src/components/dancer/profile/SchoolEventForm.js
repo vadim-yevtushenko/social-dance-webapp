@@ -40,7 +40,8 @@ const SchoolEventForm = ({ typeOption }) => {
     const [imageUrl, setImageUrl] = useState(optionObject.image)
     const [enableSetLocation, setEnableSetLocation] = useState(optionObject?.contactInfo?.latitude && optionObject?.contactInfo?.longitude)
     const { resizeImage } = useUpload()
-
+    console.log("sMonth", sMonth)
+    console.log("optionObject", optionObject)
     useEffect(() => {
         if (errors?.sDate?.type === "validate"
             && new Date(getValues().sYear, getMonthNumber(sMonth), getValues().sDay, getValues().sHour, getValues().sMinute) > new Date()){
@@ -79,6 +80,7 @@ const SchoolEventForm = ({ typeOption }) => {
         setValue('name', optionObject.name)
         setValue('email', optionObject.contactInfo?.email)
         setValue('phoneNumber', optionObject.contactInfo?.phoneNumber)
+        setValue('address', optionObject.contactInfo?.address)
         setValue('description', optionObject.description)
         setDances(optionObject.dances)
         setCountry(optionObject.contactInfo?.country)
@@ -316,7 +318,7 @@ const SchoolEventForm = ({ typeOption }) => {
                                 <div className="flex">
                                     <DropDownListElement
                                         disabled={false}
-                                        startOption={optionObject.id !== null ? sMonth : ""}
+                                        startOption={sMonth !== undefined ? sMonth : ""}
                                         setOption={setSMonth}
                                         options={months.map(month => month.name)}
                                     />
@@ -407,7 +409,7 @@ const SchoolEventForm = ({ typeOption }) => {
                                 <div className="flex">
                                     <DropDownListElement
                                         disabled={false}
-                                        startOption={fMonth}
+                                        startOption={fMonth !== undefined ? fMonth : ""}
                                         setOption={setFMonth}
                                         options={months.map(month => month.name)}
                                     />
