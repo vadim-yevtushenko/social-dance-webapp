@@ -4,7 +4,7 @@ import CardList from "./CardList";
 import PaginationComponent from "../pagination/PaginationComponent";
 import { useValues } from "../../hooks/useValues";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
-import ComboboxElement from "../forms/elements/ComboboxElement";
+import LocationComboboxElement from "../forms/elements/LocationComboboxElement";
 import { GET } from "../../api/Endpoints";
 import { useHttp } from "../../hooks/http.hook";
 import { fetchSchools } from "../../api/SchoolApi";
@@ -18,8 +18,8 @@ const EventsOrSchoolsComponent = ({ typeOption }) => {
     const [page, setPage] = useState(1);
     const [size, setSize] = useState(6);
     const [name, setName] = useState()
-    const [city, setCity] = useState()
-    const [country, setCountry] = useState()
+    const [city, setCity] = useState("")
+    const [country, setCountry] = useState("")
     const { request } = useHttp();
 
     useEffect(() => {
@@ -69,7 +69,7 @@ const EventsOrSchoolsComponent = ({ typeOption }) => {
                         <span className="inline-flex items-center px-3 text-gray-500 sm:text-sm">
                           country:
                         </span>
-                        <ComboboxElement
+                        <LocationComboboxElement
                             value={country}
                             setValue={setCountry}
                             request={getCountries}
@@ -80,11 +80,11 @@ const EventsOrSchoolsComponent = ({ typeOption }) => {
                         <span className="inline-flex items-center px-3 text-gray-500 sm:text-sm">
                           city:
                         </span>
-                        <ComboboxElement
+                        <LocationComboboxElement
                             value={city}
                             setValue={setCity}
                             request={getCities}
-                            // isDisable={country === null || country === ""}
+                            isDisable={country === ""}
                         />
                     </div>
                 </div>
