@@ -1,5 +1,5 @@
 import DropDownListElement from "../../forms/elements/DropDownListElement";
-import ComboboxElement from "../../forms/elements/ComboboxElement";
+import LocationComboboxElement from "../../forms/elements/LocationComboboxElement";
 import CheckboxElement from "../../forms/elements/CheckboxElement";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -27,8 +27,8 @@ const SchoolEventForm = ({ typeOption }) => {
     const { administratedSchool } = useSelector(state => state.mySchools)
     const { organizedEvent } = useSelector(state => state.myEvents)
     const [optionObject, setOptionObject] = useState(typeOption === TYPE_OPTIONS.EVENT ? organizedEvent : administratedSchool)
-    const [city, setCity] = useState(optionObject?.contactInfo?.city)
-    const [country, setCountry] = useState(optionObject?.contactInfo?.country)
+    const [city, setCity] = useState(optionObject?.contactInfo?.city || "")
+    const [country, setCountry] = useState(optionObject?.contactInfo?.country || "")
     const [lat, setLat] = useState(optionObject?.contactInfo?.latitude)
     const [lng, setLng] = useState(optionObject?.contactInfo?.latitude)
     const [dances, setDances] = useState(optionObject.dances);
@@ -40,8 +40,7 @@ const SchoolEventForm = ({ typeOption }) => {
     const [imageUrl, setImageUrl] = useState(optionObject.image)
     const [enableSetLocation, setEnableSetLocation] = useState(optionObject?.contactInfo?.latitude && optionObject?.contactInfo?.longitude)
     const { resizeImage } = useUpload()
-    console.log("sMonth", sMonth)
-    console.log("optionObject", optionObject)
+
     useEffect(() => {
         if (errors?.sDate?.type === "validate"
             && new Date(getValues().sYear, getMonthNumber(sMonth), getValues().sDay, getValues().sHour, getValues().sMinute) > new Date()){
@@ -83,8 +82,8 @@ const SchoolEventForm = ({ typeOption }) => {
         setValue('address', optionObject.contactInfo?.address)
         setValue('description', optionObject.description)
         setDances(optionObject.dances)
-        setCountry(optionObject.contactInfo?.country)
-        setCity(optionObject.contactInfo?.city)
+        setCountry(optionObject.contactInfo?.country || "")
+        setCity(optionObject.contactInfo?.city || "")
         setLat(optionObject?.contactInfo?.latitude)
         setLng(optionObject?.contactInfo?.longitude)
         setImageUrl(optionObject.image)
@@ -517,7 +516,7 @@ const SchoolEventForm = ({ typeOption }) => {
                             <span className="inline-flex items-center px-3 text-gray-500 sm:text-sm">
                               country:
                             </span>
-                            <ComboboxElement
+                            <LocationComboboxElement
                                 value={country}
                                 setValue={setCountry}
                                 request={getCountries}
@@ -528,12 +527,13 @@ const SchoolEventForm = ({ typeOption }) => {
                             <span className="inline-flex items-center px-3 text-gray-500 sm:text-sm">
                               city:
                             </span>
-                            <ComboboxElement
+                            <LocationComboboxElement
                                 value={city}
                                 setValue={setCity}
                                 request={getCities}
                                 setLat={setLat}
                                 setLng={setLng}
+                                isDisable={country === ""}
                             />
                         </div>
                     </div>

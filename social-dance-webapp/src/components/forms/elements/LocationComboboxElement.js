@@ -1,14 +1,20 @@
-import {useEffect, useState} from "react";
-import {CheckIcon, ChevronUpDownIcon} from "@heroicons/react/20/solid";
-import {classNamesJoin} from "../../../util/classNameUtils";
+import { useEffect, useState } from "react";
+import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
+import { classNamesJoin } from "../../../util/classNameUtils";
 import { Combobox } from '@headlessui/react'
 
-export default function ComboboxElement({ label, value, setValue, request, setLat, setLng }) {
+export default function LocationComboboxElement({ label, value, setValue, request, setLat, setLng, isDisable }) {
 
     const [filteredValues, setFilteredValues] = useState([])
     const [currentValue, setCurrentValue] = useState(value)
-    // const [disable, setDisable] = useState(false)
+    const [disable, setDisable] = useState(isDisable)
 
+    useEffect(() => {
+        setDisable(isDisable)
+        if (isDisable) {
+            setValue("")
+        }
+    }, [isDisable])
 
     useEffect(() => {
         setCurrentValue(value)
@@ -40,15 +46,14 @@ export default function ComboboxElement({ label, value, setValue, request, setLa
     }
 
     return (
-        <Combobox as="div" value={currentValue} onChange={setSelectedValue}>
+        <Combobox as="div" value={currentValue} onChange={setSelectedValue} disabled={Boolean(disable)}>
             <Combobox.Label className="block text-sm font-medium leading-6 text-gray-900">{label}</Combobox.Label>
             <div className="relative mt-2">
                 <Combobox.Input
                     className="w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1 ring-inset
                     ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     onChange={(event) => onChange(event.target.value)}
-                    displayValue={() => currentValue}
-                    // onFocus={(event) => event.target.disabled=disable}
+                    displayValue={() => String(currentValue)}
                 />
                 <Combobox.Button className="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
                     <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />

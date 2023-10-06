@@ -35,8 +35,9 @@ const Sidebar = ({ onChange }) => {
                     {chapters.map((chapter) => (
                         <li key={chapter.name}>
                             <a
+                                key={chapter.name}
                                 href={chapter.href}
-                                className={chapter.current && 'text-indigo-400'}
+                                className={chapter.current ? 'text-indigo-400' : undefined}
                                 onClick={() => handleChangeChapter(chapter)}
                             >
                                 {chapter.name}

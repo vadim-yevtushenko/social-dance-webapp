@@ -5,7 +5,7 @@ import { useValues } from "../../../hooks/useValues";
 import RadioGroupElement from "../../forms/elements/RadioGroupElement";
 import DropDownListElement from "../../forms/elements/DropDownListElement";
 import { joinDateString } from "../../../util/dateTimeUtils";
-import ComboboxElement from "../../forms/elements/ComboboxElement";
+import LocationComboboxElement from "../../forms/elements/LocationComboboxElement";
 import CheckboxElement from "../../forms/elements/CheckboxElement";
 import { useHttp } from "../../../hooks/http.hook";
 import { useForm } from "react-hook-form";
@@ -20,8 +20,8 @@ const InfoProfileComponent = () => {
     const { isAuthenticated, email, dancer } = useSelector(state => state.auth)
     const [level, setLevel] = useState(dancer.level)
     const [gender, setGender] = useState(dancer.gender)
-    const [city, setCity] = useState(dancer.contactInfo?.city)
-    const [country, setCountry] = useState(dancer.contactInfo?.country)
+    const [city, setCity] = useState(dancer.contactInfo?.city || "")
+    const [country, setCountry] = useState(dancer.contactInfo?.country || "")
     const [bMonth, setMonth] = useState("");
     const [dances, setDances] = useState(dancer.dances);
     const {request} = useHttp();
@@ -286,7 +286,7 @@ const InfoProfileComponent = () => {
                                         <span className="inline-flex items-center px-3 text-gray-500 sm:text-sm">
                                           country:
                                         </span>
-                                        <ComboboxElement
+                                        <LocationComboboxElement
                                             value={country}
                                             setValue={setCountry}
                                             request={getCountries}
@@ -297,11 +297,11 @@ const InfoProfileComponent = () => {
                                         <span className="inline-flex items-center px-3 text-gray-500 sm:text-sm">
                                           city:
                                         </span>
-                                        <ComboboxElement
+                                        <LocationComboboxElement
                                             value={city}
                                             setValue={setCity}
                                             request={getCities}
-                                            // isDisable={country === ""}
+                                            isDisable={country === ""}
                                         />
                                     </div>
                                 </div>

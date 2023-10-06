@@ -1,14 +1,14 @@
 import {Fragment} from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import {classNamesJoin} from "../../../util/classNameUtils";
-import {NavLink, useNavigate} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
-import {dancerLogout} from "../../../redux/actions/authActions";
-import {getOrganizedEvent} from "../../../redux/actions/eventActions";
-import {getAdministratedSchool} from "../../../redux/actions/schoolActions";
-import {loadingRequest} from "../../../redux/actions/requestActions";
-import {successHandling} from "../../../api/notificationHandling";
+import { classNamesJoin } from "../../../util/classNameUtils";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { dancerLogout } from "../../../redux/actions/authActions";
+import { getOrganizedEvent } from "../../../redux/actions/eventActions";
+import { getAdministratedSchool } from "../../../redux/actions/schoolActions";
+import { loadingRequest } from "../../../redux/actions/requestActions";
+import { successHandling } from "../../../api/notificationHandling";
 
 const navigation = [
   { name: 'Events', href: '/events' },
@@ -18,7 +18,6 @@ const navigation = [
 
 const menu = [
   { name: 'Your profile', href: '/profile' },
-  // { name: 'Settings', href: '/profile' },
   { name: 'Log out', href: '#' },
 ]
 
@@ -123,10 +122,9 @@ export default function MainHeader() {
                         <Menu.Items
                             className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                           {menu.map(item => (
-                              <Menu.Item >
+                              <Menu.Item key={item.name}>
                             {({active}) => (
                                 <NavLink
-                                    key={item.name}
                                     to={item.href}
                                     className={classNamesJoin(
                                         active ? 'bg-gray-100' : '',
@@ -207,6 +205,7 @@ export default function MainHeader() {
               <div className="mt-3 space-y-1 px-2">
                 {menu.map(item => (
                           <NavLink
+                              key={item.name}
                               to={item.href}
                               className='block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white'
                               onClick={() => item.name==='Log out' && logout()}
