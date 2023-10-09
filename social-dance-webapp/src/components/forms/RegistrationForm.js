@@ -25,7 +25,27 @@ const RegistrationForm = () => {
     const onSubmit = ({name, lastName, email, password}) => {
         const newDancer = {name, lastName, gender, level}
         dispatch(signup(email, password, newDancer))
-            .then(() => navigate("/profile"))
+            .then(() => {
+                if (isAuthenticated){
+                    navigate("/profile")
+                }
+            })
+    }
+
+    function validatePassword(value) {
+        const lowerCase = /[a-z]/g;
+        const upperCase = /[A-Z]/g;
+        const numbers = /\d/g;
+
+        if (!value.match(lowerCase)){
+            return "lowercase required."
+        }else if (!value.match(upperCase)){
+            return "uppercase required."
+        }else if (!value.match(numbers)){
+            return "number required."
+        }else {
+            return null
+        }
     }
 
     return (
@@ -130,7 +150,7 @@ const RegistrationForm = () => {
                                 <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
                                     Password
                                 </label>
-                                <p className="text-sm italic text-gray-500">required: uppercase and lowercase letters and numbers.</p>
+                                <p className="text-sm italic text-gray-500">required: uppercase, lowercase, numbers, min 8 symbols.</p>
                                 <div className="mt-2">
                                     <input
                                         id="password"
@@ -138,12 +158,19 @@ const RegistrationForm = () => {
                                         type="password"
                                         autoComplete="password"
                                         required
-                                        {...register('password', { required: true, minLength: 8 })}
+                                        {...register('password', { required: true, minLength: 8,
+                                        validate: (value) => {
+                                            const message = validatePassword(value)
+                                            if (message != null){
+                                                return message
+                                            }
+                                        }})}
                                         placeholder='**********'
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     />
                                     {errors?.password?.type === "required" && <p className="text-xs leading-5 text-red-700">Password is required.</p>}
                                     {errors?.password?.type === "minLength" && <p className="text-xs leading-5 text-red-700">Min length must be 8 symbols.</p>}
+                                    {errors?.password?.type === "validate" && <p className="text-xs leading-5 text-red-700">{errors.password.message}</p>}
                                 </div>
                             </div>
 
