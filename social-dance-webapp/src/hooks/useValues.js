@@ -68,6 +68,6 @@ export const useValues = () => {
         EVENT: "event"
     }
 
-    return {dancerPageSizeOptions: pageSizeOptions, eventOrSchoolPageSizeOptions, levelOptions, genderButtons, months, socialDances, TYPE_OPTIONS, ratingButtons}
+    return { dancerPageSizeOptions: pageSizeOptions, eventOrSchoolPageSizeOptions, levelOptions, genderButtons, months, socialDances, TYPE_OPTIONS, ratingButtons }
 
 }

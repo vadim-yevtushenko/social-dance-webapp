@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import RadioGroupElement from "./elements/RadioGroupElement";
 import DropDownListElement from "./elements/DropDownListElement";
 import { useValues } from "../../hooks/useValues";
 import { useForm } from "react-hook-form";
 import { signup } from "../../api/CredentialApi";
+import { useValidate } from "../../hooks/useValidate";
 
 const RegistrationForm = () => {
     const [gender, setGender] = useState();
     const [level, setLevel] = useState();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const {isAuthenticated} = useSelector(state => state.auth)
-    const {levelOptions, genderButtons} = useValues()
+    const { isAuthenticated } = useSelector(state => state.auth)
+    const { levelOptions, genderButtons } = useValues()
     const { register, handleSubmit, formState: { errors }, getValues } = useForm()
+    const { validatePassword } = useValidate()
 
     useEffect(() => {
         if (isAuthenticated){
@@ -32,21 +34,21 @@ const RegistrationForm = () => {
             })
     }
 
-    function validatePassword(value) {
-        const lowerCase = /[a-z]/g;
-        const upperCase = /[A-Z]/g;
-        const numbers = /\d/g;
-
-        if (!value.match(lowerCase)){
-            return "lowercase required."
-        }else if (!value.match(upperCase)){
-            return "uppercase required."
-        }else if (!value.match(numbers)){
-            return "number required."
-        }else {
-            return null
-        }
-    }
+    // function validatePassword(value) {
+    //     const lowerCase = /[a-z]/g;
+    //     const upperCase = /[A-Z]/g;
+    //     const numbers = /\d/g;
+    //
+    //     if (!value.match(lowerCase)){
+    //         return "lowercase required."
+    //     }else if (!value.match(upperCase)){
+    //         return "uppercase required."
+    //     }else if (!value.match(numbers)){
+    //         return "number required."
+    //     }else {
+    //         return null
+    //     }
+    // }
 
     return (
         <>
@@ -150,7 +152,7 @@ const RegistrationForm = () => {
                                 <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
                                     Password
                                 </label>
-                                <p className="text-sm italic text-gray-500">required: uppercase, lowercase, numbers, min 8 symbols.</p>
+                                <p className="text-sm italic text-gray-500">required: uppercase, lowercase, number, min 8 symbols.</p>
                                 <div className="mt-2">
                                     <input
                                         id="password"
