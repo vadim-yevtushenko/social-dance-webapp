@@ -27,5 +27,5 @@ export const useUpload = () => {
         return file
     }
 
-    return {checkSize, resizeImage}
+    return { checkSize, resizeImage }
 }

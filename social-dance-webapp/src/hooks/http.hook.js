@@ -1,6 +1,6 @@
-import {useCallback} from "react";
+import { useCallback } from "react";
 import React from "react";
-import {errorHandling} from "../api/notificationHandling";
+import { errorHandling } from "../api/notificationHandling";
 
 export const useHttp = () => {
 

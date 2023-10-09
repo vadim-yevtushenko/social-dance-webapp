@@ -1,14 +1,16 @@
 import { useForm } from "react-hook-form";
 import React from "react";
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { deleteDancer } from "../../../api/DancerApi";
 import { changePassword } from "../../../api/CredentialApi";
+import { useValidate } from "../../../hooks/useValidate";
 
 const SettingsProfileComponent = () => {
     const {email, password, dancer} = useSelector(state => state.auth)
     const { register, handleSubmit, formState: { errors }, getValues, setValue } = useForm()
     const { register: deleteRegister, handleSubmit: deleteHandleSubmit, formState: { errors: deleteErrors }, getValues: deleteGetValues } = useForm()
     const dispatch = useDispatch();
+    const { validatePassword } = useValidate()
 
     function onChangeSubmit(data) {
         dispatch(changePassword(email, data.newPassword, data.currentPassword))
@@ -67,10 +69,17 @@ const SettingsProfileComponent = () => {
                                             autoComplete="newPassword"
                                             className="block w-full rounded-md border-1 bg-white/5 py-1.5 text-black shadow-md
                                             ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                                            {...register('newPassword', { required: true, minLength: 8 })}
+                                            {...register('newPassword', { required: true, minLength: 8,
+                                                validate: (value) => {
+                                                    const message = validatePassword(value)
+                                                    if (message != null){
+                                                        return message
+                                                    }
+                                                }})}
                                         />
                                         {errors?.newPassword?.type === "required" && <p className="text-xs leading-5 text-red-700">New password is required.</p>}
                                         {errors?.newPassword?.type === "minLength" && <p className="text-xs leading-5 text-red-700">Min length must be 8 symbols.</p>}
+                                        {errors?.newPassword?.type === "validate" && <p className="text-xs leading-5 text-red-700">{errors.newPassword.message}</p>}
                                     </div>
                                 </div>
 
