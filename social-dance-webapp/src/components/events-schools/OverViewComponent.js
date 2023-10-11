@@ -127,7 +127,7 @@ const OverViewComponent = ({ typeOption }) => {
                                     <h2 className="text-sm font-medium text-gray-900">Location:</h2>
                                     {viewObject?.contactInfo?.latitude && viewObject?.contactInfo?.longitude && (
                                         <a
-                                            className="text-sm font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer"
+                                            className="text-sm font-medium text-indigo-700 hover:text-indigo-500 cursor-pointer"
                                             onClick={() => setOpenMap(!openMap)}
                                         >
                                             {!openMap ? "See on the map": "Close map"}
