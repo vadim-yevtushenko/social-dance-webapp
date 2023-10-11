@@ -1,14 +1,17 @@
-import {useEffect, useState} from "react";
-import {useValues} from "../../../hooks/useValues";
+import { useEffect, useState } from "react";
+import { useValues } from "../../../hooks/useValues";
 
-export default function CheckboxElement({label, checkedDances, setDances}) {
+export default function CheckboxElement({ label, checkedDances, setDances }) {
 
     const [checkedState, setCheckedState] = useState([]);
-    const [checkedDancerDances, setCheckedDancerDances] = useState(checkedDances);
-    const {socialDances} = useValues()
+    const [title, setTitle] = useState("");
+    const { socialDances } = useValues()
 
     useEffect(() => {
-        setCheckedDancerDances(checkedDances)
+        setTitle(label)
+    }, [label])
+
+    useEffect(() => {
         if (checkedDances?.length > 0){
             socialDances?.forEach((element, i) => {
                 checkedState[i] = !!checkedDances.includes(element.name);
@@ -36,7 +39,7 @@ export default function CheckboxElement({label, checkedDances, setDances}) {
 
     return (
         <fieldset>
-            <legend className="text-base font-semibold leading-6 text-gray-900">{label}</legend>
+            {title && <legend className="text-base font-semibold leading-6 text-gray-900">{title}</legend>}
             <div className="mt-4 divide-y divide-gray-400 border-b border-t border-gray-400">
                 {socialDances?.map((dance, i) => (
                     <div key={dance.id} className="relative flex items-start py-4">

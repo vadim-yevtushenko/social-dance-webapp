@@ -1,7 +1,7 @@
-import React, {useEffect} from "react";
-import {useForm} from "react-hook-form";
-import {useDispatch, useSelector} from "react-redux";
-import {sendSupportEmail} from "../../../api/AdminApi";
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { sendSupportEmail } from "../../../api/AdminApi";
 
 const SupportForm = ({ setOpenDialog }) => {
     const dispatch = useDispatch();
@@ -26,7 +26,7 @@ const SupportForm = ({ setOpenDialog }) => {
     }
 
     return (
-        <div className="">
+        <div>
             <form
                 className="space-y-6"
                 onSubmit={handleSubmit(onSubmit)}

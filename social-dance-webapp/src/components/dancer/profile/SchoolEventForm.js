@@ -9,14 +9,15 @@ import { useHttp } from "../../../hooks/http.hook";
 import { useForm } from "react-hook-form";
 import { eventMapper, schoolMapper } from "../../../util/mapper";
 import { GET } from "../../../api/Endpoints";
-import {getMonthNumber, joinDateTimeString} from "../../../util/dateTimeUtils";
+import { getMonthNumber, joinDateTimeString } from "../../../util/dateTimeUtils";
 import { deleteSchoolImage, fetchAdministratedSchool, saveSchool, uploadSchoolImage } from "../../../api/SchoolApi";
 import { useUpload } from "../../../hooks/useUpload";
-import {deleteEventImage, fetchOrganizedEvent, saveEvent, uploadEventImage} from "../../../api/EventApi";
+import { deleteEventImage, fetchOrganizedEvent, saveEvent, uploadEventImage } from "../../../api/EventApi";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import React from "react";
 import { fetchDancer } from "../../../api/DancerApi";
 import MapComponent from "../../events-schools/MapComponent";
+import DialogComponent from "../../modals/DialogComponent";
 
 const SchoolEventForm = ({ typeOption }) => {
 
@@ -40,6 +41,7 @@ const SchoolEventForm = ({ typeOption }) => {
     const [imageUrl, setImageUrl] = useState(optionObject.image)
     const [enableSetLocation, setEnableSetLocation] = useState(optionObject?.contactInfo?.latitude && optionObject?.contactInfo?.longitude)
     const { resizeImage } = useUpload()
+    const [openDialog, setOpenDialog] = useState(false)
 
     useEffect(() => {
         if (errors?.sDate?.type === "validate"
@@ -591,13 +593,34 @@ const SchoolEventForm = ({ typeOption }) => {
                 </div>
 
                 <div className="col-span-full mb-12">
-                    <label htmlFor="about" className="block text-md font-medium leading-6 text-black">
-                        Dances
-                    </label>
-                    <CheckboxElement
-                        checkedDances={dances?.map(dance => dance.name)}
-                        setDances={setDances}
-                    />
+                    <div className="flex justify-between">
+                        <label htmlFor="about" className="block text-md font-medium leading-6 text-black">
+                            Dances
+                        </label>
+                        <a
+                            className="text-sm font-medium text-indigo-700 hover:text-indigo-500 cursor-pointer"
+                            onClick={() => setOpenDialog(true)}
+                        >
+                            {dances?.length > 0 ? "change dances list" : "add dances"}
+                        </a>
+                    </div>
+
+                    <div className="prose prose-sm mt-4 text-gray-500">
+                        <ul role="list" className="columns-2">
+                            {dances?.map((dance) => (
+                                <li key={dance.id}>{dance.name}</li>
+                            ))}
+                        </ul>
+                    </div>
+                    <DialogComponent openDialog={openDialog} setOpenDialog={setOpenDialog}>
+                        <div className="flex-col w-2/3">
+                            <CheckboxElement
+                                label={"Dances"}
+                                checkedDances={dances?.map(dance => dance.name)}
+                                setDances={setDances}
+                            />
+                        </div>
+                    </DialogComponent>
                 </div>
             </div>
 

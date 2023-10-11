@@ -1,4 +1,4 @@
-import DialogComponent from "./DialogComponent";
+import DialogComponent from "../../modals/DialogComponent";
 import { useState } from "react";
 import React from "react";
 import AboutForm from "./AboutForm";

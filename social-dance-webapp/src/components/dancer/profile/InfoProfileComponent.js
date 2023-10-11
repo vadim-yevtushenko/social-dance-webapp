@@ -13,6 +13,8 @@ import { GET } from "../../../api/Endpoints";
 import { dancerMapper } from "../../../util/mapper";
 import { useUpload } from "../../../hooks/useUpload";
 import { deleteDancerImage, fetchDancer, saveDancer, uploadDancerImage } from "../../../api/DancerApi";
+import DialogComponent from "../../modals/DialogComponent";
+import React from "react";
 
 const InfoProfileComponent = () => {
     const navigate = useNavigate();
@@ -30,6 +32,7 @@ const InfoProfileComponent = () => {
     const [photo, setPhoto] = useState()
     const [photoUrl, setPhotoUrl] = useState(dancer.image)
     const { resizeImage } = useUpload()
+    const [openDialog, setOpenDialog] = useState(false)
 
     useEffect(() => {
         if (!isAuthenticated){
@@ -326,13 +329,34 @@ const InfoProfileComponent = () => {
                             </div>
 
                             <div className="col-span-full mb-12">
-                                <label htmlFor="about" className="block text-md font-medium leading-6 text-black">
-                                    Dances
-                                </label>
-                                <CheckboxElement
-                                    checkedDances={dances?.map(dance => dance.name)}
-                                    setDances={setDances}
-                                />
+                                <div className="flex justify-between">
+                                    <label htmlFor="about" className="block text-md font-medium leading-6 text-black">
+                                        Dances
+                                    </label>
+                                    <a
+                                        className="text-sm font-medium text-indigo-700 hover:text-indigo-500 cursor-pointer"
+                                        onClick={() => setOpenDialog(true)}
+                                    >
+                                        {dances?.length > 0 ? "change dances list" : "add dances"}
+                                    </a>
+                                </div>
+
+                                <div className="prose prose-sm mt-4 text-gray-500">
+                                    <ul role="list" className="columns-2">
+                                        {dances?.map((dance) => (
+                                            <li key={dance.id}>{dance.name}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                                <DialogComponent openDialog={openDialog} setOpenDialog={setOpenDialog}>
+                                    <div className="flex-col w-2/3">
+                                        <CheckboxElement
+                                            label={"Dances"}
+                                            checkedDances={dances?.map(dance => dance.name)}
+                                            setDances={setDances}
+                                        />
+                                    </div>
+                                </DialogComponent>
                             </div>
                         </div>
 
