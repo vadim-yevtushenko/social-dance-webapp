@@ -13,6 +13,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import MapComponent from "./MapComponent";
 import DancerQuickViewComponent from "../dancer/DancerQuickViewComponent";
+import SocialNetworksComponent from "./SocialNetworksComponent";
 
 const OverViewComponent = ({ typeOption }) => {
     const dispatch = useDispatch();
@@ -156,6 +157,12 @@ const OverViewComponent = ({ typeOption }) => {
                                         // dangerouslySetInnerHTML={{ __html: viewObject?.description }}
                                     />
                                     {viewObject?.description}
+                                </div>
+                            )}
+
+                            {viewObject?.socialNetworks && (
+                                <div className="mt-8">
+                                    <SocialNetworksComponent socialNetworks={viewObject?.socialNetworks}/>
                                 </div>
                             )}
 

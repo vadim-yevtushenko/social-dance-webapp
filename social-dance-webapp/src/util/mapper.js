@@ -1,10 +1,11 @@
-export const dancerMapper = (id, name, lastName, gender, birthday, description, level, dances, contactInfo, image) => {
+export const dancerMapper = (id, name, lastName, gender, socialNetworks, birthday, description, level, dances, contactInfo, image) => {
     return{
         id,
         name,
         lastName,
         gender,
         birthday,
+        socialNetworks,
         description,
         level,
         dances,
@@ -13,25 +14,27 @@ export const dancerMapper = (id, name, lastName, gender, birthday, description, 
     }
 }
 
-export const schoolMapper = (id, name, description, dances, contactInfo, image, administrators) => {
+export const schoolMapper = (id, name, description, dances, contactInfo, socialNetworks, image, administrators) => {
     return{
         id,
         name,
         description,
         dances,
         contactInfo,
+        socialNetworks,
         image,
         administrators
     }
 }
 
-export const eventMapper = (id, name, description, dances, contactInfo, image, dateEvent, dateFinishEvent, organizers, schoolOrganizerId) => {
+export const eventMapper = (id, name, description, dances, contactInfo, socialNetworks, image, dateEvent, dateFinishEvent, organizers, schoolOrganizerId) => {
     return{
         id,
         name,
         description,
         dances,
         contactInfo,
+        socialNetworks,
         image,
         dateEvent,
         dateFinishEvent,
