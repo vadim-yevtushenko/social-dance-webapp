@@ -49,7 +49,8 @@ const InfoProfileComponent = () => {
 
     const onSubmit = (data) => {
         const contactInfo = { email: data.email, phoneNumber: data.phoneNumber, country, city }
-        const updatedDancer = dancerMapper(dancer.id, data.name, data.lastName, gender,
+        const socialNetworks = { instagram: data.instagram, facebook: data.facebook, youtube: data.youtube }
+        const updatedDancer = dancerMapper(dancer.id, data.name, data.lastName, gender, socialNetworks,
             joinDateString(data.year, bMonth, data.day, months), data.description, level, dances, contactInfo, photoUrl)
         dispatch(saveDancer(updatedDancer))
     }
@@ -308,6 +309,59 @@ const InfoProfileComponent = () => {
                                         />
                                     </div>
                                 </div>
+                            </div>
+
+                            <div className="col-span-full">
+                                <label htmlFor="location" className="block text-sm font-medium leading-6 text-black">
+                                    Social networks
+                                </label>
+
+                                <div className="mt-2 sm:flex sm:justify-between">
+                                    <span className="inline-flex items-center px-3 text-gray-500 sm:text-sm">
+                                          instagram:
+                                        </span>
+                                    <input
+                                        type="text"
+                                        name="instagram"
+                                        id="instagram"
+                                        autoComplete="instagram"
+                                        {...register('instagram', { value: dancer?.socialNetworks?.instagram })}
+                                        className="block w-full sm:w-5/6 rounded-md border-1 bg-white/2 py-1.5 text-black shadow-md ring-1 ring-inset
+                                        ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                                    />
+                                    {/*{errors?.instagram?.type === "required" && <p className="text-xs leading-5 text-red-700">Name is required</p>}*/}
+                                </div>
+                                <div className="mt-2 sm:flex sm:justify-between">
+                                    <span className="inline-flex items-center px-3 text-gray-500 sm:text-sm">
+                                          facebook:
+                                        </span>
+                                    <input
+                                        type="text"
+                                        name="facebook"
+                                        id="facebook"
+                                        autoComplete="facebook"
+                                        {...register('facebook', { value: dancer?.socialNetworks?.facebook })}
+                                        className="block w-full sm:w-5/6 rounded-md border-1 bg-white/2 py-1.5 text-black shadow-md ring-1 ring-inset
+                                        ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                                    />
+                                    {/*{errors?.facebook?.type === "required" && <p className="text-xs leading-5 text-red-700">Name is required</p>}*/}
+                                </div>
+                                <div className="mt-2 sm:flex sm:justify-between">
+                                    <span className="inline-flex items-center px-3 text-gray-500 sm:text-sm">
+                                          youtube:
+                                        </span>
+                                    <input
+                                        type="text"
+                                        name="youtube"
+                                        id="youtube"
+                                        autoComplete="youtube"
+                                        {...register('youtube', { value: dancer?.socialNetworks?.youtube })}
+                                        className="block w-full sm:w-5/6 rounded-md border-1 bg-white/2 py-1.5 text-black shadow-md ring-1 ring-inset
+                                        ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                                    />
+                                    {/*{errors?.youtube?.type === "required" && <p className="text-xs leading-5 text-red-700">Name is required</p>}*/}
+                                </div>
+
                             </div>
 
                             <div className="col-span-full">

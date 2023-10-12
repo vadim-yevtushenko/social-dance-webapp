@@ -5,6 +5,7 @@ import { classNamesJoin } from "../../util/classNameUtils";
 import { useEffect } from "react";
 import { parseFullDateString } from "../../util/dateTimeUtils";
 import React from "react";
+import SocialNetworksComponent from "../events-schools/SocialNetworksComponent";
 
 const DancerQuickViewComponent = ({ openView, setOpenView, dancer }) => {
     const [open, setOpen] = useState(openView)
@@ -94,6 +95,12 @@ const DancerQuickViewComponent = ({ openView, setOpenView, dancer }) => {
                                                         <div className="flex items-center">
                                                             {dancer.contactInfo.country}, {dancer.contactInfo.city}
                                                         </div>
+                                                    </div>
+                                                )}
+
+                                                {dancer?.socialNetworks && (
+                                                    <div className="mt-4">
+                                                        <SocialNetworksComponent socialNetworks={dancer.socialNetworks}/>
                                                     </div>
                                                 )}
                                             </section>

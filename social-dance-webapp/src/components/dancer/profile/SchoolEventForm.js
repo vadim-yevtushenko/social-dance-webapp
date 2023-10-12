@@ -113,14 +113,15 @@ const SchoolEventForm = ({ typeOption }) => {
         const latitude = enableSetLocation ? lat : null
         const longitude = enableSetLocation ? lng : null
         const contactInfo = { email: data.email, phoneNumber: data.phoneNumber, country, city, address: data.address, latitude, longitude }
+        const socialNetworks = { instagram: data.instagram, facebook: data.facebook, youtube: data.youtube }
         if (typeOption === TYPE_OPTIONS.SCHOOL){
-            const newSchool = schoolMapper(optionObject?.id, data.name, data.description, dances, contactInfo, imageUrl, [dancer])
+            const newSchool = schoolMapper(optionObject?.id, data.name, data.description, dances, contactInfo, socialNetworks, imageUrl, [dancer])
             dispatch(saveSchool(newSchool))
         }else {
             const startDate = joinDateTimeString(data.sYear, sMonth, data.sDay, data.sHour, data.sMinute, months)
             const finishDate = joinDateTimeString(data.fYear, fMonth, data.fDay, data.fHour, data.fMinute, months)
-            const newEvent = eventMapper(optionObject?.id, data.name, data.description, dances, contactInfo, imageUrl,
-                startDate, finishDate, [dancer])
+            const newEvent = eventMapper(optionObject?.id, data.name, data.description, dances, contactInfo, socialNetworks,
+                imageUrl, startDate, finishDate, [dancer])
             dispatch(saveEvent(newEvent))
                 .then(() => {
                     dispatch(fetchDancer(dancer.id))
@@ -506,6 +507,56 @@ const SchoolEventForm = ({ typeOption }) => {
                                         ring-black/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                         />
                     </div>
+                </div>
+
+                <div className="col-span-full">
+                    <label htmlFor="location" className="block text-sm font-medium leading-6 text-black">
+                        Social networks
+                    </label>
+
+                    <div className="mt-2 sm:flex sm:justify-between">
+                        <span className="inline-flex items-center px-3 text-gray-500 sm:text-sm">
+                          instagram:
+                        </span>
+                        <input
+                            type="text"
+                            name="instagram"
+                            id="instagram"
+                            autoComplete="instagram"
+                            {...register('instagram', { value: optionObject?.socialNetworks?.instagram })}
+                            className="block w-full sm:w-5/6 rounded-md border-1 bg-white/2 py-1.5 text-black shadow-md ring-1 ring-inset
+                                        ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                        />
+                    </div>
+                    <div className="mt-2 sm:flex sm:justify-between">
+                        <span className="inline-flex items-center px-3 text-gray-500 sm:text-sm">
+                          facebook:
+                        </span>
+                        <input
+                            type="text"
+                            name="facebook"
+                            id="facebook"
+                            autoComplete="facebook"
+                            {...register('facebook', { value: optionObject?.socialNetworks?.facebook })}
+                            className="block w-full sm:w-5/6 rounded-md border-1 bg-white/2 py-1.5 text-black shadow-md ring-1 ring-inset
+                                        ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                        />
+                    </div>
+                    <div className="mt-2 sm:flex sm:justify-between">
+                        <span className="inline-flex items-center px-3 text-gray-500 sm:text-sm">
+                          youtube:
+                        </span>
+                        <input
+                            type="text"
+                            name="youtube"
+                            id="youtube"
+                            autoComplete="youtube"
+                            {...register('youtube', { value: optionObject?.socialNetworks?.youtube })}
+                            className="block w-full sm:w-5/6 rounded-md border-1 bg-white/2 py-1.5 text-black shadow-md ring-1 ring-inset
+                                        ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                        />
+                    </div>
+
                 </div>
 
                 <div className="col-span-full max-h-md">
