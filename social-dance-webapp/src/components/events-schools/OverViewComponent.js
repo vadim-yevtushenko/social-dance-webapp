@@ -184,7 +184,7 @@ const OverViewComponent = ({ typeOption }) => {
                                         <h2 className="text-sm font-medium text-gray-900">Administrators</h2>
 
                                         <div className="prose prose-sm mt-4 text-gray-500">
-                                            <ul role="list">
+                                            <ul role="list" className="columns-2">
                                                 {viewObject?.administrators?.map((dancer) => (
                                                     <li key={dancer.id}>
                                                         <a
@@ -222,31 +222,37 @@ const OverViewComponent = ({ typeOption }) => {
                             ) : (
                                 <>
                                     <div className="mt-8 border-t border-gray-200 pt-8">
-                                        <h2 className="text-sm font-medium text-gray-900">Organizers</h2>
+                                        <div className="flex justify-between">
+                                            <div>
+                                                <h2 className="text-sm font-medium text-gray-900">Organizers</h2>
+                                                <div className="prose prose-sm mt-4 text-gray-500">
+                                                    <ul role="list">
+                                                        {viewObject?.organizers?.map((dancer) => (
+                                                            <li key={dancer.id}>
+                                                                <a
+                                                                    className="cursor-pointer"
+                                                                    onClick={() => openDancerInfo(dancer)}
+                                                                >
+                                                                    {dancer.name} {dancer.lastName}
+                                                                </a>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            {viewObject?.schoolOrganizer && (
+                                                <div>
+                                                    <h2 className="text-sm font-medium text-gray-900">School organizer</h2>
+                                                    <div className="prose prose-sm mt-4 text-gray-900">
+                                                        <ul role="list">
+                                                            <li>{viewObject.schoolOrganizer.name}</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
 
-                                        <div className="prose prose-sm mt-4 text-gray-500">
-                                            <ul role="list">
-                                                {viewObject?.organizers?.map((dancer) => (
-                                                    <li key={dancer.id}>
-                                                        <a
-                                                            className="cursor-pointer"
-                                                            onClick={() => openDancerInfo(dancer)}
-                                                        >
-                                                            {dancer.name} {dancer.lastName}
-                                                        </a>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
                                     </div>
-                                    {viewObject?.schoolOrganizerId && (
-                                        <div className="mt-8 border-y border-gray-200 pt-8">
-                                            <h2 className="text-sm font-medium text-gray-900">School organizer:</h2>
-                                            <a className="cursor-pointer">
-                                                {viewObject.schoolOrganizerId}
-                                            </a>
-                                        </div>
-                                    )}
                                 </>
                             )}
 

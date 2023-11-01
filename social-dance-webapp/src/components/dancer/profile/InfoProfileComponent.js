@@ -26,13 +26,17 @@ const InfoProfileComponent = () => {
     const [country, setCountry] = useState(dancer.contactInfo?.country || "")
     const [bMonth, setMonth] = useState("");
     const [dances, setDances] = useState(dancer.dances);
-    const {request} = useHttp();
+    const { request } = useHttp();
     const { register, handleSubmit, formState: { errors }, setValue} = useForm()
     const { levelOptions, genderButtons, months } = useValues()
     const [photo, setPhoto] = useState()
     const [photoUrl, setPhotoUrl] = useState(dancer.image)
     const { resizeImage } = useUpload()
     const [openDialog, setOpenDialog] = useState(false)
+
+    useEffect(() => {
+        dispatch(fetchDancer(dancer.id))
+    }, [])
 
     useEffect(() => {
         if (!isAuthenticated){
@@ -211,7 +215,7 @@ const InfoProfileComponent = () => {
                                         name="phoneNumber"
                                         type="text"
                                         autoComplete="phoneNumber"
-                                        placeholder="+* (***) ***-****"
+                                        placeholder="+** (***) ***-****"
                                         {...register('phoneNumber', { value: dancer.contactInfo?.phoneNumber, maxLength: 60, minLength: 12 })}
                                         className="block w-full rounded-md border-1 bg-white/5 py-1.5 text-black shadow-md ring-1 ring-inset
                                         ring-black/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"

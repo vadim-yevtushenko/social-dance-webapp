@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { fetchDancers } from "../../api/DancerApi";
-import DancerTable from "./DancerTable";
+import DancersTable from "./DancersTable";
 import PaginationComponent from "../pagination/PaginationComponent";
 import { useValues } from "../../hooks/useValues";
-import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { useDispatch, useSelector } from "react-redux";
+import DancerSearchComponent from "./DancerSearchComponent";
 
 const DancersComponent = () => {
 
@@ -26,52 +26,14 @@ const DancersComponent = () => {
                 <div className="sm:flex-auto">
                     <h1 className="text-base font-semibold leading-6 text-gray-900">Dancers</h1>
                 </div>
-                <div className="flex flex-1 justify-center px-2 lg:ml-6 lg:justify-end my-1 sm:my-0">
-                    <div className="w-full max-w-lg ">
-                        <label htmlFor="search" className="sr-only">
-                            Search
-                        </label>
-                        <div className="relative">
-                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                            </div>
-                            <input
-                                id="name"
-                                name="name"
-                                className="block w-full rounded-md border-0 bg-gray-700 py-1.5 pl-10 pr-3 text-gray-300
-                                placeholder:text-gray-400 focus:bg-white focus:text-gray-900 focus:ring-0 sm:text-sm sm:leading-6"
-                                placeholder="Name"
-                                type="search"
-                                value={name}
-                                onChange={event => setName(event.target.value)}
-                            />
-                        </div>
-                    </div>
-                </div>
-                <div className="flex flex-1 justify-center px-2 lg:ml-6 lg:justify-end">
-                    <div className="w-full max-w-lg ">
-                        <label htmlFor="search" className="sr-only">
-                            Search
-                        </label>
-                        <div className="relative">
-                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                            </div>
-                            <input
-                                id="lastName"
-                                name="lastName"
-                                className="block w-full rounded-md border-0 bg-gray-700 py-1.5 pl-10 pr-3 text-gray-300
-                                placeholder:text-gray-400 focus:bg-white focus:text-gray-900 focus:ring-0 sm:text-sm sm:leading-6"
-                                placeholder="Last name"
-                                type="search"
-                                value={lastName}
-                                onChange={event => setLastName(event.target.value)}
-                            />
-                        </div>
-                    </div>
-                </div>
+                <DancerSearchComponent
+                    name={name}
+                    setName={setName}
+                    lastName={lastName}
+                    setLastName={setLastName}
+                />
             </div>
-            <DancerTable/>
+            <DancersTable/>
             <PaginationComponent
                 page={page}
                 size={size}

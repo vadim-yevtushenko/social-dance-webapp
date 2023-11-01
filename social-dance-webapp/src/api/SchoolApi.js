@@ -3,7 +3,7 @@ import { DELETE, GET, POST } from "./Endpoints";
 import { loadingRequest } from "../redux/actions/requestActions";
 import { errorHandling, successHandling } from "./notificationHandling";
 import { getAdministratedSchool } from "../redux/actions/schoolActions";
-import {getSchools, getViewObject} from "../redux/actions/ListsActions";
+import {getSchools, getViewObject} from "../redux/actions/listsActions";
 
 export const fetchSchools = (name, country, city, page, size) => (dispatch) => {
     return requestWrapper({
@@ -51,12 +51,12 @@ export const fetchViewSchool = (id) => (dispatch) => {
     })
 }
 
-export const saveSchool = (school) => (dispatch) => {
+export const saveSchool = (school, adminId) => (dispatch) => {
     dispatch(loadingRequest(true))
     return requestWrapper({
         axiosConfig: {
             method: 'POST',
-            url: POST.saveSchool(),
+            url: POST.saveSchool(adminId),
             data: school,
             headers: {'Content-Type': 'application/json' }
         }

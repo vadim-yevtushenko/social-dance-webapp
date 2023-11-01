@@ -74,7 +74,7 @@ export const POST = {
     uploadDancerImage: (id) => `${API_BASE_URL}/dancers/upload-image?id=${id}`,
 
     // Schools
-    saveSchool: () => `${API_BASE_URL}/schools`,
+    saveSchool: (adminId) => `${API_BASE_URL}/schools?id=${adminId}`,
     uploadSchoolImage: (id) => `${API_BASE_URL}/schools/upload-image?id=${id}`,
 
     // Events

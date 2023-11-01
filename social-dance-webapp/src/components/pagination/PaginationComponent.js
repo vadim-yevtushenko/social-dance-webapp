@@ -1,6 +1,6 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import DropDownListElement from "../forms/elements/DropDownListElement";
-import {classNamesJoin} from "../../util/classNameUtils";
+import { classNamesJoin } from "../../util/classNameUtils";
 
 export default function PaginationComponent({page, size, total, setPage, setSize, pageSizeOptions, shortMode=false}) {
 
@@ -21,30 +21,6 @@ export default function PaginationComponent({page, size, total, setPage, setSize
 
     return (
         <div className="flex items-center sm:justify-between justify-center  border-t border-gray-200 bg-white px-4 py-3 sm:px-6 mb-4">
-            {/*<div className="flex flex-1 justify-between sm:hidden">*/}
-            {/*    <button*/}
-            {/*        disabled={page < 2}*/}
-            {/*        onClick={() => setPage(page - 1)}*/}
-            {/*        className={classNamesJoin(*/}
-            {/*            page > 1 && "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",*/}
-            {/*            "relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 focus:z-20 focus:outline-offset-0"*/}
-
-            {/*        )}*/}
-            {/*    >*/}
-            {/*        Previous*/}
-            {/*    </button>*/}
-            {/*    <button*/}
-            {/*        disabled={page >= total/size}*/}
-            {/*        onClick={() => setPage(page + 1)}*/}
-            {/*        className={classNamesJoin(*/}
-            {/*            page < total/size && "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",*/}
-            {/*            "relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 focus:z-20 focus:outline-offset-0"*/}
-
-            {/*        )}*/}
-            {/*    >*/}
-            {/*        Next*/}
-            {/*    </button>*/}
-            {/*</div>*/}
             <div className="hidden sm:flex sm:flex-1 sm:items-center">
 
                     {shortMode || (
