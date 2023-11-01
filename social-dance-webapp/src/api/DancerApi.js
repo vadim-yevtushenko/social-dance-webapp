@@ -5,7 +5,7 @@ import { errorHandling, successHandling } from "./notificationHandling";
 import { dancerLogout, updateDancer } from "../redux/actions/authActions";
 import { getOrganizedEvent } from "../redux/actions/eventActions";
 import { getAdministratedSchool } from "../redux/actions/schoolActions";
-import {getDancers} from "../redux/actions/ListsActions";
+import { getDancers } from "../redux/actions/listsActions";
 
 
 export const fetchDancers = (name, lastName, country, city, page, size) => (dispatch) => {

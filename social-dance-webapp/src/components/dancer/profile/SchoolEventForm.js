@@ -1,23 +1,23 @@
 import DropDownListElement from "../../forms/elements/DropDownListElement";
 import LocationComboboxElement from "../../forms/elements/LocationComboboxElement";
 import CheckboxElement from "../../forms/elements/CheckboxElement";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { useValues } from "../../../hooks/useValues";
-import { useHttp } from "../../../hooks/http.hook";
-import { useForm } from "react-hook-form";
-import { eventMapper, schoolMapper } from "../../../util/mapper";
-import { GET } from "../../../api/Endpoints";
-import { getMonthNumber, joinDateTimeString } from "../../../util/dateTimeUtils";
-import { deleteSchoolImage, fetchAdministratedSchool, saveSchool, uploadSchoolImage } from "../../../api/SchoolApi";
-import { useUpload } from "../../../hooks/useUpload";
-import { deleteEventImage, fetchOrganizedEvent, saveEvent, uploadEventImage } from "../../../api/EventApi";
-import { PhotoIcon } from "@heroicons/react/24/solid";
-import React from "react";
-import { fetchDancer } from "../../../api/DancerApi";
+import React, {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {useValues} from "../../../hooks/useValues";
+import {useHttp} from "../../../hooks/http.hook";
+import {useForm} from "react-hook-form";
+import {eventMapper, schoolMapper} from "../../../util/mapper";
+import {GET} from "../../../api/Endpoints";
+import {getMonthNumber, joinDateTimeString} from "../../../util/dateTimeUtils";
+import {deleteSchoolImage, fetchAdministratedSchool, saveSchool, uploadSchoolImage} from "../../../api/SchoolApi";
+import {useUpload} from "../../../hooks/useUpload";
+import {deleteEventImage, fetchOrganizedEvent, saveEvent, uploadEventImage} from "../../../api/EventApi";
+import {PhotoIcon} from "@heroicons/react/24/solid";
+import {fetchDancer} from "../../../api/DancerApi";
 import MapComponent from "../../events-schools/MapComponent";
 import DialogComponent from "../../modals/DialogComponent";
+import EditSchoolAdministratorsForm from "./administrate/EditSchoolAdministratorsForm";
 
 const SchoolEventForm = ({ typeOption }) => {
 
@@ -41,7 +41,10 @@ const SchoolEventForm = ({ typeOption }) => {
     const [imageUrl, setImageUrl] = useState(optionObject.image)
     const [enableSetLocation, setEnableSetLocation] = useState(optionObject?.contactInfo?.latitude && optionObject?.contactInfo?.longitude)
     const { resizeImage } = useUpload()
-    const [openDialog, setOpenDialog] = useState(false)
+    const [openDancesDialog, setOpenDancesDialog] = useState(false)
+    const [openAdministratorsDialog, setOpenAdministratorsDialog] = useState(false)
+    const [schoolOrganizer, setSchoolOrganizer] = useState(optionObject?.schoolOrganizer)
+    const [administrators, setAdministrators] = useState(optionObject?.administrators)
 
     useEffect(() => {
         if (errors?.sDate?.type === "validate"
@@ -106,6 +109,9 @@ const SchoolEventForm = ({ typeOption }) => {
             setValue('sMinute', sTime?.split(":")[1])
             setValue('fHour', fTime?.split(":")[0])
             setValue('fMinute', fTime?.split(":")[1])
+            setSchoolOrganizer(optionObject?.schoolOrganizer)
+        }else {
+            setAdministrators(optionObject?.administrators?.length > 0 ? optionObject?.administrators : [dancer])
         }
     }, [optionObject])
 
@@ -115,13 +121,13 @@ const SchoolEventForm = ({ typeOption }) => {
         const contactInfo = { email: data.email, phoneNumber: data.phoneNumber, country, city, address: data.address, latitude, longitude }
         const socialNetworks = { instagram: data.instagram, facebook: data.facebook, youtube: data.youtube }
         if (typeOption === TYPE_OPTIONS.SCHOOL){
-            const newSchool = schoolMapper(optionObject?.id, data.name, data.description, dances, contactInfo, socialNetworks, imageUrl, [dancer])
-            dispatch(saveSchool(newSchool))
+            const newSchool = schoolMapper(optionObject?.id, data.name, data.description, dances, contactInfo, socialNetworks, imageUrl, administrators)
+            dispatch(saveSchool(newSchool, dancer.id))
         }else {
             const startDate = joinDateTimeString(data.sYear, sMonth, data.sDay, data.sHour, data.sMinute, months)
             const finishDate = joinDateTimeString(data.fYear, fMonth, data.fDay, data.fHour, data.fMinute, months)
             const newEvent = eventMapper(optionObject?.id, data.name, data.description, dances, contactInfo, socialNetworks,
-                imageUrl, startDate, finishDate, [dancer])
+                imageUrl, startDate, finishDate, [dancer], schoolOrganizer)
             dispatch(saveEvent(newEvent))
                 .then(() => {
                     dispatch(fetchDancer(dancer.id))
@@ -200,6 +206,14 @@ const SchoolEventForm = ({ typeOption }) => {
                 .then(() => setEnableSetLocation(!enableSetLocation))
         }else {
             setEnableSetLocation(!enableSetLocation)
+        }
+    }
+
+    const changeSchoolOrganizer = () => {
+        if (schoolOrganizer === null){
+            setSchoolOrganizer(dancer.administrator)
+        }else {
+            setSchoolOrganizer(null)
         }
     }
 
@@ -643,14 +657,14 @@ const SchoolEventForm = ({ typeOption }) => {
                     </div>
                 </div>
 
-                <div className="col-span-full mb-12">
+                <div className="col-span-full">
                     <div className="flex justify-between">
                         <label htmlFor="about" className="block text-md font-medium leading-6 text-black">
                             Dances
                         </label>
                         <a
                             className="text-sm font-medium text-indigo-700 hover:text-indigo-500 cursor-pointer"
-                            onClick={() => setOpenDialog(true)}
+                            onClick={() => setOpenDancesDialog(true)}
                         >
                             {dances?.length > 0 ? "change dances list" : "add dances"}
                         </a>
@@ -663,7 +677,7 @@ const SchoolEventForm = ({ typeOption }) => {
                             ))}
                         </ul>
                     </div>
-                    <DialogComponent openDialog={openDialog} setOpenDialog={setOpenDialog}>
+                    <DialogComponent openDialog={openDancesDialog} setOpenDialog={setOpenDancesDialog}>
                         <div className="flex-col w-2/3">
                             <CheckboxElement
                                 label={"Dances"}
@@ -673,12 +687,72 @@ const SchoolEventForm = ({ typeOption }) => {
                         </div>
                     </DialogComponent>
                 </div>
+
+                {typeOption === TYPE_OPTIONS.EVENT ? (
+                    <>
+                        {dancer.administrator &&(
+                            <div className="col-span-full mb-12">
+                                <div className="flex justify-between">
+                                    <label htmlFor="about" className="block text-md font-medium leading-6 text-black">
+                                        School organizer
+                                    </label>
+                                    <a
+                                        className="text-sm font-medium text-indigo-700 hover:text-indigo-500 cursor-pointer"
+                                        onClick={() => changeSchoolOrganizer()}
+                                    >
+                                        {schoolOrganizer != null ? "hide school" : "show school"}
+                                    </a>
+                                </div>
+                                {schoolOrganizer != null &&
+                                    <div className="prose prose-sm mt-4 text-gray-800">
+                                        <ul role="list">
+                                            <li >{schoolOrganizer.name}</li>
+                                        </ul>
+                                    </div>
+                                }
+                            </div>
+                        )}
+                    </>
+                    ) : (
+                    <div className="col-span-full mb-12">
+                        <div className="flex justify-between">
+                            <label htmlFor="about" className="block text-md font-medium leading-6 text-black">
+                                Administrators
+                            </label>
+                            <a
+                                className="text-sm font-medium text-indigo-700 hover:text-indigo-500 cursor-pointer"
+                                onClick={() => setOpenAdministratorsDialog(true)}
+                            >
+                                edit administrators
+                            </a>
+                        </div>
+                        <div className="prose prose-sm mt-4 text-gray-800">
+                            <ul role="list" className="columns-2">
+                                {administrators !== undefined && administrators?.map((admin) => (
+                                    <li key={admin.id}>
+                                        {admin.name} {admin.lastName}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        <DialogComponent openDialog={openAdministratorsDialog} setOpenDialog={setOpenAdministratorsDialog}>
+                            <div className="flex-col w-4/5">
+                                <EditSchoolAdministratorsForm
+                                    administrators={administrators}
+                                    setAdministrators={setAdministrators}
+                                />
+                            </div>
+                        </DialogComponent>
+                    </div>
+                )}
             </div>
 
             <div className="mt-8 flex">
                 <button
                     type="submit"
-                    className="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                    className="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white
+                    shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2
+                    focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
                 >
                     Save {typeOption}
                 </button>

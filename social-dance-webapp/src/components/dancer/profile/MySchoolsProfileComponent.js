@@ -1,8 +1,9 @@
-import {useEffect, useState} from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SchoolEventForm from "./SchoolEventForm";
 import { useValues } from "../../../hooks/useValues";
-import {deleteSchool, fetchAdministratedSchool} from "../../../api/SchoolApi";
+import { deleteSchool, fetchAdministratedSchool } from "../../../api/SchoolApi";
+import { getAdministratedSchool } from "../../../redux/actions/schoolActions";
 
 const SUBTITLE = {
     EXIST_ADMINISTRATED_SCHOOL: "You already have a school for administrate.",
@@ -16,14 +17,16 @@ const MySchoolsProfileComponent = () => {
     const dispatch = useDispatch();
     const { dancer } = useSelector(state => state.auth)
     const { administratedSchool } = useSelector(state => state.mySchools)
-    const [administratedSchoolExist, setAdministratedSchoolExist] = useState(!!dancer.administrator)
     const { TYPE_OPTIONS } = useValues()
 
     useEffect(() => {
-        if (!!dancer.administrator){
+        if (dancer.administrator){
             dispatch(fetchAdministratedSchool(dancer.administrator?.id))
+        }else if (administratedSchool.id && !dancer.administrator){
+            dispatch(getAdministratedSchool({}))
         }
     }, [])
+
 
     const deleteCurrentSchool = () => {
         dispatch(deleteSchool(administratedSchool.id))
@@ -35,7 +38,7 @@ const MySchoolsProfileComponent = () => {
                 <div>
                     <h2 className="text-lg font-semibold leading-7 text-black">School Information</h2>
                     <p className="mt-1 text-sm leading-6 text-gray-400">
-                        {administratedSchoolExist ? (
+                        {dancer.administrator ? (
                             SUBTITLE.EXIST_ADMINISTRATED_SCHOOL
                         ) : (
                             SUBTITLE.NOT_EXIST_ADMINISTRATED_SCHOOL
@@ -48,7 +51,7 @@ const MySchoolsProfileComponent = () => {
                     optionObject={administratedSchool}
                 />
 
-                {administratedSchoolExist && (
+                {dancer.administrator && (
                     <>
                         <div>
                             <h2 className="text-base font-semibold leading-7 text-black">Delete school</h2>

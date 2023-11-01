@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Sidebar from "./Sidebar";
 import InfoProfileComponent from "./InfoProfileComponent";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import MySchoolsProfileComponent from "./MySchoolsProfileComponent";
 import MyEventsProfileComponent from "./MyEventsProfileComponent";
 import SettingsProfileComponent from "./SettingsProfileComponent";
+import { fetchDancer } from "../../../api/DancerApi";
 
 const CHAPTER = {
     PERSONAL_INFO: "PERSONAL_INFO",
@@ -17,8 +18,13 @@ const CHAPTER = {
 const MainProfileComponent = () => {
 
     const navigate = useNavigate()
-    const { isAuthenticated } = useSelector(state => state.auth)
+    const dispatch = useDispatch();
+    const { isAuthenticated, dancer } = useSelector(state => state.auth)
     const [currentChapter, setCurrentChapter] = useState(CHAPTER.PERSONAL_INFO)
+
+    useEffect(() => {
+        dispatch(fetchDancer(dancer.id))
+    }, [currentChapter])
 
     useEffect(() => {
         if (!isAuthenticated){

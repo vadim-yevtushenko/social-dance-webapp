@@ -1,6 +1,6 @@
 import requestWrapper from "./requestWrapper";
 import { DELETE, GET, POST } from "./Endpoints";
-import {getEvents, getViewObject} from "../redux/actions/ListsActions";
+import {getEvents, getViewObject} from "../redux/actions/listsActions";
 import { loadingRequest } from "../redux/actions/requestActions";
 import { errorHandling, successHandling } from "./notificationHandling";
 import { getOrganizedEvent } from "../redux/actions/eventActions";

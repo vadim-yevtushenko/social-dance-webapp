@@ -4,7 +4,13 @@ import { useSelector } from "react-redux";
 import { classNamesJoin } from "../../util/classNameUtils";
 import React from "react";
 
-const DancerTable = () => {
+const columns = [
+    { id: 1, name: "Name" },
+    { id: 2, name: "Level" },
+    { id: 3, name: "Dances" },
+];
+
+const DancersTable = () => {
     const [openQuickViewDancer, setOpenQuickViewDancer] = useState(false)
     const [chosenDancer, setChosenDancer] = useState()
     const { dancers } = useSelector(state => state.lists)
@@ -31,16 +37,15 @@ const DancerTable = () => {
                         <table className="min-w-fit sm:min-w-full divide-y divide-gray-300">
                             <thead>
                                 <tr>
-                                    <th scope="col"
-                                        className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
-                                        Name
-                                    </th>
-                                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                        Level
-                                    </th>
-                                    <th scope="col" className="hidden md:block px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                        Dances
-                                    </th>
+                                    {columns.map(column => (
+                                        <th
+                                            key={column.id}
+                                            scope="col"
+                                            className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0"
+                                        >
+                                            {column.name}
+                                        </th>
+                                    ))}
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200 bg-white">
@@ -51,7 +56,7 @@ const DancerTable = () => {
                                     onClick={() => openDancerInfo(dancer)}
                                 >
                                     <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0 ">
-                                        <div className="flex items-center">
+                                        <div className="flex items-center pl-2">
                                             <div className="h-11 w-11 flex-shrink-0">
                                                 <img className="h-11 w-11 rounded-full"
                                                      src={dancer.image ? dancer.image : "/images/avatar-default/avatar_default_icon.png"}
@@ -69,12 +74,12 @@ const DancerTable = () => {
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                    <td className="whitespace-nowrap pr-3 py-5 text-sm text-gray-500">
                                         <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
                                             {dancer.level}
                                         </span>
                                     </td>
-                                    <td className="hidden md:block whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                    <td className="hidden md:block whitespace-nowrap pr-3 py-5 text-sm text-gray-500">
                                         <div className="mt-1 text-gray-500">
                                             <div className="hidden lg:block">
                                                 {dancer.dances && dancesStr(dancer.dances)}
@@ -106,4 +111,4 @@ const DancerTable = () => {
     )
 }
 
-export default DancerTable
+export default DancersTable

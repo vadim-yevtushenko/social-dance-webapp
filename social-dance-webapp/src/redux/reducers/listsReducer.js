@@ -1,5 +1,5 @@
 import initialState from "../initialState";
-import { GET_DANCERS, GET_EVENTS, GET_SCHOOLS, GET_VIEW_OBJECT } from "../actions/ListsActions";
+import { GET_DANCERS, GET_EVENTS, GET_SCHOOLS, GET_VIEW_OBJECT } from "../actions/listsActions";
 
 const listsReducer = (
     state = initialState().lists,

@@ -27,7 +27,7 @@ export const schoolMapper = (id, name, description, dances, contactInfo, socialN
     }
 }
 
-export const eventMapper = (id, name, description, dances, contactInfo, socialNetworks, image, dateEvent, dateFinishEvent, organizers, schoolOrganizerId) => {
+export const eventMapper = (id, name, description, dances, contactInfo, socialNetworks, image, dateEvent, dateFinishEvent, organizers, schoolOrganizer) => {
     return{
         id,
         name,
@@ -39,7 +39,7 @@ export const eventMapper = (id, name, description, dances, contactInfo, socialNe
         dateEvent,
         dateFinishEvent,
         organizers,
-        schoolOrganizerId
+        schoolOrganizer
     }
 }
 
