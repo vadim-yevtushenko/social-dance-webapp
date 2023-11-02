@@ -1,8 +1,8 @@
 import requestWrapper from "./requestWrapper";
-import {POST} from "./Endpoints";
-import {dancerLogin, updateDancer, updatePassword} from "../redux/actions/authActions";
-import {loadingRequest} from "../redux/actions/requestActions";
-import {errorHandling, successHandling} from "./notificationHandling";
+import { POST } from "./Endpoints";
+import { dancerLogin, updateDancer } from "../redux/actions/authActions";
+import { loadingRequest } from "../redux/actions/requestActions";
+import { errorHandling, successHandling } from "./notificationHandling";
 
 export const login = (email, password) => (dispatch) => {
     dispatch(loadingRequest(true))
@@ -13,7 +13,7 @@ export const login = (email, password) => (dispatch) => {
         }
     }).then(res => {
         const isAuth = res.data != null
-        dispatch(dancerLogin(email, password, isAuth))
+        dispatch(dancerLogin(email, isAuth))
         dispatch(updateDancer(res.data))
         dispatch(loadingRequest(false))
     }).catch(error => {
@@ -33,7 +33,7 @@ export const signup = (email, password, dancer) => (dispatch) => {
         }
     }).then(res => {
         const isAuth = res.data != null
-        dispatch(dancerLogin(email, password, isAuth))
+        dispatch(dancerLogin(email, isAuth))
         dispatch(updateDancer(res.data))
         dispatch(loadingRequest(false))
     }).catch(error => {
@@ -50,7 +50,6 @@ export const changePassword = (email, newPassword, oldPassword) => (dispatch) =>
             url: POST.changePassword(email, newPassword, oldPassword)
         }
     }).then(() => {
-        dispatch(updatePassword(newPassword))
         dispatch(loadingRequest(false))
         successHandling("Password changed successful.")
     }).catch(error => {

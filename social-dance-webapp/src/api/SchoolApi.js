@@ -3,7 +3,8 @@ import { DELETE, GET, POST } from "./Endpoints";
 import { loadingRequest } from "../redux/actions/requestActions";
 import { errorHandling, successHandling } from "./notificationHandling";
 import { getAdministratedSchool } from "../redux/actions/schoolActions";
-import {getSchools, getViewObject} from "../redux/actions/listsActions";
+import { getSchools, getViewObject } from "../redux/actions/listsActions";
+import { fetchDancer } from "./DancerApi";
 
 export const fetchSchools = (name, country, city, page, size) => (dispatch) => {
     return requestWrapper({
@@ -62,6 +63,7 @@ export const saveSchool = (school, adminId) => (dispatch) => {
         }
     }).then(res => {
         dispatch(getAdministratedSchool(res.data))
+        dispatch(fetchDancer(adminId))
         dispatch(loadingRequest(false))
     }).then(() => {
         successHandling("School info saved!")
@@ -71,12 +73,12 @@ export const saveSchool = (school, adminId) => (dispatch) => {
     })
 }
 
-export const uploadSchoolImage = (id, formData) => (dispatch) => {
+export const uploadSchoolImage = (id, adminId, formData) => (dispatch) => {
     dispatch(loadingRequest(true))
     return requestWrapper({
         axiosConfig: {
             method: 'post',
-            url: POST.uploadSchoolImage(id),
+            url: POST.uploadSchoolImage(id, adminId),
             data: formData ,
             headers: {'Content-Type': 'multipart/form-data' }
         }
@@ -90,12 +92,12 @@ export const uploadSchoolImage = (id, formData) => (dispatch) => {
     })
 }
 
-export const deleteSchoolImage = (id) => (dispatch) => {
+export const deleteSchoolImage = (id, adminId) => (dispatch) => {
     dispatch(loadingRequest(true))
     return requestWrapper({
         axiosConfig: {
             method: 'DELETE',
-            url: DELETE.deleteSchoolImage(id),
+            url: DELETE.deleteSchoolImage(id, adminId),
         }
     }).then(() => {
         dispatch(loadingRequest(false))
@@ -107,15 +109,16 @@ export const deleteSchoolImage = (id) => (dispatch) => {
     })
 }
 
-export const deleteSchool = (id) => (dispatch) => {
+export const deleteSchool = (id, adminId) => (dispatch) => {
     dispatch(loadingRequest(true))
     return requestWrapper({
         axiosConfig: {
             method: 'DELETE',
-            url: DELETE.deleteSchool(id),
+            url: DELETE.deleteSchool(id, adminId),
         }
     }).then(() => {
         dispatch(getAdministratedSchool({}))
+        dispatch(fetchDancer(adminId))
         dispatch(loadingRequest(false))
     }).then(() => {
         successHandling("School deleted!")

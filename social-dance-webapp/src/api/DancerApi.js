@@ -94,12 +94,12 @@ export const deleteDancerImage = (id) => (dispatch) => {
     })
 }
 
-export const deleteDancer = (id) => (dispatch) => {
+export const deleteDancer = (id, email, password) => (dispatch) => {
     dispatch(loadingRequest(true))
     return requestWrapper({
         axiosConfig: {
             method: 'DELETE',
-            url: DELETE.deleteDancer(id),
+            url: DELETE.deleteDancer(id, email, password),
         }
     }).then(() => {
         dispatch(getOrganizedEvent({}))

@@ -1,20 +1,20 @@
 import DropDownListElement from "../../forms/elements/DropDownListElement";
 import LocationComboboxElement from "../../forms/elements/LocationComboboxElement";
 import CheckboxElement from "../../forms/elements/CheckboxElement";
-import React, {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
-import {useValues} from "../../../hooks/useValues";
-import {useHttp} from "../../../hooks/http.hook";
-import {useForm} from "react-hook-form";
-import {eventMapper, schoolMapper} from "../../../util/mapper";
-import {GET} from "../../../api/Endpoints";
-import {getMonthNumber, joinDateTimeString} from "../../../util/dateTimeUtils";
-import {deleteSchoolImage, fetchAdministratedSchool, saveSchool, uploadSchoolImage} from "../../../api/SchoolApi";
-import {useUpload} from "../../../hooks/useUpload";
-import {deleteEventImage, fetchOrganizedEvent, saveEvent, uploadEventImage} from "../../../api/EventApi";
-import {PhotoIcon} from "@heroicons/react/24/solid";
-import {fetchDancer} from "../../../api/DancerApi";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useValues } from "../../../hooks/useValues";
+import { useHttp } from "../../../hooks/http.hook";
+import { useForm } from "react-hook-form";
+import { eventMapper, schoolMapper } from "../../../util/mapper";
+import { GET } from "../../../api/Endpoints";
+import { getMonthNumber, joinDateTimeString } from "../../../util/dateTimeUtils";
+import { deleteSchoolImage, fetchAdministratedSchool, saveSchool, uploadSchoolImage } from "../../../api/SchoolApi";
+import { useUpload } from "../../../hooks/useUpload";
+import { deleteEventImage, fetchOrganizedEvent, saveEvent, uploadEventImage } from "../../../api/EventApi";
+import { PhotoIcon } from "@heroicons/react/24/solid";
+import { fetchDancer } from "../../../api/DancerApi";
 import MapComponent from "../../events-schools/MapComponent";
 import DialogComponent from "../../modals/DialogComponent";
 import EditSchoolAdministratorsForm from "./administrate/EditSchoolAdministratorsForm";
@@ -142,7 +142,7 @@ const SchoolEventForm = ({ typeOption }) => {
                     const formData = new FormData();
                     formData.append('file', file);
                     if (typeOption === TYPE_OPTIONS.SCHOOL) {
-                        dispatch(uploadSchoolImage(optionObject.id, formData))
+                        dispatch(uploadSchoolImage(optionObject.id, dancer.id, formData))
                             .then(() => {
                                 dispatch(fetchAdministratedSchool(optionObject.id))
                                 setImage(null)
@@ -161,7 +161,7 @@ const SchoolEventForm = ({ typeOption }) => {
     const deleteImage = () => {
         if (optionObject.image){
             if (typeOption === TYPE_OPTIONS.SCHOOL){
-                dispatch(deleteSchoolImage(optionObject.id))
+                dispatch(deleteSchoolImage(optionObject.id, dancer.id))
                     .then(() => {
                         dispatch(fetchAdministratedSchool(optionObject.id))
                         setImageUrl(null)

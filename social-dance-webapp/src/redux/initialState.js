@@ -1,7 +1,6 @@
 const initialState = () => ({
     auth: {
         email: '',
-        password: '',
         isAuthenticated: false,
         dancer: {
             contactInfo: {}

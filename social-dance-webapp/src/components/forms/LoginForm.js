@@ -18,7 +18,7 @@ const LoginForm = () => {
         }
     },[isAuthenticated])
 
-    const onSubmit = ({email, password}) => {
+    const onSubmit = ({ email, password }) => {
         if (isForgotPassword){
             dispatch(resetPassword(email))
             setIsForgotPassword(false)

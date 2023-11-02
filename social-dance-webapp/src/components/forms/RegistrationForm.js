@@ -24,7 +24,7 @@ const RegistrationForm = () => {
         }
     },[isAuthenticated])
 
-    const onSubmit = ({name, lastName, email, password}) => {
+    const onSubmit = ({ name, lastName, email, password }) => {
         const newDancer = {name, lastName, gender, level}
         dispatch(signup(email, password, newDancer))
             .then(() => {
@@ -33,22 +33,6 @@ const RegistrationForm = () => {
                 }
             })
     }
-
-    // function validatePassword(value) {
-    //     const lowerCase = /[a-z]/g;
-    //     const upperCase = /[A-Z]/g;
-    //     const numbers = /\d/g;
-    //
-    //     if (!value.match(lowerCase)){
-    //         return "lowercase required."
-    //     }else if (!value.match(upperCase)){
-    //         return "uppercase required."
-    //     }else if (!value.match(numbers)){
-    //         return "number required."
-    //     }else {
-    //         return null
-    //     }
-    // }
 
     return (
         <>
