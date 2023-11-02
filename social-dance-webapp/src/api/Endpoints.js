@@ -74,15 +74,15 @@ export const POST = {
     uploadDancerImage: (id) => `${API_BASE_URL}/dancers/upload-image?id=${id}`,
 
     // Schools
-    saveSchool: (adminId) => `${API_BASE_URL}/schools?id=${adminId}`,
-    uploadSchoolImage: (id) => `${API_BASE_URL}/schools/upload-image?id=${id}`,
+    saveSchool: (adminId) => `${API_BASE_URL}/schools?adminId=${adminId}`,
+    uploadSchoolImage: (id, adminId) => `${API_BASE_URL}/schools/upload-image?id=${id}&adminId=${adminId}`,
 
     // Events
     saveEvent: () => `${API_BASE_URL}/events`,
     uploadEventImage: (id) => `${API_BASE_URL}/events/upload-image?id=${id}`,
 
     // Credential
-    login: (email, password, oldPassword) => `${API_BASE_URL}/credential/login?email=${email}&password=${password}`,
+    login: (email, password) => `${API_BASE_URL}/credential/login?email=${email}&password=${password}`,
     registration: (email, password) => `${API_BASE_URL}/credential/registration?email=${email}&password=${password}`,
     changePassword: (email, newPassword, oldPassword) => `${API_BASE_URL}/credential/change-password?email=${email}&newPassword=${newPassword}&oldPassword=${oldPassword}`,
     changeEmail: (email, newEmail) => `${API_BASE_URL}/credential/change-email?email=${email}&newEmail=${newEmail}`,
@@ -100,12 +100,12 @@ export const POST = {
 
 export const DELETE = {
     // Dancers
-    deleteDancer: (dancerId) => `${API_BASE_URL}/dancers/${dancerId}`,
+    deleteDancer: (dancerId, email, password) => `${API_BASE_URL}/dancers/${dancerId}?email=${email}&password=${password}`,
     deleteDancerImage: (dancerId) => `${API_BASE_URL}/dancers/delete-image?id=${dancerId}`,
 
     // Schools
-    deleteSchool: (schoolId) => `${API_BASE_URL}/schools/${schoolId}`,
-    deleteSchoolImage: (schoolId) => `${API_BASE_URL}/schools/delete-image?id=${schoolId}`,
+    deleteSchool: (schoolId, adminId) => `${API_BASE_URL}/schools/${schoolId}?adminId=${adminId}`,
+    deleteSchoolImage: (schoolId, adminId) => `${API_BASE_URL}/schools/delete-image?id=${schoolId}&adminId=${adminId}`,
 
     // Events
     deleteEvent: (eventId) => `${API_BASE_URL}/events/${eventId}`,

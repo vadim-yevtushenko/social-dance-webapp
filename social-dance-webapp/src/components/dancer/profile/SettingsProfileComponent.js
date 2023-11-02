@@ -6,21 +6,21 @@ import { changePassword } from "../../../api/CredentialApi";
 import { useValidate } from "../../../hooks/useValidate";
 
 const SettingsProfileComponent = () => {
-    const {email, password, dancer} = useSelector(state => state.auth)
+    const { email, dancer } = useSelector(state => state.auth)
     const { register, handleSubmit, formState: { errors }, getValues, setValue } = useForm()
-    const { register: deleteRegister, handleSubmit: deleteHandleSubmit, formState: { errors: deleteErrors }, getValues: deleteGetValues } = useForm()
+    const { register: deleteRegister, handleSubmit: deleteHandleSubmit, formState: { errors: deleteErrors } } = useForm()
     const dispatch = useDispatch();
     const { validatePassword } = useValidate()
 
-    function onChangeSubmit(data) {
-        dispatch(changePassword(email, data.newPassword, data.currentPassword))
+    function onChangeSubmit({ newPassword, currentPassword }) {
+        dispatch(changePassword(email, newPassword, currentPassword))
         setValue("currentPassword", "")
         setValue("newPassword", "")
         setValue("confirmPassword", "")
     }
 
-    function onDeleteSubmit() {
-        dispatch(deleteDancer(dancer.id))
+    function onDeleteSubmit({ deletePassword }) {
+        dispatch(deleteDancer(dancer.id, email, deletePassword))
     }
 
     return (
@@ -143,15 +143,9 @@ const SettingsProfileComponent = () => {
                                             autoComplete="deletePassword"
                                             className="block w-full rounded-md border-1 bg-white/5 py-1.5 text-black shadow-md ring-1
                                             ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                                            {...deleteRegister('deletePassword', { required: true,
-                                                validate: (value) => {
-                                                    if (deleteGetValues().deletePassword !== password) {
-                                                        return "Your password is incorrect.";
-                                                    }
-                                                }})}
+                                            {...deleteRegister('deletePassword', { required: true })}
                                         />
                                         {deleteErrors?.deletePassword?.type === "required" && <p className="text-xs leading-5 text-red-700">Password is required.</p>}
-                                        {deleteErrors?.deletePassword?.type === "validate" && <p className="text-xs leading-5 text-red-700">{deleteErrors?.deletePassword?.message}</p>}
                                     </div>
                                 </div>
                             </div>

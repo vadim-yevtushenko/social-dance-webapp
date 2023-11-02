@@ -29,7 +29,7 @@ const MySchoolsProfileComponent = () => {
 
 
     const deleteCurrentSchool = () => {
-        dispatch(deleteSchool(administratedSchool.id))
+        dispatch(deleteSchool(administratedSchool.id, dancer.id))
     }
 
     return (
