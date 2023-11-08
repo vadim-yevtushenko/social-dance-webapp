@@ -56,7 +56,7 @@ const SupportForm = ({ setOpenDialog }) => {
                         Message
                     </label>
 
-                    <p className="text-sm leading-6 text-gray-600">If you have any questions or would like to submit a ticket, please send an email to the support.</p>
+                    <p className="text-sm leading-6 text-gray-600">If you have any questions or suggestions, please send an email to the support.</p>
                     <div className="mt-2 sm:col-span-2 ">
                                     <textarea
                                         id="message"

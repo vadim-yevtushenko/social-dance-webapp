@@ -4,7 +4,6 @@ import { PhotoIcon, StarIcon } from "@heroicons/react/20/solid";
 import { classNamesJoin } from "../../util/classNameUtils";
 import { NavLink } from "react-router-dom";
 import { useValues } from "../../hooks/useValues";
-import React, {useEffect, useState} from "react";
 import { useSelector } from "react-redux";
 
 export default function CardList({ typeOption }) {
@@ -12,15 +11,6 @@ export default function CardList({ typeOption }) {
     const { TYPE_OPTIONS } = useValues()
     const { events } = useSelector(state => state.lists)
     const { schools } = useSelector(state => state.lists)
-    const [results, setResults] = useState(typeOption === TYPE_OPTIONS.EVENT ? events : schools)
-
-    useEffect(() => {
-        if (typeOption === TYPE_OPTIONS.EVENT){
-            setResults(events)
-        }else {
-            setResults(schools)
-        }
-    }, [])
 
     return (
         <div className="bg-gray-50">
@@ -66,56 +56,46 @@ export default function CardList({ typeOption }) {
                                 <p className="text-sm italic text-gray-500">{obj.contactInfo && getFullAddress(obj.contactInfo)}</p>
                                 <div className="prose prose-sm mt-4 text-gray-500">
                                     {obj?.dances.map(d => d.name).join(", ")}
-                                    {/*<ul className="columns-2">*/}
-                                    {/*    {obj?.dances.map((dance) => (*/}
-                                    {/*        <li key={dance.id}>{dance.name}</li>*/}
-                                    {/*    ))}*/}
-                                    {/*</ul>*/}
                                 </div>
-                                {typeOption === TYPE_OPTIONS.EVENT ? (
-                                    <>
-                                        {obj.description && (
-                                            <textarea
-                                            id="description"
-                                            name="description"
-                                            rows={2}
-                                            disabled={true}
-                                            value={obj.description}
-                                            className="block w-full max-w-2xl rounded-md py-1.5 text-gray-900 sm:text-sm sm:leading-6 border-0 resize-none"
-                                            />
-                                        )}
-                                        <div className="flex flex-1 flex-col justify-end">
-                                            <p className="text-base font-medium text-gray-900">Start: {parseFullDateTimeString(obj.dateEvent)}</p>
-                                            <p className="text-base font-medium text-gray-900">Finish: {parseFullDateTimeString(obj.dateFinishEvent)}</p>
-                                            <p className="text-sm italic text-gray-500 mt-5 text-end">{parseFullDateTimeString(obj.created)}</p>
-                                        </div>
-                                    </>
-                                ) : (
+
+                                {typeOption === TYPE_OPTIONS.SCHOOL && (
                                     <div className="flex flex-1 flex-col justify-end">
                                         <div className="flex-col text-lg my-2">
                                             <p className="text-base font-medium text-gray-900">email: {obj.contactInfo?.email}</p>
                                             <p className="text-base font-medium text-gray-900">phone: {obj.contactInfo?.phoneNumber}</p>
                                         </div>
-                                        <div className="flex mt-5">
-                                            <div>
-                                                <div className="flex items-center">
-                                                    {[0, 1, 2, 3, 4].map((rating) => (
-                                                        <StarIcon
-                                                            key={rating}
-                                                            className={classNamesJoin(
-                                                                obj.generalRating?.average > rating ? 'text-yellow-400' : 'text-gray-300',
-                                                                'h-5 w-5 flex-shrink-0'
-                                                            )}
-                                                            aria-hidden="true"
-                                                        />
-                                                    ))}
-                                                </div>
-                                                <p className="sr-only"> out of 5 stars</p>
-                                            </div>
-                                            <p className="ml-4 text-sm text-gray-900">Based on {obj.generalRating?.totalCount} ratings</p>
-                                        </div>
                                     </div>
                                 )}
+
+                                <div className="flex flex-1 flex-col justify-end">
+
+                                <div className="flex pt-3">
+                                    <div>
+                                        <div className="flex items-center">
+                                            {[0, 1, 2, 3, 4].map((rating) => (
+                                                <StarIcon
+                                                    key={rating}
+                                                    className={classNamesJoin(
+                                                        obj.generalRating?.average > rating ? 'text-yellow-400' : 'text-gray-300',
+                                                        'h-5 w-5 flex-shrink-0'
+                                                    )}
+                                                    aria-hidden="true"
+                                                />
+                                            ))}
+                                        </div>
+                                        <p className="sr-only"> out of 5 stars</p>
+                                    </div>
+                                    <p className="ml-4 text-sm text-gray-900">Based on {obj.generalRating?.totalCount} ratings</p>
+                                </div>
+
+                                {typeOption === TYPE_OPTIONS.EVENT && (
+                                    <div className="flex flex-col justify-end pt-3">
+                                        <p className="text-base font-medium text-gray-900">Start: {parseFullDateTimeString(obj.dateEvent)}</p>
+                                        <p className="text-base font-medium text-gray-900">Finish: {parseFullDateTimeString(obj.dateFinishEvent)}</p>
+                                        <p className="text-sm italic text-gray-500 mt-5 text-end">{parseFullDateTimeString(obj.created)}</p>
+                                    </div>
+                                )}
+                                </div>
                             </div>
                         </div>
                     ))}

@@ -43,20 +43,20 @@ export const eventMapper = (id, name, description, dances, contactInfo, socialNe
     }
 }
 
-export const reviewMapper = (id, schoolId, dancerId, review, incognito) => {
+export const reviewMapper = (id, objectId, dancerId, review, incognito) => {
     return {
         id,
-        schoolId,
+        objectId,
         dancerId,
         review,
         incognito
     }
 }
 
-export const ratingMapper = (id, schoolId, dancerId, rating) => {
+export const ratingMapper = (id, objectId, dancerId, rating) => {
     return {
         id,
-        schoolId,
+        objectId,
         dancerId,
         rating
     }

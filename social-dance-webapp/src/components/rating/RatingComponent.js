@@ -7,16 +7,18 @@ import { ratingMapper } from "../../util/mapper";
 import { useDispatch, useSelector } from "react-redux";
 import { useValues } from "../../hooks/useValues";
 
-const RatingComponent = ({ rerender, setRerender }) => {
+const RatingComponent = ({ rerender, setRerender, typeOption }) => {
     const dispatch = useDispatch();
     const { isAuthenticated, dancer } = useSelector(state => state.auth)
     const params = useParams();
-    const [schoolId, setSchoolId] = useState(params.id)
+    const [objectId, setObjectId] = useState(params.id)
     const { generalRating } = useSelector(state => state.feedback)
     const { id, rating } = useSelector(state => state.feedback.rating)
     const [changedRating, setChangedRating] = useState(0)
     const [showRate, setShowRate] = useState(false)
     const { ratingButtons } = useValues()
+    const { TYPE_OPTIONS } = useValues()
+    const [name, setName] = useState(typeOption === TYPE_OPTIONS.SCHOOL ? "school" : "event")
 
     useEffect(() => {
         dispatch(fetchGeneralRating(params.id))
@@ -24,14 +26,14 @@ const RatingComponent = ({ rerender, setRerender }) => {
 
     const save = () => {
         if (showRate && changedRating > 0){
-            const newRating = ratingMapper(id, schoolId, dancer.id, changedRating)
+            const newRating = ratingMapper(id, objectId, dancer.id, changedRating)
             dispatch(saveRating(newRating))
                 .then(() => {
                     setRerender(!rerender)
                     setShowRate(false)
                 })
         }else {
-            dispatch(fetchRating(schoolId, dancer.id))
+            dispatch(fetchRating(objectId, dancer.id))
                 .then(() => {
                     setShowRate(true)
                 })
@@ -41,7 +43,7 @@ const RatingComponent = ({ rerender, setRerender }) => {
 
     return (
     <>
-        <h2 className="text-xl font-bold tracking-tight text-gray-900">School Rating</h2>
+        <h2 className="text-xl font-bold tracking-tight text-gray-900">{typeOption === TYPE_OPTIONS.SCHOOL ? "School Rating" : "Event Rating for Recommendation"}</h2>
         <div className="mt-3 flex items-center">
             <div>
                 <div className="flex items-center">
@@ -110,13 +112,13 @@ const RatingComponent = ({ rerender, setRerender }) => {
                         )}
                         onClick={() => save()}
                     >
-                        {showRate ? "Save rating" : "Rate the school"}
+                        {showRate ? "Save rating" : "Rate the " + name}
                     </button>
                     {showRate && (
                         <>
                             <p className="mt-1 text-sm text-gray-600">
-                                {id !== null ? "You have already rated this school, but you can change your rating."
-                                    : "You have not rated this school yet. Please rate if you have reason."}
+                                {id != null ? "You have already rated this " + name + ", but you can change your rating."
+                                    : "You have not rated this " + name + " yet. Please rate if you have reason."}
                             </p>
                             <div className="flex mt-2 justify-center">
                                 <fieldset className="mt-2">
@@ -146,7 +148,7 @@ const RatingComponent = ({ rerender, setRerender }) => {
                 </>
             ) : (
                 <p className="mt-3 text-sm flex justify-center text-gray-600">
-                    If you want to rate the school, please log in!
+                    If you want to rate the {name}, please log in!
                 </p>
             )}
         </div>

@@ -42,12 +42,12 @@ export const GET = {
     getEventsByDancerId: (dancerId) => `${API_BASE_URL}/events/organizer/${dancerId}`,
 
     // Rating
-    getGeneralRating: (schoolId) => `${API_BASE_URL}/ratings/${schoolId}`,
-    getRating: (schoolId, dancerId) => `${API_BASE_URL}/ratings?schoolId=${schoolId}&dancerId=${dancerId}`,
+    getGeneralRating: (objectId) => `${API_BASE_URL}/ratings/${objectId}`,
+    getRating: (objectId, dancerId) => `${API_BASE_URL}/ratings?objectId=${objectId}&dancerId=${dancerId}`,
 
     // Review
-    getReviews: (schoolId, page, size) => {
-        let url = `${API_BASE_URL}/reviews?schoolId=${schoolId}`
+    getReviews: (objectId, page, size) => {
+        let url = `${API_BASE_URL}/reviews?objectId=${objectId}`
         if (!!page) url = url.concat(`&pageNumber=${page}`)
         if (!!size) url = url.concat(`&size=${size}`)
         return url
