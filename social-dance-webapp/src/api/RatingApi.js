@@ -1,15 +1,15 @@
 import RequestWrapper from "./requestWrapper";
-import {GET, POST} from "./Endpoints";
-import {loadingRequest} from "../redux/actions/requestActions";
-import {errorHandling, successHandling} from "./notificationHandling";
-import {getGeneralRating, getRating} from "../redux/actions/feedbackActions";
+import { GET, POST } from "./Endpoints";
+import { loadingRequest } from "../redux/actions/requestActions";
+import { errorHandling, successHandling } from "./notificationHandling";
+import { getGeneralRating, getRating } from "../redux/actions/feedbackActions";
 
-export const fetchGeneralRating = (schoolId) => (dispatch) => {
+export const fetchGeneralRating = (objectId) => (dispatch) => {
     dispatch(loadingRequest(true))
     return RequestWrapper({
         axiosConfig: {
             method: 'GET',
-            url: GET.getGeneralRating(schoolId)
+            url: GET.getGeneralRating(objectId)
         }
     }).then(res => {
         dispatch(getGeneralRating(res.data))
@@ -20,12 +20,12 @@ export const fetchGeneralRating = (schoolId) => (dispatch) => {
     })
 }
 
-export const fetchRating = (schoolId, dancerId) => (dispatch) => {
+export const fetchRating = (objectId, dancerId) => (dispatch) => {
     dispatch(loadingRequest(true))
     return RequestWrapper({
         axiosConfig: {
             method: 'GET',
-            url: GET.getRating(schoolId, dancerId)
+            url: GET.getRating(objectId, dancerId)
         }
     }).then(res => {
         dispatch(getRating(res.data))

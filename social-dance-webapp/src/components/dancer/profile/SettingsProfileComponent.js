@@ -33,7 +33,7 @@ const SettingsProfileComponent = () => {
                         <div>
                             <h2 className="text-lg font-semibold leading-7 text-black">Change password</h2>
                             <p className="mt-1 text-sm leading-6 text-gray-400">
-                                Update your password associated with your account. The password must contain uppercase and lowercase letters and numbers.
+                                Update the password associated with your account. The password must contain uppercase and lowercase letters, numbers and be at least 8 characters long.
                             </p>
                         </div>
 

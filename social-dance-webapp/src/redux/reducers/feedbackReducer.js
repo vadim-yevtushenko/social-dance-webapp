@@ -1,5 +1,5 @@
 import initialState from "../initialState";
-import {GET_GENERAL_RATING, GET_RATING, GET_REVIEWS} from "../actions/feedbackActions";
+import { GET_GENERAL_RATING, GET_RATING, GET_REVIEWS } from "../actions/feedbackActions";
 
 const feedbackReducer = (
     state = initialState().feedback,

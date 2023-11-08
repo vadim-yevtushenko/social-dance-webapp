@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import MapComponent from "./MapComponent";
 import DancerQuickViewComponent from "../dancer/DancerQuickViewComponent";
 import SocialNetworksComponent from "./SocialNetworksComponent";
+import {getGeneralRating, getRating, getReviews} from "../../redux/actions/feedbackActions";
 
 const OverViewComponent = ({ typeOption }) => {
     const dispatch = useDispatch();
@@ -39,6 +40,13 @@ const OverViewComponent = ({ typeOption }) => {
         setOpenQuickViewDancer(true)
     }
 
+    const back = () => {
+        navigate(-1)
+        dispatch(getRating({}))
+        dispatch(getGeneralRating({}))
+        dispatch(getReviews({}))
+    }
+
     return (
         <div className="grow bg-white">
             <DancerQuickViewComponent
@@ -51,7 +59,7 @@ const OverViewComponent = ({ typeOption }) => {
                     <a
                         aria-current="page"
                         className="flex items-center font-medium text-gray-500 hover:text-gray-700 cursor-pointer"
-                        onClick={() => navigate(-1)}
+                        onClick={() => back()}
                     >
                         <ChevronLeftIcon className="h-4 w-4"/> <span>Back</span>
                     </a>
@@ -259,17 +267,20 @@ const OverViewComponent = ({ typeOption }) => {
                         </div>
                     </div>
                     <div>
-                        {typeOption === TYPE_OPTIONS.SCHOOL && (
-                            <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-12 lg:gap-x-8 lg:px-8 lg:pt-12 mt-5 lg:mt-1">
-                                <div className="lg:col-span-4">
-                                    <RatingComponent rerender={rerenderReview} setRerender={setRerenderReview}/>
-                                </div>
-                                <div className="mt-6 lg:col-span-7 lg:col-start-6 lg:mt-0">
-                                    <ReviewComponent rerender={rerenderReview}/>
-                                </div>
-                            </div>
 
-                        )}
+                        <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-12 lg:gap-x-8 lg:px-8 lg:pt-12 mt-5 lg:mt-1">
+                            <div className="lg:col-span-4">
+                                <RatingComponent
+                                    rerender={rerenderReview}
+                                    setRerender={setRerenderReview}
+                                    typeOption={typeOption}
+                                />
+                            </div>
+                            <div className="mt-6 lg:col-span-7 lg:col-start-6 lg:mt-0">
+                                <ReviewComponent rerender={rerenderReview} typeOption={typeOption}/>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>

@@ -4,13 +4,13 @@ import { loadingRequest } from "../redux/actions/requestActions";
 import { errorHandling } from "./notificationHandling";
 import { getReviews } from "../redux/actions/feedbackActions";
 
-export const fetchReviews = (schoolId, page, size) => (dispatch) => {
+export const fetchReviews = (objectId, page, size) => (dispatch) => {
     dispatch(loadingRequest(true))
 
     return RequestWrapper({
         axiosConfig: {
             method: 'GET',
-            url: GET.getReviews(schoolId, page, size)
+            url: GET.getReviews(objectId, page, size)
         }
     }).then(res => {
         dispatch(getReviews(res.data))

@@ -10,26 +10,27 @@ import PaginationComponent from "../pagination/PaginationComponent";
 import React from "react";
 import { useValues } from "../../hooks/useValues";
 
-export default function ReviewComponent({ rerender }) {
+export default function ReviewComponent({ rerender, typeOption }) {
     const dispatch = useDispatch();
-    const {isAuthenticated, dancer} = useSelector(state => state.auth)
-    const {results, total} = useSelector(state => state.feedback.reviews)
+    const { isAuthenticated, dancer } = useSelector(state => state.auth)
+    const { results, total } = useSelector(state => state.feedback.reviews)
     const params = useParams();
-    const [schoolId, setSchoolId] = useState(params.id)
+    const [objectId, setObjectId] = useState(params.id)
     const[review, setReview] = useState('')
     const[incognito, setIncognito] = useState()
     const[showWriteReview, setShowWriteReview] = useState(false)
     const[page, setPage] = useState(1)
     const[size, setSize] = useState(5)
-    const {dancerPageSizeOptions} = useValues()
+    const { dancerPageSizeOptions } = useValues()
+    const { TYPE_OPTIONS } = useValues()
 
     useEffect(() => {
-        dispatch(fetchReviews(schoolId, page, size))
+        dispatch(fetchReviews(objectId, page, size))
     }, [showWriteReview, rerender, page, size])
 
     const createReview = () => {
         if (showWriteReview && review.trim() !== ''){
-            const newReview = reviewMapper(null, schoolId, dancer.id, review, incognito)
+            const newReview = reviewMapper(null, objectId, dancer.id, review, incognito)
             dispatch(saveReview(newReview))
                 .then(() => {
                     setReview('')
@@ -47,7 +48,7 @@ export default function ReviewComponent({ rerender }) {
             <div className="mt-0">
                 <h2 className="text-xl font-bold tracking-tight text-gray-900">Reviews</h2>
                 <p className="mt-1 text-sm text-gray-600">
-                    Share your thoughts about this school with other dancers
+                    Share your thoughts about this {typeOption === TYPE_OPTIONS.SCHOOL ? "school": "upcoming event"} with other dancers
                 </p>
                 {isAuthenticated ? (
                     <>
