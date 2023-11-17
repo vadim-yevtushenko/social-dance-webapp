@@ -38,7 +38,7 @@ const MyEventsProfileComponent = () => {
     }
 
     const deleteCurrentEvent = () => {
-        dispatch(deleteEvent(organizedEvent.id))
+        dispatch(deleteEvent(organizedEvent.id, dancer.id))
             .then(() => {
                 dispatch(getOrganizedEvent({}))
                 setOpenEditForm(false)

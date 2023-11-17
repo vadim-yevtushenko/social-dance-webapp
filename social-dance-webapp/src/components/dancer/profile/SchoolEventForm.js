@@ -1,6 +1,5 @@
 import DropDownListElement from "../../forms/elements/DropDownListElement";
 import LocationComboboxElement from "../../forms/elements/LocationComboboxElement";
-import CheckboxElement from "../../forms/elements/CheckboxElement";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,8 +15,8 @@ import { deleteEventImage, fetchOrganizedEvent, saveEvent, uploadEventImage } fr
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import { fetchDancer } from "../../../api/DancerApi";
 import MapComponent from "../../events-schools/MapComponent";
-import DialogComponent from "../../modals/DialogComponent";
-import EditSchoolAdministratorsForm from "./administrate/EditSchoolAdministratorsForm";
+import ManageDancerListComponent from "./administrate/ManageDancerListComponent";
+import ManageDanceListComponent from "./administrate/ManageDanceListComponent";
 
 const SchoolEventForm = ({ typeOption }) => {
 
@@ -43,8 +42,10 @@ const SchoolEventForm = ({ typeOption }) => {
     const { resizeImage } = useUpload()
     const [openDancesDialog, setOpenDancesDialog] = useState(false)
     const [openAdministratorsDialog, setOpenAdministratorsDialog] = useState(false)
+    const [openOrganizersDialog, setOpenOrganizersDialog] = useState(false)
     const [schoolOrganizer, setSchoolOrganizer] = useState(optionObject?.schoolOrganizer)
     const [administrators, setAdministrators] = useState(optionObject?.administrators)
+    const [organizers, setOrganizers] = useState(optionObject?.organizers)
 
     useEffect(() => {
         if (errors?.sDate?.type === "validate"
@@ -110,6 +111,7 @@ const SchoolEventForm = ({ typeOption }) => {
             setValue('fHour', fTime?.split(":")[0])
             setValue('fMinute', fTime?.split(":")[1])
             setSchoolOrganizer(optionObject?.schoolOrganizer)
+            setOrganizers(optionObject?.organizers?.length > 0 ? optionObject?.organizers : [dancer])
         }else {
             setAdministrators(optionObject?.administrators?.length > 0 ? optionObject?.administrators : [dancer])
         }
@@ -127,8 +129,8 @@ const SchoolEventForm = ({ typeOption }) => {
             const startDate = joinDateTimeString(data.sYear, sMonth, data.sDay, data.sHour, data.sMinute, months)
             const finishDate = joinDateTimeString(data.fYear, fMonth, data.fDay, data.fHour, data.fMinute, months)
             const newEvent = eventMapper(optionObject?.id, data.name, data.description, dances, contactInfo, socialNetworks,
-                imageUrl, startDate, finishDate, [dancer], schoolOrganizer)
-            dispatch(saveEvent(newEvent))
+                imageUrl, startDate, finishDate, organizers, schoolOrganizer)
+            dispatch(saveEvent(newEvent, dancer.id))
                 .then(() => {
                     dispatch(fetchDancer(dancer.id))
                 })
@@ -148,7 +150,7 @@ const SchoolEventForm = ({ typeOption }) => {
                                 setImage(null)
                             })
                     }else {
-                        dispatch(uploadEventImage(optionObject.id, formData))
+                        dispatch(uploadEventImage(optionObject.id, dancer.id, formData))
                             .then(() => {
                                 dispatch(fetchOrganizedEvent(optionObject.id))
                                 setImage(null)
@@ -170,7 +172,7 @@ const SchoolEventForm = ({ typeOption }) => {
                     })
 
             }else {
-                dispatch(deleteEventImage(optionObject.id))
+                dispatch(deleteEventImage(optionObject.id, dancer.id))
                     .then(() => {
                         dispatch(fetchOrganizedEvent(optionObject.id))
                         setImageUrl(null)
@@ -658,38 +660,26 @@ const SchoolEventForm = ({ typeOption }) => {
                 </div>
 
                 <div className="col-span-full">
-                    <div className="flex justify-between">
-                        <label htmlFor="about" className="block text-md font-medium leading-6 text-black">
-                            Dances
-                        </label>
-                        <a
-                            className="text-sm font-medium text-indigo-700 hover:text-indigo-500 cursor-pointer"
-                            onClick={() => setOpenDancesDialog(true)}
-                        >
-                            {dances?.length > 0 ? "change dances list" : "add dances"}
-                        </a>
-                    </div>
-
-                    <div className="prose prose-sm mt-4 text-gray-500">
-                        <ul role="list" className="columns-2">
-                            {dances?.map((dance) => (
-                                <li key={dance.id}>{dance.name}</li>
-                            ))}
-                        </ul>
-                    </div>
-                    <DialogComponent openDialog={openDancesDialog} setOpenDialog={setOpenDancesDialog}>
-                        <div className="flex-col w-2/3">
-                            <CheckboxElement
-                                label={"Dances"}
-                                checkedDances={dances?.map(dance => dance.name)}
-                                setDances={setDances}
-                            />
-                        </div>
-                    </DialogComponent>
+                    <ManageDanceListComponent
+                        dances={dances}
+                        setDancesList={setDances}
+                        openDialog={openDancesDialog}
+                        setOpenDialog={setOpenDancesDialog}
+                    />
                 </div>
 
                 {typeOption === TYPE_OPTIONS.EVENT ? (
                     <>
+                        <div className="col-span-full">
+                            <ManageDancerListComponent
+                                type={typeOption}
+                                dancerList={organizers}
+                                setDancerList={setOrganizers}
+                                openDialog={openOrganizersDialog}
+                                setOpenDialog={setOpenOrganizersDialog}
+                            />
+                        </div>
+
                         {dancer.administrator &&(
                             <div className="col-span-full mb-12">
                                 <div className="flex justify-between">
@@ -715,34 +705,13 @@ const SchoolEventForm = ({ typeOption }) => {
                     </>
                     ) : (
                     <div className="col-span-full mb-12">
-                        <div className="flex justify-between">
-                            <label htmlFor="about" className="block text-md font-medium leading-6 text-black">
-                                Administrators
-                            </label>
-                            <a
-                                className="text-sm font-medium text-indigo-700 hover:text-indigo-500 cursor-pointer"
-                                onClick={() => setOpenAdministratorsDialog(true)}
-                            >
-                                edit administrators
-                            </a>
-                        </div>
-                        <div className="prose prose-sm mt-4 text-gray-800">
-                            <ul role="list" className="columns-2">
-                                {administrators !== undefined && administrators?.map((admin) => (
-                                    <li key={admin.id}>
-                                        {admin.name} {admin.lastName}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                        <DialogComponent openDialog={openAdministratorsDialog} setOpenDialog={setOpenAdministratorsDialog}>
-                            <div className="flex-col w-4/5">
-                                <EditSchoolAdministratorsForm
-                                    administrators={administrators}
-                                    setAdministrators={setAdministrators}
-                                />
-                            </div>
-                        </DialogComponent>
+                        <ManageDancerListComponent
+                            type={typeOption}
+                            dancerList={administrators}
+                            setDancerList={setAdministrators}
+                            openDialog={openAdministratorsDialog}
+                            setOpenDialog={setOpenAdministratorsDialog}
+                        />
                     </div>
                 )}
             </div>

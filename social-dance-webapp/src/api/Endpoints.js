@@ -78,8 +78,8 @@ export const POST = {
     uploadSchoolImage: (id, adminId) => `${API_BASE_URL}/schools/upload-image?id=${id}&adminId=${adminId}`,
 
     // Events
-    saveEvent: () => `${API_BASE_URL}/events`,
-    uploadEventImage: (id) => `${API_BASE_URL}/events/upload-image?id=${id}`,
+    saveEvent: (organizerId) => `${API_BASE_URL}/events?organizerId=${organizerId}`,
+    uploadEventImage: (id, organizerId) => `${API_BASE_URL}/events/upload-image?id=${id}&organizerId=${organizerId}`,
 
     // Credential
     login: (email, password) => `${API_BASE_URL}/credential/login?email=${email}&password=${password}`,
@@ -108,6 +108,6 @@ export const DELETE = {
     deleteSchoolImage: (schoolId, adminId) => `${API_BASE_URL}/schools/delete-image?id=${schoolId}&adminId=${adminId}`,
 
     // Events
-    deleteEvent: (eventId) => `${API_BASE_URL}/events/${eventId}`,
-    deleteEventImage: (eventId) => `${API_BASE_URL}/events/delete-image?id=${eventId}`,
+    deleteEvent: (eventId, organizerId) => `${API_BASE_URL}/events/${eventId}?organizerId=${organizerId}`,
+    deleteEventImage: (eventId, organizerId) => `${API_BASE_URL}/events/delete-image?id=${eventId}&organizerId=${organizerId}`,
 };

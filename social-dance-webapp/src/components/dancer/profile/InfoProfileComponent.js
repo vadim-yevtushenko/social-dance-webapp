@@ -6,15 +6,14 @@ import RadioGroupElement from "../../forms/elements/RadioGroupElement";
 import DropDownListElement from "../../forms/elements/DropDownListElement";
 import { joinDateString } from "../../../util/dateTimeUtils";
 import LocationComboboxElement from "../../forms/elements/LocationComboboxElement";
-import CheckboxElement from "../../forms/elements/CheckboxElement";
 import { useHttp } from "../../../hooks/http.hook";
 import { useForm } from "react-hook-form";
 import { GET } from "../../../api/Endpoints";
 import { dancerMapper } from "../../../util/mapper";
 import { useUpload } from "../../../hooks/useUpload";
 import { deleteDancerImage, fetchDancer, saveDancer, uploadDancerImage } from "../../../api/DancerApi";
-import DialogComponent from "../../modals/DialogComponent";
 import React from "react";
+import ManageDanceListComponent from "./administrate/ManageDanceListComponent";
 
 const InfoProfileComponent = () => {
     const navigate = useNavigate();
@@ -32,7 +31,7 @@ const InfoProfileComponent = () => {
     const [photo, setPhoto] = useState()
     const [photoUrl, setPhotoUrl] = useState(dancer.image)
     const { resizeImage } = useUpload()
-    const [openDialog, setOpenDialog] = useState(false)
+    const [openDancesDialog, setOpenDancesDialog] = useState(false)
 
     useEffect(() => {
         dispatch(fetchDancer(dancer.id))
@@ -333,7 +332,6 @@ const InfoProfileComponent = () => {
                                         className="block w-full sm:w-5/6 rounded-md border-1 bg-white/2 py-1.5 text-black shadow-md ring-1 ring-inset
                                         ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                                     />
-                                    {/*{errors?.instagram?.type === "required" && <p className="text-xs leading-5 text-red-700">Name is required</p>}*/}
                                 </div>
                                 <div className="mt-2 sm:flex sm:justify-between">
                                     <span className="inline-flex items-center px-3 text-gray-500 sm:text-sm">
@@ -348,7 +346,6 @@ const InfoProfileComponent = () => {
                                         className="block w-full sm:w-5/6 rounded-md border-1 bg-white/2 py-1.5 text-black shadow-md ring-1 ring-inset
                                         ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                                     />
-                                    {/*{errors?.facebook?.type === "required" && <p className="text-xs leading-5 text-red-700">Name is required</p>}*/}
                                 </div>
                                 <div className="mt-2 sm:flex sm:justify-between">
                                     <span className="inline-flex items-center px-3 text-gray-500 sm:text-sm">
@@ -363,9 +360,7 @@ const InfoProfileComponent = () => {
                                         className="block w-full sm:w-5/6 rounded-md border-1 bg-white/2 py-1.5 text-black shadow-md ring-1 ring-inset
                                         ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                                     />
-                                    {/*{errors?.youtube?.type === "required" && <p className="text-xs leading-5 text-red-700">Name is required</p>}*/}
                                 </div>
-
                             </div>
 
                             <div className="col-span-full">
@@ -387,38 +382,14 @@ const InfoProfileComponent = () => {
                             </div>
 
                             <div className="col-span-full mb-12">
-                                <div className="flex justify-between">
-                                    <label htmlFor="about" className="block text-md font-medium leading-6 text-black">
-                                        Dances
-                                    </label>
-                                    <a
-                                        className="text-sm font-medium text-indigo-700 hover:text-indigo-500 cursor-pointer"
-                                        onClick={() => setOpenDialog(true)}
-                                    >
-                                        {dances?.length > 0 ? "change dances list" : "add dances"}
-                                    </a>
-                                </div>
-
-                                <div className="prose prose-sm mt-4 text-gray-500">
-                                    <ul role="list" className="columns-2">
-                                        {dances?.map((dance) => (
-                                            <li key={dance.id}>{dance.name}</li>
-                                        ))}
-                                    </ul>
-                                </div>
-                                <DialogComponent openDialog={openDialog} setOpenDialog={setOpenDialog}>
-                                    <div className="flex-col w-2/3">
-                                        <CheckboxElement
-                                            label={"Dances"}
-                                            checkedDances={dances?.map(dance => dance.name)}
-                                            setDances={setDances}
-                                        />
-                                    </div>
-                                </DialogComponent>
+                                <ManageDanceListComponent
+                                    dances={dances}
+                                    setDancesList={setDances}
+                                    openDialog={openDancesDialog}
+                                    setOpenDialog={setOpenDancesDialog}
+                                />
                             </div>
                         </div>
-
-
 
                         <div className="mt-8 flex">
                             <button

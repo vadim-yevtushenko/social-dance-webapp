@@ -1,61 +1,52 @@
 import React, { useEffect, useState } from "react";
-import DancerSearchComponent from "../../DancerSearchComponent";
 import { useHttp } from "../../../../hooks/http.hook";
 import { GET } from "../../../../api/Endpoints";
+import DancerSearchComponent from "../../DancerSearchComponent";
 import { classNamesJoin } from "../../../../util/classNameUtils";
-
 
 const columns = [
     { id: 1, name: "Name" },
     { id: 2, name: "" },
 ];
 
-const EditSchoolAdministratorsForm = ({ administrators, setAdministrators }) => {
-
-    const [dancers, setDancers] = useState(administrators)
+const EditEventOrganizersForm = ({ organizers, setOrganizers }) => {
+    const [dancers, setDancers] = useState(organizers)
     const [name, setName] = useState("")
     const [lastName, setLastName] = useState("")
     const { request } = useHttp();
 
     useEffect(() => {
-        setDancers(administrators)
-    }, [administrators])
+        setDancers(organizers)
+    }, [organizers])
 
     useEffect(() => {
         if (name || lastName){
             request(GET.getDancers(name, lastName, null, null, 1, 5))
                 .then(res => {
-                    setDancers([...administrators, ...res.results.filter(dancer => !includedInAdministrators(dancer.id))])
+                    setDancers([...organizers, ...res.results.filter(dancer => !includedInOrganizers(dancer.id))])
                 })
         }
     }, [name, lastName]);
 
-    const addAdministrator = (dancer) => {
-        setAdministrators([...administrators, dancer])
+    const addOrganizer = (dancer) => {
+        setOrganizers([...organizers, dancer])
     }
 
-    const removeAdministrator = (id) => {
-        setAdministrators(administrators.filter(dancer => dancer.id !== id))
+    const removeOrganizer = (id) => {
+        setOrganizers(organizers.filter(dancer => dancer.id !== id))
     }
 
-    const includedInAdministrators = (id) => {
-        return administrators.map(admin => admin.id).includes(id)
+    const includedInOrganizers = (id) => {
+        return organizers.map(admin => admin.id).includes(id)
     }
 
-    const alreadyAdministrator = (dancer) => {
-        return !!dancer.administrator
-    }
-
-    const moreTwoAdministrators = () => {
-        return administrators.length > 1
+    const moreTwoOrganizers = () => {
+        return organizers.length > 1
     }
 
     const buttonName = (dancer) => {
-        if (includedInAdministrators(dancer.id)){
+        if (includedInOrganizers(dancer.id)){
             return "Remove"
-        }
-        if (alreadyAdministrator(dancer)){
-            return "Not available"
         }
         return "Add"
     }
@@ -116,13 +107,12 @@ const EditSchoolAdministratorsForm = ({ administrators, setAdministrators }) => 
                                 <div>
                                     <button
                                         type="button"
-                                        className={classNamesJoin(includedInAdministrators(dancer.id) ? moreTwoAdministrators() ? "bg-red-600 text-white" : "bg-gray-200 text-black"
-                                                : alreadyAdministrator(dancer) ? "bg-gray-200 text-black"
-                                            : "bg-indigo-500 hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 " +
-                                            "focus-visible:outline-offset-2 focus-visible:outline-indigo-500 text-white"
+                                        className={classNamesJoin(includedInOrganizers(dancer.id) ? moreTwoOrganizers() ? "bg-red-600 text-white" : "bg-gray-200 text-black"
+                                                : "bg-indigo-500 hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 " +
+                                                    "focus-visible:outline-offset-2 focus-visible:outline-indigo-500 text-white"
                                             , "rounded-md  px-3 py-2 text-sm font-semibold shadow-sm ")}
-                                        onClick={() => includedInAdministrators(dancer.id) ? removeAdministrator(dancer.id) : addAdministrator(dancer)}
-                                        disabled={alreadyAdministrator(dancer) || (includedInAdministrators(dancer.id) && !moreTwoAdministrators())}
+                                        onClick={() => includedInOrganizers(dancer.id) ? removeOrganizer(dancer.id) : addOrganizer(dancer)}
+                                        disabled={(includedInOrganizers(dancer.id) && !moreTwoOrganizers())}
                                     >
                                         {buttonName(dancer)}
                                     </button>
@@ -136,4 +126,4 @@ const EditSchoolAdministratorsForm = ({ administrators, setAdministrators }) => 
         </div>
     )}
 
-export default EditSchoolAdministratorsForm
+export default EditEventOrganizersForm
