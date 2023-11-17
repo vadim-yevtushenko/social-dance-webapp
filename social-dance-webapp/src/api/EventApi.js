@@ -53,12 +53,12 @@ export const fetchViewEvent = (id) => (dispatch) => {
     })
 }
 
-export const saveEvent = (event) => (dispatch) => {
+export const saveEvent = (event, organizerId) => (dispatch) => {
     dispatch(loadingRequest(true))
     return requestWrapper({
         axiosConfig: {
             method: 'POST',
-            url: POST.saveEvent(),
+            url: POST.saveEvent(organizerId),
             data: event,
             headers: {'Content-Type': 'application/json' }
         }
@@ -73,12 +73,12 @@ export const saveEvent = (event) => (dispatch) => {
     })
 }
 
-export const uploadEventImage = (id, formData) => (dispatch) => {
+export const uploadEventImage = (id, organizerId, formData) => (dispatch) => {
     dispatch(loadingRequest(true))
     return requestWrapper({
         axiosConfig: {
             method: 'post',
-            url: POST.uploadEventImage(id),
+            url: POST.uploadEventImage(id, organizerId),
             data: formData ,
             headers: {'Content-Type': 'multipart/form-data' }
         }
@@ -92,12 +92,12 @@ export const uploadEventImage = (id, formData) => (dispatch) => {
     })
 }
 
-export const deleteEventImage = (id) => (dispatch) => {
+export const deleteEventImage = (id, organizerId) => (dispatch) => {
     dispatch(loadingRequest(true))
     return requestWrapper({
         axiosConfig: {
             method: 'DELETE',
-            url: DELETE.deleteEventImage(id),
+            url: DELETE.deleteEventImage(id, organizerId),
         }
     }).then(() => {
         dispatch(loadingRequest(false))
@@ -109,12 +109,12 @@ export const deleteEventImage = (id) => (dispatch) => {
     })
 }
 
-export const deleteEvent = (id) => (dispatch) => {
+export const deleteEvent = (id, organizerId) => (dispatch) => {
     dispatch(loadingRequest(true))
     return requestWrapper({
         axiosConfig: {
             method: 'DELETE',
-            url: DELETE.deleteEvent(id),
+            url: DELETE.deleteEvent(id, organizerId),
         }
     }).then(() => {
         dispatch(getOrganizedEvent({}))
