@@ -41,7 +41,8 @@ const DancersTable = () => {
                                         <th
                                             key={column.id}
                                             scope="col"
-                                            className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0"
+                                            className={classNamesJoin(column.id === 3 && "hidden sm:flex",
+                                                "py-3.5 pl-4 sm:pl-0 pr-3 text-left text-sm font-semibold text-gray-900 ")}
                                         >
                                             {column.name}
                                         </th>

@@ -77,7 +77,7 @@ const EventsOrSchoolsComponent = ({ typeOption }) => {
                     </div>
 
                     <div className="flex">
-                        <span className="inline-flex items-center px-3 text-gray-500 sm:text-sm">
+                        <span className="inline-flex items-center px-3 text-gray-500 sm:text-sm mr-7 sm:mr-0">
                           city:
                         </span>
                         <LocationComboboxElement

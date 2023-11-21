@@ -5,7 +5,7 @@ const DancerSearchComponent = ({ name, setName, lastName, setLastName }) => {
 
     return (
         <>
-            <div className="flex flex-1 justify-center px-2 lg:ml-6 lg:justify-end my-1 sm:my-0">
+            <div className="flex flex-1 justify-center lg:ml-6 lg:justify-end my-1 sm:my-0">
                 <div className="w-full max-w-lg ">
                     <div className="relative">
                         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -24,7 +24,7 @@ const DancerSearchComponent = ({ name, setName, lastName, setLastName }) => {
                     </div>
                 </div>
             </div>
-            <div className="flex flex-1 justify-center px-2 lg:ml-6 lg:justify-end">
+            <div className="flex flex-1 justify-center lg:ml-6 lg:justify-end">
                 <div className="w-full max-w-lg ">
                     <div className="relative">
                         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
