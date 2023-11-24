@@ -22,7 +22,7 @@ export const splitDateTimeString = (fullDateTimeString) => {
 }
 
 export const joinDateString = (year, month, day, months) => {
-    if (day === undefined || month === undefined || year === undefined){
+    if (!year || !month || !day || day.length === 0 || month.length === 0 || year.length === 0){
         return null
     }
     const numMonth = months.find(mon => mon.name === month).id
@@ -31,11 +31,10 @@ export const joinDateString = (year, month, day, months) => {
 
 export const joinDateTimeString = (year, month, day, hour, minute, months) => {
     const date = joinDateString(year, month, day, months)
-    if (date == null){
+    if (date == null || !hour || !minute || hour?.length === 0 || minute?.length === 0){
         return null
     }
-
-    return date + "T" + hour + ":" + minute + "+00:00"
+    return date + "T" + hour + ":" + minute
 }
 
 export const getMonthNumber = (month) => {

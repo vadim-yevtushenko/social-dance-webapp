@@ -14,6 +14,7 @@ import { useUpload } from "../../../hooks/useUpload";
 import { deleteDancerImage, fetchDancer, saveDancer, uploadDancerImage } from "../../../api/DancerApi";
 import React from "react";
 import ManageDanceListComponent from "./administrate/ManageDanceListComponent";
+import DateTimeForm from "../../forms/DateTimeForm";
 
 const InfoProfileComponent = () => {
     const navigate = useNavigate();
@@ -23,7 +24,9 @@ const InfoProfileComponent = () => {
     const [gender, setGender] = useState(dancer.gender)
     const [city, setCity] = useState(dancer.contactInfo?.city || "")
     const [country, setCountry] = useState(dancer.contactInfo?.country || "")
-    const [bMonth, setMonth] = useState("");
+    const [bDay, setBDay] = useState("");
+    const [bMonth, setBMonth] = useState("");
+    const [bYear, setBYear] = useState("");
     const [dances, setDances] = useState(dancer.dances);
     const { request } = useHttp();
     const { register, handleSubmit, formState: { errors }, setValue} = useForm()
@@ -42,7 +45,9 @@ const InfoProfileComponent = () => {
             navigate("/events")
         } else {
             const month = dancer.birthday?.split("-")[1]
-            setMonth(months.find(mon => mon.id === month)?.name);
+            setBMonth(months.find(mon => mon.id === month)?.name);
+            setBDay(dancer.birthday?.split("-")[2])
+            setBYear(dancer.birthday?.split("-")[0])
         }
     }, [isAuthenticated])
 
@@ -54,7 +59,7 @@ const InfoProfileComponent = () => {
         const contactInfo = { email: data.email, phoneNumber: data.phoneNumber, country, city }
         const socialNetworks = { instagram: data.instagram, facebook: data.facebook, youtube: data.youtube }
         const updatedDancer = dancerMapper(dancer.id, data.name, data.lastName, gender, socialNetworks,
-            joinDateString(data.year, bMonth, data.day, months), data.description, level, dances, contactInfo, photoUrl)
+            joinDateString(bYear, bMonth, bDay, months), data.description, level, dances, contactInfo, photoUrl)
         dispatch(saveDancer(updatedDancer))
     }
 
@@ -249,37 +254,20 @@ const InfoProfileComponent = () => {
                                 <label htmlFor="birthday" className="block text-sm font-medium leading-6 text-black">
                                     Birthday
                                 </label>
-                                <div className="flex mt-2 justify-around">
-                                    <div className="flex w-10 rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
-                                        <input
-                                            type="text"
-                                            name="day"
-                                            id="day"
-                                            autoComplete="day"
-                                            {...register('day', { value: dancer?.birthday?.split("-")[2], maxLength: 2, minLength: 2, min: 1, max: 31 })}
-                                            className="flex-1 w-10 rounded-md shadow-md border-1 bg-transparent py-1.5 pl-1 text-black focus:ring-0 sm:text-sm sm:leading-6"
-                                            placeholder="day"
-                                        />
-                                    </div>
-                                    <div className="flex">
-                                        <DropDownListElement
-                                            disabled={false}
-                                            startOption={bMonth}
-                                            setOption={setMonth}
-                                            options={months.map(month => month.name)}
-                                        />
-                                    </div>
-                                    <div className="flex w-20 rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
-                                        <input
-                                            type="text"
-                                            name="year"
-                                            id="year"
-                                            autoComplete="year"
-                                            {...register('year', { value: dancer?.birthday?.split("-")[0], maxLength: 4, minLength: 4, min: 1900, max: 2100 })}
-                                            className="flex-1 w-20 rounded-md shadow-md border-1 bg-transparent py-1.5 pl-1 text-black focus:ring-0 sm:text-sm sm:leading-6"
-                                            placeholder="year"
-                                        />
-                                    </div>
+                                <div className="mt-2">
+                                    <DateTimeForm
+                                        day={bDay}
+                                        setDay={setBDay}
+                                        month={bMonth}
+                                        setMonth={setBMonth}
+                                        year={bYear}
+                                        setYear={setBYear}
+                                        // time={}
+                                        // hour={}
+                                        // setHour={}
+                                        // minute={}
+                                        // setMinute={}
+                                    />
                                 </div>
                             </div>
 

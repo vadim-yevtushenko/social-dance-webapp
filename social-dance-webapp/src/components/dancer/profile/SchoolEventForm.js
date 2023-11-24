@@ -1,4 +1,3 @@
-import DropDownListElement from "../../forms/elements/DropDownListElement";
 import LocationComboboxElement from "../../forms/elements/LocationComboboxElement";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +16,7 @@ import { fetchDancer } from "../../../api/DancerApi";
 import MapComponent from "../../events-schools/MapComponent";
 import ManageDancerListComponent from "./administrate/ManageDancerListComponent";
 import ManageDanceListComponent from "./administrate/ManageDanceListComponent";
+import DateTimeForm from "../../forms/DateTimeForm";
 
 const SchoolEventForm = ({ typeOption }) => {
 
@@ -32,8 +32,16 @@ const SchoolEventForm = ({ typeOption }) => {
     const [lat, setLat] = useState(optionObject?.contactInfo?.latitude)
     const [lng, setLng] = useState(optionObject?.contactInfo?.latitude)
     const [dances, setDances] = useState(optionObject.dances);
+    const [sDay, setSDay] = useState("");
     const [sMonth, setSMonth] = useState("");
+    const [sYear, setSYear] = useState("");
+    const [sHour, setSHour] = useState("");
+    const [sMinute, setSMinute] = useState("");
+    const [fDay, setFDay] = useState("");
     const [fMonth, setFMonth] = useState("");
+    const [fYear, setFYear] = useState("");
+    const [fHour, setFHour] = useState("");
+    const [fMinute, setFMinute] = useState("");
     const { request } = useHttp();
     const { register, handleSubmit, formState: { errors }, getValues, setValue, setError } = useForm()
     const [image, setImage] = useState()
@@ -101,15 +109,15 @@ const SchoolEventForm = ({ typeOption }) => {
             const startMonth = sDate?.split("-")[1]
             const finishMonth = fDate?.split("-")[1]
             setSMonth(months.find(mon => mon.id === startMonth)?.name);
+            setSDay(sDate?.split("-")[2])
+            setSYear(sDate?.split("-")[0])
+            setSHour(sTime?.split(":")[0])
+            setSMinute(sTime?.split(":")[1])
             setFMonth(months.find(mon => mon.id === finishMonth)?.name);
-            setValue('sDay', sDate?.split("-")[2])
-            setValue('sYear', sDate?.split("-")[0])
-            setValue('fDay', fDate?.split("-")[2])
-            setValue('fYear', fDate?.split("-")[0])
-            setValue('sHour', sTime?.split(":")[0])
-            setValue('sMinute', sTime?.split(":")[1])
-            setValue('fHour', fTime?.split(":")[0])
-            setValue('fMinute', fTime?.split(":")[1])
+            setFDay(fDate?.split("-")[2])
+            setFYear(fDate?.split("-")[0])
+            setFHour(fTime?.split(":")[0])
+            setFMinute(fTime?.split(":")[1])
             setSchoolOrganizer(optionObject?.schoolOrganizer)
             setOrganizers(optionObject?.organizers?.length > 0 ? optionObject?.organizers : [dancer])
         }else {
@@ -126,8 +134,8 @@ const SchoolEventForm = ({ typeOption }) => {
             const newSchool = schoolMapper(optionObject?.id, data.name, data.description, dances, contactInfo, socialNetworks, imageUrl, administrators)
             dispatch(saveSchool(newSchool, dancer.id))
         }else {
-            const startDate = joinDateTimeString(data.sYear, sMonth, data.sDay, data.sHour, data.sMinute, months)
-            const finishDate = joinDateTimeString(data.fYear, fMonth, data.fDay, data.fHour, data.fMinute, months)
+            const startDate = joinDateTimeString(sYear, sMonth, sDay, sHour, sMinute, months)
+            const finishDate = joinDateTimeString(fYear, fMonth, fDay, fHour, fMinute, months)
             const newEvent = eventMapper(optionObject?.id, data.name, data.description, dances, contactInfo, socialNetworks,
                 imageUrl, startDate, finishDate, organizers, schoolOrganizer)
             dispatch(saveEvent(newEvent, dancer.id))
@@ -269,7 +277,7 @@ const SchoolEventForm = ({ typeOption }) => {
                                 >
                                     Change image
                                 </button>
-                                <p className="my-1 text-xs leading-5 text-gray-400">JPG, JPEG or PNG. 1MB max.</p>
+                                <p className="my-1 text-xs leading-5 text-gray-400 ml-3">JPG, JPEG or PNG. 1MB max.</p>
                                 {imageUrl && (
                                     <button
                                         type="button"
@@ -308,88 +316,33 @@ const SchoolEventForm = ({ typeOption }) => {
                                 Start event
                             </label>
                             <div
-                                className="flex mt-2 justify-around"
+                                className="mt-2"
                                 {...register('sDate', {
                                     validate: (value) => {
-                                        if (new Date(getValues().sYear, getMonthNumber(sMonth), getValues().sDay, getValues().sHour, getValues().sMinute) < new Date()){
+                                        if (joinDateTimeString(sYear, sMonth, sDay, sHour, sMinute, months) == null){
+                                            return "All date values must be filled in.";
+                                        }
+                                        if (new Date(sYear, getMonthNumber(sMonth), sDay, sHour, sMinute) < new Date()){
                                             return "Start event date must be later then current date time.";
                                         }
                                     },
                                 })}
                             >
-                                <div className="flex w-10 rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
-                                    <input
-                                        type="text"
-                                        name="sDay"
-                                        id="sDay"
-                                        autoComplete="sDay"
-                                        {...register('sDay', { required: true, minLength: 2, min: 1, max: 31,
-                                            validate: (value) => {
-                                                if (!sMonth) {
-                                                    return "Month is required.";
-                                                }
-                                            },})}
-                                        className="flex-1 w-10 rounded-md shadow-md border-1 bg-transparent py-1.5 pl-1 text-black focus:ring-0 sm:text-sm sm:leading-6"
-                                        placeholder="day"
-                                    />
-                                </div>
-                                <div className="flex">
-                                    <DropDownListElement
-                                        disabled={false}
-                                        startOption={sMonth !== undefined ? sMonth : ""}
-                                        setOption={setSMonth}
-                                        options={months.map(month => month.name)}
-                                    />
-                                </div>
-                                <div className="flex w-20 rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
-                                    <input
-                                        type="text"
-                                        name="sYear"
-                                        id="sYear"
-                                        autoComplete="sYear"
-                                        {...register('sYear', { required: true, maxLength: 4, minLength: 4 })}
-                                        className="flex-1 w-20 rounded-md shadow-md border-1 bg-transparent py-1.5 pl-1 text-black focus:ring-0 sm:text-sm sm:leading-6"
-                                        placeholder="year"
-                                    />
-                                </div>
-                                <div className="flex items-center">
-                                    <div className="flex w-10 rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
-                                        <input
-                                            type="text"
-                                            name="sHour"
-                                            id="sHour"
-                                            autoComplete="sHour"
-                                            {...register('sHour', { required: true, maxLength: 2, minLength: 2, min: 0, max: 23 })}
-                                            className="flex-1 w-10 rounded-md shadow-md border-1 bg-transparent py-1.5 pl-1 text-black focus:ring-0 sm:text-sm sm:leading-6"
-                                            placeholder="h"
-                                        />
-                                    </div>
-                                    <span className="text-xl">&nbsp;:&nbsp;</span>
-                                    <div className="flex w-10 rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
-                                        <input
-                                            type="text"
-                                            id="sMinute"
-                                            name="sMinute"
-                                            autoComplete="sMinute"
-                                            {...register('sMinute', { required: true, maxLength: 2, minLength: 2, min: 0, max: 59 })}
-                                            className="flex-1 w-10 rounded-md shadow-md border-1 bg-transparent py-1.5 pl-1 text-black focus:ring-0 sm:text-sm sm:leading-6"
-                                            placeholder="m"
-                                        />
-                                    </div>
-                                </div>
+                                <DateTimeForm
+                                    day={sDay}
+                                    setDay={setSDay}
+                                    month={sMonth}
+                                    setMonth={setSMonth}
+                                    year={sYear}
+                                    setYear={setSYear}
+                                    time={true}
+                                    hour={sHour}
+                                    setHour={setSHour}
+                                    minute={sMinute}
+                                    setMinute={setSMinute}
+                                />
                             </div>
                             <div className="grid mt-1">
-                                {errors?.sDay?.type === "required"
-                                    || errors?.sYear?.type === "required"
-                                    || errors?.sHour?.type === "required"
-                                    || errors?.sMinute?.type === "required"
-                                    && <p className="text-xs leading-5 text-red-700">Field is required.</p>}
-                                {errors?.sDay?.type === "minLength" && <p className="text-xs leading-5 text-red-700">Day format: 01 ... 09.</p>}
-                                {errors?.sDay?.type === "max" || errors?.fDay?.type === "min" &&  <p className="text-xs leading-5 text-red-700">Input number from 01 to 31.</p>}
-                                {errors?.sDay?.type === "validate" && <p className="text-xs leading-5 text-red-700">{errors.sDay.message}</p>}
-                                {errors?.sYear?.type === "minLength" && <p className="justify-self-center translate-x-12 pl-12 text-xs leading-5 text-red-700">Year format: yyyy.</p>}
-                                {errors?.sHour?.type === "minLength" && <p className="justify-self-end text-xs leading-5 text-red-700">Hour format: 01 ... 09.</p>}
-                                {errors?.sMinute?.type === "minLength" && <p className="justify-self-end text-xs leading-5 text-red-700">Minute format: 01 ... 09.</p>}
                                 {errors?.sDate?.type === "validate" && <p className="text-xs leading-5 text-red-700">{errors.sDate.message}</p>}
                             </div>
                         </div>
@@ -399,88 +352,33 @@ const SchoolEventForm = ({ typeOption }) => {
                                 Finish event
                             </label>
                             <div
-                                className="flex mt-2 justify-around"
+                                className="mt-2"
                                 {...register('fDate', {
                                     validate: (value) => {
-                                        if (new Date(getValues().sYear, getMonthNumber(sMonth), getValues().sDay, getValues().sHour, getValues().sMinute) > new Date(new Date(getValues().fYear, getMonthNumber(fMonth), getValues().fDay, getValues().fHour, getValues().fMinute))){
+                                        if (joinDateTimeString(fYear, fMonth, fDay, fHour, fMinute, months) == null){
+                                            return "All date values must be filled in.";
+                                        }
+                                        if (new Date(sYear, getMonthNumber(sMonth), sDay, sHour, sMinute) > new Date(new Date(fYear, getMonthNumber(fMonth), fDay, fHour, fMinute))){
                                             return "Finish event date must be later then start event date.";
                                         }
                                     },
                                 })}
                             >
-                                <div className="flex w-10 rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
-                                    <input
-                                        type="text"
-                                        name="fDay"
-                                        id="fDay"
-                                        autoComplete="fDay"
-                                        {...register('fDay', { required: true, minLength: 2, min: 1, max: 31,
-                                            validate: (value) => {
-                                                if (!fMonth) {
-                                                    return "Month is required.";
-                                                }
-                                            },})}
-                                        className="flex-1 w-10 rounded-md shadow-md border-1 bg-transparent py-1.5 pl-1 text-black focus:ring-0 sm:text-sm sm:leading-6"
-                                        placeholder="day"
-                                    />
-                                </div>
-                                <div className="flex">
-                                    <DropDownListElement
-                                        disabled={false}
-                                        startOption={fMonth !== undefined ? fMonth : ""}
-                                        setOption={setFMonth}
-                                        options={months.map(month => month.name)}
-                                    />
-                                </div>
-                                <div className="flex w-20 rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
-                                    <input
-                                        type="text"
-                                        name="fYear"
-                                        id="fYear"
-                                        autoComplete="fYear"
-                                        {...register('fYear', { maxLength: 4, minLength: 4 })}
-                                        className="flex-1 w-20 rounded-md shadow-md border-1 bg-transparent py-1.5 pl-1 text-black focus:ring-0 sm:text-sm sm:leading-6"
-                                        placeholder="year"
-                                    />
-                                </div>
-                                <div className="flex items-center">
-                                    <div className="flex w-10 rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
-                                        <input
-                                            type="text"
-                                            name="fHour"
-                                            id="fHour"
-                                            autoComplete="fHour"
-                                            {...register('fHour', { required: true, minLength: 2, min: 0, max: 23 })}
-                                            className="flex-1 w-10 rounded-md shadow-md border-1 bg-transparent py-1.5 pl-1 text-black focus:ring-0 sm:text-sm sm:leading-6"
-                                            placeholder="h"
-                                        />
-                                    </div>
-                                    <span className="text-xl">&nbsp;:&nbsp;</span>
-                                    <div className="flex w-10 rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
-                                        <input
-                                            type="text"
-                                            name="fMinute"
-                                            id="fMinute"
-                                            autoComplete="fMinute"
-                                            {...register('fMinute', { required: true, minLength: 2, min: 0, max: 59 })}
-                                            className="flex-1 w-10 rounded-md shadow-md border-1 bg-transparent py-1.5 pl-1 text-black focus:ring-0 sm:text-sm sm:leading-6"
-                                            placeholder="m"
-                                        />
-                                    </div>
-                                </div>
+                                <DateTimeForm
+                                    day={fDay}
+                                    setDay={setFDay}
+                                    month={fMonth}
+                                    setMonth={setFMonth}
+                                    year={fYear}
+                                    setYear={setFYear}
+                                    time={true}
+                                    hour={fHour}
+                                    setHour={setFHour}
+                                    minute={fMinute}
+                                    setMinute={setFMinute}
+                                />
                             </div>
                             <div className="grid mt-1">
-                                {errors?.fDay?.type === "required"
-                                    || errors?.fYear?.type === "required"
-                                    || errors?.fHour?.type === "required"
-                                    || errors?.fMinute?.type === "required"
-                                    && <p className="text-xs leading-5 text-red-700">Field is required.</p>}
-                                {errors?.fDay?.type === "minLength" && <p className="text-xs leading-5 text-red-700">Day format: 01 ... 09.</p>}
-                                {errors?.fDay?.type === "max" || errors?.fDay?.type === "min" &&  <p className="text-xs leading-5 text-red-700">Input number from 01 to 31.</p>}
-                                {errors?.fDay?.type === "validate" && <p className="text-xs leading-5 text-red-700">{errors.fDay.message}</p>}
-                                {errors?.fYear?.type === "minLength" && <p className="justify-self-center translate-x-12 pl-12 text-xs leading-5 text-red-700">Year format: yyyy.</p>}
-                                {errors?.fHour?.type === "minLength" && <p className="justify-self-end text-xs leading-5 text-red-700">Hour format: 01 ... 09.</p>}
-                                {errors?.fMinute?.type === "minLength" && <p className="justify-self-end text-xs leading-5 text-red-700">Minute format: 01 ... 09.</p>}
                                 {errors?.fDate?.type === "validate" && <p className="text-xs leading-5 text-red-700">{errors.fDate.message}</p>}
                             </div>
 
