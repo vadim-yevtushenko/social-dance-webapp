@@ -6,7 +6,7 @@ export const useValues = () => {
 
     const eventOrSchoolPageSizeOptions = [6, 12, 24]
 
-    const levelOptions = ["", "JUNIOR", "MIDDLE", "ADVANCED", "PROFESSIONAL"]
+    const levelOptions = ["UNDEFINED", "JUNIOR", "MIDDLE", "ADVANCED", "PROFESSIONAL"]
 
     const ratingButtons = [
         { id: '1', title: <div className="flex items-center">
@@ -36,22 +36,6 @@ export const useValues = () => {
         { id: 'female', title: 'female' }
     ]
 
-    const months = [
-        { id: '00', name: '' },
-        { id: '01', name: "January" },
-        { id: '02', name: 'February' },
-        { id: '03', name: 'March' },
-        { id: '04', name: 'April' },
-        { id: '05', name: 'May' },
-        { id: '06', name: 'June' },
-        { id: '07', name: 'July' },
-        { id: '08', name: 'August' },
-        { id: '09', name: 'September' },
-        { id: '10', name: 'October' },
-        { id: '11', name: 'November' },
-        { id: '12', name: 'December' },
-    ]
-
     const socialDances = [
         { id: '01', name: 'Salsa' },
         { id: '02', name: 'Bachata' },
@@ -68,6 +52,39 @@ export const useValues = () => {
         EVENT: "event"
     }
 
-    return { dancerPageSizeOptions: pageSizeOptions, eventOrSchoolPageSizeOptions, levelOptions, genderButtons, months, socialDances, TYPE_OPTIONS, ratingButtons }
+    const days = ['', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15',
+        '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31']
+
+    const months = [
+        { id: '00', name: '' },
+        { id: '01', name: "January" },
+        { id: '02', name: 'February' },
+        { id: '03', name: 'March' },
+        { id: '04', name: 'April' },
+        { id: '05', name: 'May' },
+        { id: '06', name: 'June' },
+        { id: '07', name: 'July' },
+        { id: '08', name: 'August' },
+        { id: '09', name: 'September' },
+        { id: '10', name: 'October' },
+        { id: '11', name: 'November' },
+        { id: '12', name: 'December' },
+    ]
+
+    const years = (startYear, finishYear) => {
+        const result = ['']
+        for(let i = startYear; i <= finishYear; i++){
+            result.push(String(i))
+        }
+        return result
+    }
+
+    const hours = ['', '00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15',
+        '16', '17', '18', '19', '20', '21', '22', '23']
+
+    const minutes = ['', '00', '10', '20', '30', '40', '50']
+
+    return { dancerPageSizeOptions: pageSizeOptions, eventOrSchoolPageSizeOptions, levelOptions, genderButtons,
+        socialDances, TYPE_OPTIONS, ratingButtons, days, months, years, hours, minutes }
 
 }

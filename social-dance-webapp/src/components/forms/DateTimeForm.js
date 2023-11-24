@@ -1,69 +1,81 @@
 import DropDownListElement from "./elements/DropDownListElement";
-import {useValues} from "../../hooks/useValues";
-import {useForm} from "react-hook-form";
-import {useEffect, useState} from "react";
-import {joinDateString} from "../../util/dateTimeUtils";
+import { useValues } from "../../hooks/useValues";
+import React from "react";
 
-const DateTimeForm = ({date, setDateTime, time = false}) => {
+const DateTimeForm = ({ day, setDay, month, setMonth, year, setYear,
+                          time = false, hour, setHour, minute, setMinute }) => {
 
-    const { months } = useValues()
-    const [day, setDay] = useState("");
-    const [month, setMonth] = useState("");
-    const [year, setYear] = useState();
-    const [hour, setHour] = useState("");
-    const [minute, setMinute] = useState("");
-    const { register, formState: { errors } } = useForm()
+    const { days, months, years, hours, minutes } = useValues()
 
-    useEffect(() => {
-        const numMonth = date.split("-")[1]
-        setMonth(months.find(mon => mon.id === numMonth)?.name);
-        setDay(date.split("-")[2])
-        setYear(date.split("-")[0])
-        // submitDate()
-    }, [])
+    const defineDaysNumber = () => {
+        if (['April', 'June', 'September', 'November'].includes(month)){
+            return days.slice(0, 31)
+        }
+        if ('February' === month){
+            if (leapYear(year)){
+                return days.slice(0, 30)
+            }
+            return days.slice(0, 29)
+        }
 
-    const submitDate = () => {
-        setDateTime(joinDateString(year, month, day, months))
+        return days
     }
 
-    return (
+    const leapYear = (year) => ((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0);
 
-        <form className="flex mt-2 justify-around">
-            <div className="flex w-10 rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
-                <input
-                    type="text"
-                    name="day"
-                    id="day"
-                    autoComplete="day"
-                    // value={date.split("-")[2]}
-                    onChange={event => setDay(event.target.value)}
-                    {...register('day', { value: date.split("-")[2], maxLength: 2, minLength: 2, min: 1, max: 31 })}
-                    className="flex-1 w-10 rounded-md shadow-md border-1 bg-transparent py-1.5 pl-1 text-black focus:ring-0 sm:text-sm sm:leading-6"
-                    placeholder="day"
-                />
+    const defineYears = () => time ? years(new Date().getFullYear(), new Date().getFullYear() + 5) : years(1940, new Date().getFullYear())
+
+    return (
+        <div className="flex-col">
+            <div className="flex justify-around mb-2">
+                <div className="flex">
+                    <DropDownListElement
+                        disabled={false}
+                        startOption={year !== undefined ? year : ""}
+                        setOption={setYear}
+                        options={defineYears()}
+                    />
+                </div>
+                <div className="flex">
+                    <DropDownListElement
+                        disabled={false}
+                        startOption={month !== undefined ? month : ""}
+                        setOption={setMonth}
+                        options={months.map(month => month.name)}
+                    />
+                </div>
+                <div className="flex">
+                    <DropDownListElement
+                        disabled={false}
+                        startOption={day !== undefined ? day : ""}
+                        setOption={setDay}
+                        options={defineDaysNumber()}
+                    />
+                </div>
             </div>
-            <div className="flex">
-                <DropDownListElement
-                    disabled={false}
-                    startOption={month}
-                    setOption={setMonth}
-                    options={months.map(month => month.name)}
-                />
-            </div>
-            <div className="flex w-20 rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
-                <input
-                    type="text"
-                    name="year"
-                    id="year"
-                    autoComplete="year"
-                    // value={year}
-                    // onChange={event => setYear(event.target.value)}
-                    {...register('year', { value: date.split("-")[0], maxLength: 4, minLength: 4, min: 1900, max: 2100 })}
-                    className="flex-1 w-20 rounded-md shadow-md border-1 bg-transparent py-1.5 pl-1 text-black focus:ring-0 sm:text-sm sm:leading-6"
-                    placeholder="year"
-                />
-            </div>
-        </form>
+
+            {time && (
+                <div className="flex justify-center">
+                    <div className="flex">
+                        <DropDownListElement
+                            disabled={false}
+                            startOption={hour !== undefined ? hour : ""}
+                            setOption={setHour}
+                            options={hours}
+                        />
+                    </div>
+                    <span className="text-xl mt-1">&nbsp;:&nbsp;</span>
+                    <div className="flex">
+                        <DropDownListElement
+                            disabled={false}
+                            startOption={minute !== undefined ? minute : ""}
+                            setOption={setMinute}
+                            options={minutes}
+                        />
+                    </div>
+                </div>
+            )}
+        </div>
 
     )
 }
