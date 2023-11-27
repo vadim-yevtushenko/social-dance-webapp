@@ -4,6 +4,7 @@ import SchoolEventForm from "./SchoolEventForm";
 import { useValues } from "../../../hooks/useValues";
 import { deleteSchool, fetchAdministratedSchool } from "../../../api/SchoolApi";
 import { getAdministratedSchool } from "../../../redux/actions/schoolActions";
+import DeletingBlock from "./administrate/DeletingBlock";
 
 const SUBTITLE = {
     EXIST_ADMINISTRATED_SCHOOL: "You already have a school for administrate.",
@@ -52,24 +53,12 @@ const MySchoolsProfileComponent = () => {
                 />
 
                 {dancer.administrator && (
-                    <>
-                        <div>
-                            <h2 className="text-base font-semibold leading-7 text-black">Delete school</h2>
-                            <p className="mt-1 text-sm leading-6 text-gray-400">
-                                {SUBTITLE.DELETE_SCHOOL}
-                            </p>
-                        </div>
-
-                        <div className="md:col-span-2">
-                            <button
-                                type="button"
-                                className="rounded-md bg-red-500 mt-8 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-400"
-                                onClick={() => deleteCurrentSchool()}
-                            >
-                                Delete school
-                            </button>
-                        </div>
-                    </>
+                    <DeletingBlock
+                        title={"school"}
+                        subTitle={SUBTITLE.DELETE_SCHOOL}
+                        buttonName={"Delete school"}
+                        action={deleteCurrentSchool}
+                    />
                 )}
 
             </div>

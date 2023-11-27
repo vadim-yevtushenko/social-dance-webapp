@@ -5,7 +5,7 @@ export const DANCER_LOGOUT = 'DANCER_LOGOUT'
 export const UPDATE_DANCER = 'UPDATE_DANCER'
 
 // Action Creator
-export const dancerLogin = (email, isAuth ) => ({
+export const dancerLogin = (email, isAuth) => ({
     type: DANCER_LOGIN,
     payload: { email, isAuth }
 })

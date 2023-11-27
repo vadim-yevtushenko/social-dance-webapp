@@ -252,7 +252,7 @@ const SchoolEventForm = ({ typeOption }) => {
                                                 <img
                                                     src={imageUrl}
                                                     alt="Photo"
-                                                    className="max-w-xl flex-none rounded-lg bg-gray-300 object-cover"
+                                                    className='lg:col-span-2 lg:row-span-2 justify-self-center'
                                                 />
                                             ) : (
                                                 <PhotoIcon className="h-40 w-40 text-gray-300 hover:text-indigo-500" aria-hidden="true" />

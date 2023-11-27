@@ -98,14 +98,22 @@ export const deleteDancer = (id, email, password) => (dispatch) => {
     dispatch(loadingRequest(true))
     return requestWrapper({
         axiosConfig: {
-            method: 'DELETE',
-            url: DELETE.deleteDancer(id, email, password),
+            method: 'POST',
+            url: POST.login(email, password)
         }
+    }).then(() => {
+        requestWrapper({
+            axiosConfig: {
+                method: 'DELETE',
+                url: DELETE.deleteDancer(id),
+            }
+        }).then()
     }).then(() => {
         dispatch(getOrganizedEvent({}))
         dispatch(getAdministratedSchool({}))
         dispatch(dancerLogout())
         dispatch(loadingRequest(false))
+        successHandling("Dancer deleted!")
     }).catch(error => {
         dispatch(loadingRequest(false))
         errorHandling(error)
