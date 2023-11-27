@@ -207,6 +207,9 @@ const InfoProfileComponent = () => {
                                         ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                                     />
                                 </div>
+                                <label htmlFor="email" className="flex justify-center text-sm font-medium leading-6 text-gray-500">
+                                    (not for login)
+                                </label>
                             </div>
 
                             <div className="sm:col-span-3">
@@ -262,11 +265,6 @@ const InfoProfileComponent = () => {
                                         setMonth={setBMonth}
                                         year={bYear}
                                         setYear={setBYear}
-                                        // time={}
-                                        // hour={}
-                                        // setHour={}
-                                        // minute={}
-                                        // setMinute={}
                                     />
                                 </div>
                             </div>

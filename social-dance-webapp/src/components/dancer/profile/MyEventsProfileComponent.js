@@ -6,12 +6,13 @@ import { getOrganizedEvent } from "../../../redux/actions/eventActions";
 import { deleteEvent, fetchOrganizedEvent } from "../../../api/EventApi";
 import { fetchDancer } from "../../../api/DancerApi";
 import { classNamesJoin } from "../../../util/classNameUtils";
+import DeletingBlock from "./administrate/DeletingBlock";
 
 const SUBTITLE = {
     EXIST_EVENTS: "All your active events.",
     NOT_EXIST_EVENTS: "You have no active events created.",
     NOT_EXIST_ORGANIZED_EVENT: "You can create new school.",
-    DELETE_EVENT: "You can delete your school here. This action is not reversible. " +
+    DELETE_EVENT: "You can delete your event here. This action is not reversible. " +
         "All information related to this event will be deleted permanently.",
     CREATE_EVENT: "Click the button to open the form for creating a new event."
 }
@@ -106,24 +107,12 @@ const MyEventsProfileComponent = () => {
                             typeOption={TYPE_OPTIONS.EVENT}
                         />
                         {!organizedEvent.id || (
-                            <>
-                                <div>
-                                    <h2 className="text-base font-semibold leading-7 text-black">Delete event</h2>
-                                    <p className="mt-1 text-sm leading-6 text-gray-400">
-                                        {SUBTITLE.DELETE_EVENT}
-                                    </p>
-                                </div>
-
-                                <div className="md:col-span-2">
-                                    <button
-                                        type="button"
-                                        className="rounded-md bg-red-500 mt-8 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-400"
-                                        onClick={() => deleteCurrentEvent()}
-                                    >
-                                        Delete event
-                                    </button>
-                                </div>
-                            </>
+                            <DeletingBlock
+                                title={"event"}
+                                subTitle={SUBTITLE.DELETE_EVENT}
+                                buttonName={"Delete event"}
+                                action={deleteCurrentEvent}
+                            />
                         )}
                     </>
                 )}

@@ -74,3 +74,20 @@ export const resetPassword = (email) => (dispatch) => {
     })
 }
 
+export const changeEmail = (email, newEmail) => (dispatch) => {
+    dispatch(loadingRequest(true))
+    return requestWrapper({
+        axiosConfig: {
+            method: 'POST',
+            url: POST.changeEmail(email, newEmail)
+        }
+    }).then(() => {
+        dispatch(dancerLogin(newEmail, true))
+        dispatch(loadingRequest(false))
+        successHandling("Email changed successful.")
+    }).catch(error => {
+        dispatch(loadingRequest(false))
+        errorHandling(error)
+    })
+}
+

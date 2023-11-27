@@ -10,11 +10,11 @@ import { useValidate } from "../../hooks/useValidate";
 
 const RegistrationForm = () => {
     const [gender, setGender] = useState();
-    const [level, setLevel] = useState();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { isAuthenticated } = useSelector(state => state.auth)
     const { levelOptions, genderButtons } = useValues()
+    const [level, setLevel] = useState(levelOptions[0]);
     const { register, handleSubmit, formState: { errors }, getValues } = useForm()
     const { validatePassword } = useValidate()
 
