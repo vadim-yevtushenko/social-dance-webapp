@@ -53,6 +53,7 @@ export const fetchViewSchool = (id) => (dispatch) => {
 }
 
 export const saveSchool = (school, adminId) => (dispatch) => {
+    let schoolId
     dispatch(loadingRequest(true))
     return requestWrapper({
         axiosConfig: {
@@ -62,11 +63,23 @@ export const saveSchool = (school, adminId) => (dispatch) => {
             headers: {'Content-Type': 'application/json' }
         }
     }).then(res => {
+        schoolId = res.data.id
         dispatch(getAdministratedSchool(res.data))
         dispatch(fetchDancer(adminId))
         dispatch(loadingRequest(false))
     }).then(() => {
         successHandling("School info saved!")
+        if (school.id === null || school.id === undefined){
+            school = {...school, id: schoolId}
+            requestWrapper({
+                axiosConfig: {
+                    method: 'POST',
+                    url: POST.notifyCreatedSchool(),
+                    data: school,
+                    headers: {'Content-Type': 'application/json' }
+                }
+            }).then()
+        }
     }).catch(error => {
         dispatch(loadingRequest(false))
         errorHandling(error)

@@ -52,7 +52,7 @@ export default function MainHeader() {
                     className="text-3xl italic font-bold text-center text-white cursor-pointer 2xl:-translate-x-12 ml-5 lg:ml-0"
                     onClick={() => navigate("/")}
                 >
-                  SOCIAL DANCE
+                  SOCIAL DANCES
                 </h1>
               </div>
               <div className="flex items-center px-2 lg:px-0">

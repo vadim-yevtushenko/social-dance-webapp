@@ -19,6 +19,12 @@ const DancerQuickViewComponent = ({ openView, setOpenView, dancer }) => {
         setOpen(false)
     }
 
+    const isExistSocialNetwork = () => {
+        return !!(dancer?.socialNetworks && (dancer?.socialNetworks.instagram !== ""
+            || dancer?.socialNetworks.facebook !== "" || dancer?.socialNetworks.youtube !== ""));
+
+    }
+
     return (
         <Transition.Root show={open} as={Fragment}>
             <Dialog as="div" className="relative z-10" onClose={closeView}>
@@ -81,13 +87,24 @@ const DancerQuickViewComponent = ({ openView, setOpenView, dancer }) => {
                                                     Dancer information
                                                 </h3>
 
-                                                {dancer?.birthday && <p className="font-medium text-gray-900">{parseFullDateString(dancer?.birthday)}</p>}
+                                                {dancer?.birthday && <p className="font-medium text-gray-900">Birthday: {parseFullDateString(dancer?.birthday)}</p>}
 
-                                                <div className="flex">
-                                                    <p className="font-medium text-gray-900">Gender: {dancer?.gender}&nbsp;&nbsp;&nbsp;</p>
+                                                <div className="flex justify-between">
+                                                    <p className="font-medium text-gray-900">Gender: {dancer?.gender}</p>
                                                     <p className="font-medium text-gray-900">Level: {dancer?.level}</p>
 
                                                 </div>
+
+                                                {dancer?.contactInfo && (dancer.contactInfo.country || dancer.contactInfo.city) && (
+                                                    <div className="mt-4">
+                                                        <h4 className="text-sm font-medium text-gray-900">Contacts</h4>
+                                                        <div className="flex justify-between">
+                                                            <p className="font-medium text-gray-900">{dancer.contactInfo.email}</p>
+                                                            <p className="font-medium text-gray-900">{dancer.contactInfo.phoneNumber}</p>
+
+                                                        </div>
+                                                    </div>
+                                                )}
 
                                                 {dancer?.contactInfo && (dancer.contactInfo.country || dancer.contactInfo.city) && (
                                                     <div className="mt-4">
@@ -98,7 +115,7 @@ const DancerQuickViewComponent = ({ openView, setOpenView, dancer }) => {
                                                     </div>
                                                 )}
 
-                                                {dancer?.socialNetworks && (
+                                                {isExistSocialNetwork() && (
                                                     <div className="mt-4">
                                                         <SocialNetworksComponent socialNetworks={dancer.socialNetworks}/>
                                                     </div>
