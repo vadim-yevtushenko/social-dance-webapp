@@ -1,5 +1,5 @@
 import RequestWrapper from "./requestWrapper";
-import { GET, POST } from "./Endpoints";
+import {DELETE, GET, POST} from "./Endpoints";
 import { loadingRequest } from "../redux/actions/requestActions";
 import { errorHandling } from "./notificationHandling";
 import { getReviews } from "../redux/actions/feedbackActions";
@@ -28,6 +28,22 @@ export const saveReview = review => (dispatch) => {
             method: 'POST',
             url: POST.saveReview(),
             data: review,
+            headers: {'Content-Type': 'application/json' }
+        }
+    }).then(() => {
+        dispatch(loadingRequest(false))
+    }).catch(error => {
+        dispatch(loadingRequest(false))
+        errorHandling(error)
+    })
+}
+
+export const deleteReview = reviewId => (dispatch) => {
+    dispatch(loadingRequest(true))
+    return RequestWrapper({
+        axiosConfig: {
+            method: 'DELETE',
+            url: DELETE.deleteReview(reviewId),
             headers: {'Content-Type': 'application/json' }
         }
     }).then(() => {

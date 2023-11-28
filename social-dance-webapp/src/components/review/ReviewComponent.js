@@ -2,7 +2,7 @@ import { StarIcon } from '@heroicons/react/20/solid'
 import { classNamesJoin } from "../../util/classNameUtils";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { fetchReviews, saveReview } from "../../api/ReviewApi";
+import {deleteReview, fetchReviews, saveReview} from "../../api/ReviewApi";
 import { parseFullDateTimeString } from "../../util/dateTimeUtils";
 import { reviewMapper } from "../../util/mapper";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,22 +15,24 @@ export default function ReviewComponent({ rerender, typeOption }) {
     const { isAuthenticated, dancer } = useSelector(state => state.auth)
     const { results, total } = useSelector(state => state.feedback.reviews)
     const params = useParams();
-    const [objectId, setObjectId] = useState(params.id)
     const[review, setReview] = useState('')
     const[incognito, setIncognito] = useState()
     const[showWriteReview, setShowWriteReview] = useState(false)
     const[page, setPage] = useState(1)
     const[size, setSize] = useState(5)
+    const[localRerender, setLocalRerender] = useState(false)
     const { dancerPageSizeOptions } = useValues()
     const { TYPE_OPTIONS } = useValues()
 
     useEffect(() => {
-        dispatch(fetchReviews(objectId, page, size))
-    }, [showWriteReview, rerender, page, size])
+        dispatch(fetchReviews(objectId(), page, size))
+    }, [showWriteReview, rerender, page, size, localRerender])
+
+    const objectId = () => params.id
 
     const createReview = () => {
         if (showWriteReview && review.trim() !== ''){
-            const newReview = reviewMapper(null, objectId, dancer.id, review, incognito)
+            const newReview = reviewMapper(null, objectId(), dancer.id, review, incognito)
             dispatch(saveReview(newReview))
                 .then(() => {
                     setReview('')
@@ -40,6 +42,11 @@ export default function ReviewComponent({ rerender, typeOption }) {
         }else {
             setShowWriteReview(true)
         }
+    }
+
+    const removeReview = (reviewId) => {
+        dispatch(deleteReview(reviewId))
+            .then(() => setLocalRerender(!localRerender))
     }
 
     return (
@@ -138,7 +145,15 @@ export default function ReviewComponent({ rerender, typeOption }) {
                                 className="mt-4 space-y-6 text-base italic text-gray-600"
                                 dangerouslySetInnerHTML={{ __html: review.review }}
                             />
-                            <p className="text-sm italic text-gray-500 mt-3 text-end">{parseFullDateTimeString(review.created)}</p>
+                            <div className="flex justify-between">
+                                <p
+                                    className="text-red-600 hover:text-red-400 cursor-pointer text-sm italic mt-3"
+                                    onClick={() => removeReview(review.id)}
+                                >
+                                    {dancer.id === review.dancerId && "Delete review"}
+                                </p>
+                                <p className="text-sm italic text-gray-500 mt-3 text-end">{parseFullDateTimeString(review.created)}</p>
+                            </div>
                         </div>
                     ))}
                 </div>

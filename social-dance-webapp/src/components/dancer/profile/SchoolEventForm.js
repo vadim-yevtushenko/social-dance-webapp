@@ -490,20 +490,33 @@ const SchoolEventForm = ({ typeOption }) => {
                             />
                         </div>
 
-                        <div className="flex">
+                        <div
+                            className="flex"
+                            {...register('city', {
+                                validate: (value) => {
+                                    if (city === ""){
+                                        return "City required.";
+                                    }
+                                },
+                            })}
+                        >
                             <span className="inline-flex items-center px-3 text-gray-500 sm:text-sm">
                               city:
                             </span>
-                            <LocationComboboxElement
-                                value={city}
-                                setValue={setCity}
-                                request={getCities}
-                                setLat={setLat}
-                                setLng={setLng}
-                                isDisable={country === ""}
-                            />
+                            <div>
+                                <LocationComboboxElement
+                                    value={city}
+                                    setValue={setCity}
+                                    request={getCities}
+                                    setLat={setLat}
+                                    setLng={setLng}
+                                    isDisable={country === ""}
+                                />
+                                {errors?.city?.type === "validate" && <p className="text-xs leading-5 text-red-700 ml-2">{errors.city.message}</p>}
+                            </div>
                         </div>
                     </div>
+
                     <div className="flex mt-5">
                         <span className="inline-flex items-center px-3 text-gray-500 sm:text-sm">
                             address:

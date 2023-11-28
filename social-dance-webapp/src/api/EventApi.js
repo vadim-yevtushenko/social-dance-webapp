@@ -54,6 +54,7 @@ export const fetchViewEvent = (id) => (dispatch) => {
 }
 
 export const saveEvent = (event, organizerId) => (dispatch) => {
+    let eventId
     dispatch(loadingRequest(true))
     return requestWrapper({
         axiosConfig: {
@@ -63,10 +64,22 @@ export const saveEvent = (event, organizerId) => (dispatch) => {
             headers: {'Content-Type': 'application/json' }
         }
     }).then(res => {
+        eventId = res.data.id
         dispatch(getOrganizedEvent(res.data))
         dispatch(loadingRequest(false))
     }).then(() => {
         successHandling("Event info saved!")
+        if (event.id === null || event.id === undefined){
+            event = {...event, id: eventId}
+            requestWrapper({
+                axiosConfig: {
+                    method: 'POST',
+                    url: POST.notifyCreatedEvent(),
+                    data: event,
+                    headers: {'Content-Type': 'application/json' }
+                }
+            }).then()
+        }
     }).catch(error => {
         dispatch(loadingRequest(false))
         errorHandling(error)

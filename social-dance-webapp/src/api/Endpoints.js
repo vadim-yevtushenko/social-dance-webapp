@@ -75,10 +75,12 @@ export const POST = {
 
     // Schools
     saveSchool: (adminId) => `${API_BASE_URL}/schools?adminId=${adminId}`,
+    notifyCreatedSchool: () => `${API_BASE_URL}/schools/notify-created`,
     uploadSchoolImage: (id, adminId) => `${API_BASE_URL}/schools/upload-image?id=${id}&adminId=${adminId}`,
 
     // Events
     saveEvent: (organizerId) => `${API_BASE_URL}/events?organizerId=${organizerId}`,
+    notifyCreatedEvent: () => `${API_BASE_URL}/events/notify-created`,
     uploadEventImage: (id, organizerId) => `${API_BASE_URL}/events/upload-image?id=${id}&organizerId=${organizerId}`,
 
     // Credential
@@ -110,4 +112,7 @@ export const DELETE = {
     // Events
     deleteEvent: (eventId, organizerId) => `${API_BASE_URL}/events/${eventId}?organizerId=${organizerId}`,
     deleteEventImage: (eventId, organizerId) => `${API_BASE_URL}/events/delete-image?id=${eventId}&organizerId=${organizerId}`,
+
+    // Review
+    deleteReview: (reviewId) => `${API_BASE_URL}/reviews/${reviewId}`,
 };
