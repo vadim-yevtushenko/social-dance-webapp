@@ -15,6 +15,7 @@ import { deleteDancerImage, fetchDancer, saveDancer, uploadDancerImage } from ".
 import React from "react";
 import ManageDanceListComponent from "./administrate/ManageDanceListComponent";
 import DateTimeForm from "../../forms/DateTimeForm";
+import { classNamesJoin } from "../../../util/classNameUtils";
 
 const InfoProfileComponent = () => {
     const navigate = useNavigate();
@@ -35,6 +36,7 @@ const InfoProfileComponent = () => {
     const [photoUrl, setPhotoUrl] = useState(dancer.image)
     const { resizeImage } = useUpload()
     const [openDancesDialog, setOpenDancesDialog] = useState(false)
+    const [invisible, setInvisible] = useState(!dancer.contactInfo?.email)
 
     useEffect(() => {
         dispatch(fetchDancer(dancer.id))
@@ -56,7 +58,7 @@ const InfoProfileComponent = () => {
     }, [dancer.image])
 
     const onSubmit = (data) => {
-        const contactInfo = { email: data.email, phoneNumber: data.phoneNumber, country, city }
+        const contactInfo = { email: invisible ? "" : email, phoneNumber: data.phoneNumber, country, city }
         const socialNetworks = { instagram: data.instagram, facebook: data.facebook, youtube: data.youtube }
         const updatedDancer = dancerMapper(dancer.id, data.name, data.lastName, gender, socialNetworks,
             joinDateString(bYear, bMonth, bDay, months), data.description, level, dances, contactInfo, photoUrl)
@@ -195,21 +197,24 @@ const InfoProfileComponent = () => {
                                 <label htmlFor="email" className="block text-sm font-medium leading-6 text-black">
                                     Email address
                                 </label>
-                                <div className="mt-2">
+                                <p
+                                    className={classNamesJoin(invisible ? "text-gray-500" : "text-black", "mt-2")}
+                                >
+                                    {email}
+                                </p>
+                                <div className="mt-1 flex h-6 items-center">
                                     <input
-                                        id="email"
-                                        name="email"
-                                        type="email"
-                                        autoComplete="email"
-                                        placeholder='youremail@example.com'
-                                        {...register('email', { value: dancer.contactInfo?.email || email, maxLength: 60, minLength: 5 })}
-                                        className="block w-full rounded-md border-1 bg-white/5 py-1.5 text-black shadow-md ring-1 ring-inset
-                                        ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                                        id="1"
+                                        name="invisible"
+                                        type="checkbox"
+                                        checked={invisible}
+                                        onChange={(event) => setInvisible(!invisible)}
+                                        className="h-4 w-4 rounded border-gray-400 text-indigo-600 focus:ring-indigo-600"
                                     />
+                                    <p className="ml-3 text-sm text-gray-600">
+                                        - invisible
+                                    </p>
                                 </div>
-                                <label htmlFor="email" className="flex justify-center text-sm font-medium leading-6 text-gray-500">
-                                    (not for login)
-                                </label>
                             </div>
 
                             <div className="sm:col-span-3">

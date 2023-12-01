@@ -20,7 +20,6 @@ export const successHandling = (message) => {
 }
 
 export const errorHandling = (error) => {
-    console.log("error1", error)
     if (error){
         const message = error.response?.data?.message ? error.response.data.message : error.message
         toast.custom(<NotificationComponent

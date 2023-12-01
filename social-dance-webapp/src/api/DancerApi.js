@@ -40,14 +40,16 @@ export const fetchDancer = (id) => (dispatch) => {
     })
 }
 
-export const saveDancer = (dancer) => (dispatch) => {
+export const saveDancer = (dancer) => (dispatch, getState) => {
     dispatch(loadingRequest(true))
     return requestWrapper({
+        dispatch,
+        getState,
         axiosConfig: {
             method: 'POST',
             url: POST.saveDancer(),
             data: dancer,
-            headers: {'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' }
         }
     }).then(res => {
         dispatch(updateDancer(res.data))
@@ -60,14 +62,16 @@ export const saveDancer = (dancer) => (dispatch) => {
     })
 }
 
-export const uploadDancerImage = (id, formData) => (dispatch) => {
+export const uploadDancerImage = (id, formData) => (dispatch, getState) => {
     dispatch(loadingRequest(true))
     return requestWrapper({
+        dispatch,
+        getState,
         axiosConfig: {
             method: 'POST',
             url: POST.uploadDancerImage(id),
             data: formData ,
-            headers: {'Content-Type': 'multipart/form-data' }
+            headers: { 'Content-Type': 'multipart/form-data' }
         }
     }).then(() => {
         dispatch(loadingRequest(false))
@@ -78,9 +82,11 @@ export const uploadDancerImage = (id, formData) => (dispatch) => {
     })
 }
 
-export const deleteDancerImage = (id) => (dispatch) => {
+export const deleteDancerImage = (id) => (dispatch, getState) => {
     dispatch(loadingRequest(true))
     return requestWrapper({
+        dispatch,
+        getState,
         axiosConfig: {
             method: 'DELETE',
             url: DELETE.deleteDancerImage(id),
@@ -94,9 +100,11 @@ export const deleteDancerImage = (id) => (dispatch) => {
     })
 }
 
-export const deleteDancer = (id, email, password) => (dispatch) => {
+export const deleteDancer = (id, email, password) => (dispatch, getState) => {
     dispatch(loadingRequest(true))
     return requestWrapper({
+        dispatch,
+        getState,
         axiosConfig: {
             method: 'POST',
             url: POST.login(email, password)

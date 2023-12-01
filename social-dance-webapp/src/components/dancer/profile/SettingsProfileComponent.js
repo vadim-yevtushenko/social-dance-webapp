@@ -4,8 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { deleteDancer } from "../../../api/DancerApi";
 import { changeEmail, changePassword } from "../../../api/CredentialApi";
 import { useValidate } from "../../../hooks/useValidate";
-import {useHttp} from "../../../hooks/http.hook";
-import {POST} from "../../../api/Endpoints";
 
 const SettingsProfileComponent = () => {
     const { email, dancer } = useSelector(state => state.auth)
@@ -14,7 +12,6 @@ const SettingsProfileComponent = () => {
     const { register: deleteRegister, handleSubmit: deleteHandleSubmit, formState: { errors: deleteErrors } } = useForm()
     const dispatch = useDispatch();
     const { validatePassword } = useValidate()
-    const { request } = useHttp()
 
     function onChangePasswordSubmit({ newPassword, currentPassword }) {
         dispatch(changePassword(email, newPassword, currentPassword))
@@ -23,9 +20,8 @@ const SettingsProfileComponent = () => {
         setValue("confirmPassword", "")
     }
 
-    function onChangeEmailSubmit({ newEmail }) {
-        console.log(newEmail)
-        dispatch(changeEmail(email, newEmail))
+    function onChangeEmailSubmit({ newEmail, password }) {
+        dispatch(changeEmail(email, newEmail, password))
         changeEmailSetValue("newEmail", "")
     }
 
@@ -143,7 +139,7 @@ const SettingsProfileComponent = () => {
                                 <div className="col-span-full">
                                     <label htmlFor="logout-password" className=" text-sm font-medium leading-6 text-black">
                                         Your current email: <p className="font-bold">{email}</p>
-                                        Enter new email
+                                        New email
                                     </label>
                                     <div className="mt-2">
                                         <input
@@ -153,9 +149,27 @@ const SettingsProfileComponent = () => {
                                             autoComplete="newEmail"
                                             className="block w-full rounded-md border-1 bg-white/5 py-1.5 text-black shadow-md ring-1
                                             ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                                            {...changeEmailRegister('newEmail', { required: true })}
+                                            {...changeEmailRegister('newEmail', { required: true, maxLength: 60 })}
                                         />
                                         {changeEmailErrors?.newEmail?.type === "required" && <p className="text-xs leading-5 text-red-700">Email is required.</p>}
+                                        {changeEmailErrors?.newEmail?.type === "maxLength" && <p className="text-xs leading-5 text-red-700">Max length 60 symbols.</p>}
+                                    </div>
+                                </div>
+                                <div className="col-span-full">
+                                    <label htmlFor="logout-password" className="block text-sm font-medium leading-6 text-black">
+                                        Your password
+                                    </label>
+                                    <div className="mt-2">
+                                        <input
+                                            id="password"
+                                            name="password"
+                                            type="password"
+                                            autoComplete="password"
+                                            className="block w-full rounded-md border-1 bg-white/5 py-1.5 text-black shadow-md ring-1
+                                            ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                                            {...deleteRegister('password', { required: true })}
+                                        />
+                                        {deleteErrors?.password?.type === "required" && <p className="text-xs leading-5 text-red-700">Password is required.</p>}
                                     </div>
                                 </div>
                             </div>

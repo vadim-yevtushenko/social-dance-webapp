@@ -1,11 +1,13 @@
-import {loadingRequest} from "../redux/actions/requestActions";
-import {POST} from "./Endpoints";
-import {errorHandling, successHandling} from "./notificationHandling";
+import { loadingRequest } from "../redux/actions/requestActions";
+import { POST } from "./Endpoints";
+import { errorHandling, successHandling } from "./notificationHandling";
 import requestWrapper from "./requestWrapper";
 
-export const sendSupportEmail = (emailObj) => (dispatch) => {
+export const sendSupportEmail = (emailObj) => (dispatch, getState) => {
     dispatch(loadingRequest(true))
     return requestWrapper({
+        dispatch,
+        getState,
         axiosConfig: {
             method: 'POST',
             url: POST.supportEmail(),

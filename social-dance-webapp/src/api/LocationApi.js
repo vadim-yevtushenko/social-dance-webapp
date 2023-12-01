@@ -1,8 +1,6 @@
 import {loadingRequest} from "../redux/actions/requestActions";
 import requestWrapper from "./requestWrapper";
 import {GET} from "./Endpoints";
-import {getEvents} from "../redux/actions/listsActions";
-import {errorHandling} from "./notificationHandling";
 
 export const fetchCountries = (country) => (dispatch) => {
     dispatch(loadingRequest(true))

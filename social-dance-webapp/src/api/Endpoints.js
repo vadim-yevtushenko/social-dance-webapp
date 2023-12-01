@@ -84,11 +84,11 @@ export const POST = {
     uploadEventImage: (id, organizerId) => `${API_BASE_URL}/events/upload-image?id=${id}&organizerId=${organizerId}`,
 
     // Credential
-    login: (email, password) => `${API_BASE_URL}/credential/login?email=${email}&password=${password}`,
-    registration: (email, password) => `${API_BASE_URL}/credential/registration?email=${email}&password=${password}`,
-    changePassword: (email, newPassword, oldPassword) => `${API_BASE_URL}/credential/change-password?email=${email}&newPassword=${newPassword}&oldPassword=${oldPassword}`,
-    changeEmail: (email, newEmail) => `${API_BASE_URL}/credential/change-email?email=${email}&newEmail=${newEmail}`,
-    resetPassword: (email) => `${API_BASE_URL}/credential/reset_password?email=${email}`,
+    login: (email, password) => `${API_BASE_URL}/credentials/login?email=${email}&password=${password}`,
+    registration: (email, password) => `${API_BASE_URL}/credentials/registration?email=${email}&password=${password}`,
+    changePassword: (email, newPassword, oldPassword) => `${API_BASE_URL}/credentials/change-password?email=${email}&newPassword=${newPassword}&oldPassword=${oldPassword}`,
+    changeEmail: (email, newEmail, password) => `${API_BASE_URL}/credentials/change-email?email=${email}&newEmail=${newEmail}&password=${password}`,
+    resetPassword: (email) => `${API_BASE_URL}/credentials/reset_password?email=${email}`,
 
     // Admin
     supportEmail: () => `${API_BASE_URL}/admin/support`,

@@ -95,7 +95,7 @@ const DancerQuickViewComponent = ({ openView, setOpenView, dancer }) => {
 
                                                 </div>
 
-                                                {dancer?.contactInfo && (dancer.contactInfo.country || dancer.contactInfo.city) && (
+                                                {dancer?.contactInfo && (dancer.contactInfo.email || dancer.contactInfo.phoneNumber) && (
                                                     <div className="mt-4">
                                                         <h4 className="text-sm font-medium text-gray-900">Contacts</h4>
                                                         <div className="flex justify-between">

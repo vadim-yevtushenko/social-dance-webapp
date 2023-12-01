@@ -53,10 +53,12 @@ export const fetchViewEvent = (id) => (dispatch) => {
     })
 }
 
-export const saveEvent = (event, organizerId) => (dispatch) => {
+export const saveEvent = (event, organizerId) => (dispatch, getState) => {
     let eventId
     dispatch(loadingRequest(true))
     return requestWrapper({
+        dispatch,
+        getState,
         axiosConfig: {
             method: 'POST',
             url: POST.saveEvent(organizerId),
@@ -86,11 +88,13 @@ export const saveEvent = (event, organizerId) => (dispatch) => {
     })
 }
 
-export const uploadEventImage = (id, organizerId, formData) => (dispatch) => {
+export const uploadEventImage = (id, organizerId, formData) => (dispatch, getState) => {
     dispatch(loadingRequest(true))
     return requestWrapper({
+        dispatch,
+        getState,
         axiosConfig: {
-            method: 'post',
+            method: 'POST',
             url: POST.uploadEventImage(id, organizerId),
             data: formData ,
             headers: {'Content-Type': 'multipart/form-data' }
@@ -105,9 +109,11 @@ export const uploadEventImage = (id, organizerId, formData) => (dispatch) => {
     })
 }
 
-export const deleteEventImage = (id, organizerId) => (dispatch) => {
+export const deleteEventImage = (id, organizerId) => (dispatch, getState) => {
     dispatch(loadingRequest(true))
     return requestWrapper({
+        dispatch,
+        getState,
         axiosConfig: {
             method: 'DELETE',
             url: DELETE.deleteEventImage(id, organizerId),
@@ -122,9 +128,11 @@ export const deleteEventImage = (id, organizerId) => (dispatch) => {
     })
 }
 
-export const deleteEvent = (id, organizerId) => (dispatch) => {
+export const deleteEvent = (id, organizerId) => (dispatch, getState) => {
     dispatch(loadingRequest(true))
     return requestWrapper({
+        dispatch,
+        getState,
         axiosConfig: {
             method: 'DELETE',
             url: DELETE.deleteEvent(id, organizerId),
