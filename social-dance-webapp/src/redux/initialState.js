@@ -1,6 +1,7 @@
 const initialState = () => ({
     auth: {
         email: '',
+        token: '',
         isAuthenticated: false,
         dancer: {
             contactInfo: {}

@@ -25,8 +25,8 @@ export default function MainHeader() {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const {isAuthenticated, email, dancer } = useSelector(state => state.auth)
-  const {name, lastName} = useSelector(state => state.auth?.dancer)
+  const { isAuthenticated, email, dancer } = useSelector(state => state.auth)
+  const { name, lastName } = useSelector(state => state.auth?.dancer)
   const  state = useSelector(state => state)
 
   console.log("state", state)

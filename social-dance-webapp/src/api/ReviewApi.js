@@ -21,9 +21,11 @@ export const fetchReviews = (objectId, page, size) => (dispatch) => {
     })
 }
 
-export const saveReview = review => (dispatch) => {
+export const saveReview = review => (dispatch, getState) => {
     dispatch(loadingRequest(true))
     return RequestWrapper({
+        dispatch,
+        getState,
         axiosConfig: {
             method: 'POST',
             url: POST.saveReview(),
@@ -38,9 +40,11 @@ export const saveReview = review => (dispatch) => {
     })
 }
 
-export const deleteReview = reviewId => (dispatch) => {
+export const deleteReview = reviewId => (dispatch, getState) => {
     dispatch(loadingRequest(true))
     return RequestWrapper({
+        dispatch,
+        getState,
         axiosConfig: {
             method: 'DELETE',
             url: DELETE.deleteReview(reviewId),

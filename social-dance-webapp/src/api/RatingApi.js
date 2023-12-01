@@ -36,9 +36,11 @@ export const fetchRating = (objectId, dancerId) => (dispatch) => {
     })
 }
 
-export const saveRating = rating => (dispatch) => {
+export const saveRating = rating => (dispatch, getState) => {
     dispatch(loadingRequest(true))
     return RequestWrapper({
+        dispatch,
+        getState,
         axiosConfig: {
             method: 'POST',
             url: POST.saveRating(),

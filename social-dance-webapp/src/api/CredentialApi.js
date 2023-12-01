@@ -1,6 +1,6 @@
 import requestWrapper from "./requestWrapper";
 import { POST } from "./Endpoints";
-import { dancerLogin, updateDancer } from "../redux/actions/authActions";
+import { dancerLogin, updateDancer, updateToken } from "../redux/actions/authActions";
 import { loadingRequest } from "../redux/actions/requestActions";
 import { errorHandling, successHandling } from "./notificationHandling";
 
@@ -13,8 +13,8 @@ export const login = (email, password) => (dispatch) => {
         }
     }).then(res => {
         const isAuth = res.data != null
-        dispatch(dancerLogin(email, isAuth))
-        dispatch(updateDancer(res.data))
+        dispatch(dancerLogin(email, res.data.token, isAuth))
+        dispatch(updateDancer(res.data.dancer))
         dispatch(loadingRequest(false))
     }).catch(error => {
         dispatch(loadingRequest(false))
@@ -33,8 +33,8 @@ export const signup = (email, password, dancer) => (dispatch) => {
         }
     }).then(res => {
         const isAuth = res.data != null
-        dispatch(dancerLogin(email, isAuth))
-        dispatch(updateDancer(res.data))
+        dispatch(dancerLogin(email, res.data.token, isAuth))
+        dispatch(updateDancer(res.data.dancer))
         dispatch(loadingRequest(false))
     }).catch(error => {
         dispatch(loadingRequest(false))
@@ -42,14 +42,18 @@ export const signup = (email, password, dancer) => (dispatch) => {
     })
 }
 
-export const changePassword = (email, newPassword, oldPassword) => (dispatch) => {
+export const changePassword = (email, newPassword, oldPassword) => (dispatch, getState) => {
     dispatch(loadingRequest(true))
     return requestWrapper({
+        dispatch,
+        getState,
         axiosConfig: {
             method: 'POST',
             url: POST.changePassword(email, newPassword, oldPassword)
         }
-    }).then(() => {
+    }).then((res) => {
+        console.log("nt", res.data)
+        dispatch(updateToken(res.data))
         dispatch(loadingRequest(false))
         successHandling("Password changed successful.")
     }).catch(error => {
@@ -74,15 +78,17 @@ export const resetPassword = (email) => (dispatch) => {
     })
 }
 
-export const changeEmail = (email, newEmail) => (dispatch) => {
+export const changeEmail = (email, newEmail, password) => (dispatch, getState) => {
     dispatch(loadingRequest(true))
     return requestWrapper({
+        dispatch,
+        getState,
         axiosConfig: {
             method: 'POST',
-            url: POST.changeEmail(email, newEmail)
+            url: POST.changeEmail(email, newEmail, password)
         }
-    }).then(() => {
-        dispatch(dancerLogin(newEmail, true))
+    }).then((res) => {
+        dispatch(dancerLogin(newEmail, res.data, true))
         dispatch(loadingRequest(false))
         successHandling("Email changed successful.")
     }).catch(error => {

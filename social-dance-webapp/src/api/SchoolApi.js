@@ -52,10 +52,12 @@ export const fetchViewSchool = (id) => (dispatch) => {
     })
 }
 
-export const saveSchool = (school, adminId) => (dispatch) => {
+export const saveSchool = (school, adminId) => (dispatch, getState) => {
     let schoolId
     dispatch(loadingRequest(true))
     return requestWrapper({
+        dispatch,
+        getState,
         axiosConfig: {
             method: 'POST',
             url: POST.saveSchool(adminId),
@@ -86,9 +88,11 @@ export const saveSchool = (school, adminId) => (dispatch) => {
     })
 }
 
-export const uploadSchoolImage = (id, adminId, formData) => (dispatch) => {
+export const uploadSchoolImage = (id, adminId, formData) => (dispatch, getState) => {
     dispatch(loadingRequest(true))
     return requestWrapper({
+        dispatch,
+        getState,
         axiosConfig: {
             method: 'post',
             url: POST.uploadSchoolImage(id, adminId),
@@ -105,9 +109,11 @@ export const uploadSchoolImage = (id, adminId, formData) => (dispatch) => {
     })
 }
 
-export const deleteSchoolImage = (id, adminId) => (dispatch) => {
+export const deleteSchoolImage = (id, adminId) => (dispatch, getState) => {
     dispatch(loadingRequest(true))
     return requestWrapper({
+        dispatch,
+        getState,
         axiosConfig: {
             method: 'DELETE',
             url: DELETE.deleteSchoolImage(id, adminId),
@@ -122,9 +128,11 @@ export const deleteSchoolImage = (id, adminId) => (dispatch) => {
     })
 }
 
-export const deleteSchool = (id, adminId) => (dispatch) => {
+export const deleteSchool = (id, adminId) => (dispatch, getState) => {
     dispatch(loadingRequest(true))
     return requestWrapper({
+        dispatch,
+        getState,
         axiosConfig: {
             method: 'DELETE',
             url: DELETE.deleteSchool(id, adminId),
