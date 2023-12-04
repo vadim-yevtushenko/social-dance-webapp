@@ -100,22 +100,15 @@ export const deleteDancerImage = (id) => (dispatch, getState) => {
     })
 }
 
-export const deleteDancer = (id, email, password) => (dispatch, getState) => {
+export const deleteDancer = (id, password) => (dispatch, getState) => {
     dispatch(loadingRequest(true))
     return requestWrapper({
         dispatch,
         getState,
         axiosConfig: {
-            method: 'POST',
-            url: POST.login(email, password)
+            method: 'DELETE',
+            url: DELETE.deleteDancer(id, password),
         }
-    }).then(() => {
-        requestWrapper({
-            axiosConfig: {
-                method: 'DELETE',
-                url: DELETE.deleteDancer(id),
-            }
-        }).then()
     }).then(() => {
         dispatch(getOrganizedEvent({}))
         dispatch(getAdministratedSchool({}))

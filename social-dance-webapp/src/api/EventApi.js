@@ -74,6 +74,8 @@ export const saveEvent = (event, organizerId) => (dispatch, getState) => {
         if (event.id === null || event.id === undefined){
             event = {...event, id: eventId}
             requestWrapper({
+                dispatch,
+                getState,
                 axiosConfig: {
                     method: 'POST',
                     url: POST.notifyCreatedEvent(),

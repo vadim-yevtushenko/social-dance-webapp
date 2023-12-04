@@ -102,7 +102,7 @@ export const POST = {
 
 export const DELETE = {
     // Dancers
-    deleteDancer: (dancerId) => `${API_BASE_URL}/dancers/${dancerId}`,
+    deleteDancer: (dancerId, password) => `${API_BASE_URL}/dancers/${dancerId}?password=${password}`,
     deleteDancerImage: (dancerId) => `${API_BASE_URL}/dancers/delete-image?id=${dancerId}`,
 
     // Schools

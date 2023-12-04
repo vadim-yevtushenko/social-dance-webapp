@@ -74,6 +74,8 @@ export const saveSchool = (school, adminId) => (dispatch, getState) => {
         if (school.id === null || school.id === undefined){
             school = {...school, id: schoolId}
             requestWrapper({
+                dispatch,
+                getState,
                 axiosConfig: {
                     method: 'POST',
                     url: POST.notifyCreatedSchool(),

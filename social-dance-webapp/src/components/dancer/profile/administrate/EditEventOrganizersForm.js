@@ -4,11 +4,6 @@ import { GET } from "../../../../api/Endpoints";
 import DancerSearchComponent from "../../DancerSearchComponent";
 import { classNamesJoin } from "../../../../util/classNameUtils";
 
-const columns = [
-    { id: 1, name: "Name" },
-    { id: 2, name: "" },
-];
-
 const EditEventOrganizersForm = ({ organizers, setOrganizers }) => {
     const [dancers, setDancers] = useState(organizers)
     const [name, setName] = useState("")
@@ -53,7 +48,7 @@ const EditEventOrganizersForm = ({ organizers, setOrganizers }) => {
 
     return (
         <div>
-            <div className="flex justify-between">
+            <div className="sm:flex justify-between mb-5">
                 <DancerSearchComponent
                     name={name}
                     setName={setName}
@@ -63,24 +58,15 @@ const EditEventOrganizersForm = ({ organizers, setOrganizers }) => {
             </div>
 
             {dancers?.length > 0 && (
-                <table className="min-w-fit sm:min-w-full divide-y divide-gray-300">
+                <table className="min-w-fit sm:min-w-full divide-y divide-gray-300 mb-7">
                     <thead>
                     <tr>
-                        {columns.map(column => (
-                            <th
-                                key={column.id}
-                                scope="col"
-                                className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0"
-                            >
-                                {column.name}
-                            </th>
-                        ))}
+                        <th className="py-3.5 text-left text-sm font-semibold text-gray-900 sm:pl-0">Organizers list</th>
                     </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 bg-white">
                     {dancers?.map((dancer) => (
                         <tr
-                            // className="cursor-pointer hover:bg-gray-100"
                             key={dancer.id}
                         >
                             <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0 ">
