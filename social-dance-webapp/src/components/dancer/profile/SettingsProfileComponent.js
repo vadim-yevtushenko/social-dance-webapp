@@ -26,7 +26,7 @@ const SettingsProfileComponent = () => {
     }
 
     function onDeleteSubmit({ deletePassword }) {
-        dispatch(deleteDancer(dancer.id, email, deletePassword))
+        dispatch(deleteDancer(dancer.id, deletePassword))
     }
 
     return (
@@ -137,7 +137,7 @@ const SettingsProfileComponent = () => {
                         <form className="md:col-span-2" onSubmit={changeEmailHandleSubmit(onChangeEmailSubmit)}>
                             <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
                                 <div className="col-span-full">
-                                    <label htmlFor="logout-password" className=" text-sm font-medium leading-6 text-black">
+                                    <label htmlFor="email" className=" text-sm font-medium leading-6 text-black">
                                         Your current email: <p className="font-bold">{email}</p>
                                         New email
                                     </label>
@@ -156,7 +156,7 @@ const SettingsProfileComponent = () => {
                                     </div>
                                 </div>
                                 <div className="col-span-full">
-                                    <label htmlFor="logout-password" className="block text-sm font-medium leading-6 text-black">
+                                    <label htmlFor="email-password" className="block text-sm font-medium leading-6 text-black">
                                         Your password
                                     </label>
                                     <div className="mt-2">
@@ -167,9 +167,9 @@ const SettingsProfileComponent = () => {
                                             autoComplete="password"
                                             className="block w-full rounded-md border-1 bg-white/5 py-1.5 text-black shadow-md ring-1
                                             ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                                            {...deleteRegister('password', { required: true })}
+                                            {...changeEmailRegister('password', { required: true })}
                                         />
-                                        {deleteErrors?.password?.type === "required" && <p className="text-xs leading-5 text-red-700">Password is required.</p>}
+                                        {changeEmailErrors?.password?.type === "required" && <p className="text-xs leading-5 text-red-700">Password is required.</p>}
                                     </div>
                                 </div>
                             </div>
