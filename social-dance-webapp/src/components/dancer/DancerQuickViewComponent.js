@@ -20,8 +20,8 @@ const DancerQuickViewComponent = ({ openView, setOpenView, dancer }) => {
     }
 
     const isExistSocialNetwork = () => {
-        return !!(dancer?.socialNetworks && (dancer?.socialNetworks.instagram !== ""
-            || dancer?.socialNetworks.facebook !== "" || dancer?.socialNetworks.youtube !== ""));
+        return !!(dancer?.socialNetworks &&
+            (dancer?.socialNetworks.instagram || dancer?.socialNetworks.facebook || dancer?.socialNetworks.youtube));
 
     }
 
