@@ -3,12 +3,13 @@ import { useState } from "react";
 import React from "react";
 import AboutForm from "./AboutForm";
 import SupportForm from "./SupportForm";
+import PrivacyPolicyForm from "./PrivacyPolicyForm";
 
 const navigation = {
     main: [
         { name: 'About', href: '#' },
         { name: 'Support', href: '#' },
-        { name: 'Jobs', href: '#' },
+        { name: 'Privacy Policy', href: '#' },
         { name: 'Partners', href: '#' },
     ],
     social: [
@@ -87,6 +88,9 @@ export default function Footer() {
             }
             case "Support": {
                 return <SupportForm setOpenDialog={setOpenDialog}/>
+            }
+            case "Privacy Policy": {
+                return <PrivacyPolicyForm/>
             }
             default: {
                 return <p className="text-2xl">In developing...</p>
