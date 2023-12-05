@@ -23,27 +23,27 @@ export default function PaginationComponent({page, size, total, setPage, setSize
         <div className="flex items-center sm:justify-between justify-center  border-t border-gray-200 bg-white px-4 py-3 sm:px-6 mb-4">
             <div className="hidden sm:flex sm:flex-1 sm:items-center">
 
-                    {shortMode || (
-                        <div>
-                            <p className="hidden md:flex text-sm text-gray-700">
-                                {total === 0 ? "0 results" :
-                                    <>Showing&nbsp;
-                                        < span className="font-medium">{getFirstIndex()}</span>&nbsp;to&nbsp;
-                                        <span className="font-medium">{getLastIndex()}</span>&nbsp;of&nbsp;
-                                        <span className="font-medium">{total}</span>&nbsp;results
-                                    </>
-                                }
-                            </p>
-                        </div>
-                    )}
-                    <div className="md:ml-10 text-sm flex md:items-center">
-                        <p className="hidden lg:flex lg:mr-2">Page size</p>
-                        <DropDownListElement
-                            startOption={size}
-                            setOption={setSize}
-                            options={pageSizeOptions}
-                        />
+                {shortMode || (
+                    <div>
+                        <p className="hidden md:flex text-sm text-gray-700">
+                            {total === 0 ? "0 results" :
+                                <>Showing&nbsp;
+                                    < span className="font-medium">{getFirstIndex()}</span>&nbsp;to&nbsp;
+                                    <span className="font-medium">{getLastIndex()}</span>&nbsp;of&nbsp;
+                                    <span className="font-medium">{total}</span>&nbsp;results
+                                </>
+                            }
+                        </p>
                     </div>
+                )}
+                <div className="md:ml-10 text-sm flex md:items-center">
+                    <p className="hidden lg:flex lg:mr-2">Page size</p>
+                    <DropDownListElement
+                        startOption={size}
+                        setOption={setSize}
+                        options={pageSizeOptions}
+                    />
+                </div>
 
             </div>
             <div>
