@@ -2,6 +2,7 @@ import { Fragment, useEffect, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import React from "react";
+import { classNamesJoin } from "../../util/classNameUtils";
 
 const DialogComponent = ({ openDialog, setOpenDialog, children }) => {
     const [open, setOpen] = useState(openDialog)
@@ -30,7 +31,10 @@ const DialogComponent = ({ openDialog, setOpenDialog, children }) => {
                     <div className="fixed inset-0 hidden bg-gray-500 bg-opacity-75 transition-opacity md:block" />
                 </Transition.Child>
 
-                <div className="fixed inset-0 z-10 overflow-y-auto h-fit">
+                <div
+                    className={classNamesJoin(children.type.name === "PrivacyPolicyForm" ? "h-screen" :
+                        "h-fit", "fixed inset-0 z-10 overflow-y-auto")}
+                >
                     <div className="flex min-h-full items-stretch justify-center text-center md:items-center md:px-2 lg:px-4">
                          {/*This element is to trick the browser into centering the modal contents.*/}
                         <span className="hidden md:inline-block md:h-screen md:align-middle" aria-hidden="true">
