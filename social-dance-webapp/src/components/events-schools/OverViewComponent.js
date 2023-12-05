@@ -47,6 +47,12 @@ const OverViewComponent = ({ typeOption }) => {
         dispatch(getReviews({}))
     }
 
+    const isExistSocialNetwork = () => {
+        return !!(viewObject?.socialNetworks &&
+            (viewObject?.socialNetworks.instagram || viewObject?.socialNetworks.facebook || viewObject?.socialNetworks.youtube));
+
+    }
+
     return (
         <div className="grow bg-white">
             <DancerQuickViewComponent
@@ -168,23 +174,25 @@ const OverViewComponent = ({ typeOption }) => {
                                 </div>
                             )}
 
-                            {viewObject?.socialNetworks && (
+                            {isExistSocialNetwork() && (
                                 <div className="mt-8">
                                     <SocialNetworksComponent socialNetworks={viewObject?.socialNetworks}/>
                                 </div>
                             )}
 
-                            <div className="mt-8 border-t border-gray-200 pt-8">
-                                <h2 className="text-sm font-medium text-gray-900">Dances</h2>
+                            {viewObject?.dances?.length > 0 && (
+                                <div className="mt-8 border-t border-gray-200 pt-8">
+                                    <h2 className="text-sm font-medium text-gray-900">Dances</h2>
 
-                                <div className="prose prose-sm mt-4 text-gray-500">
-                                    <ul role="list" className="columns-2">
-                                        {viewObject?.dances?.map((dance) => (
-                                            <li key={dance.id}>{dance.name}</li>
-                                        ))}
-                                    </ul>
+                                    <div className="prose prose-sm mt-4 text-gray-500">
+                                        <ul role="list" className="columns-2">
+                                            {viewObject?.dances?.map((dance) => (
+                                                <li key={dance.id}>{dance.name}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
                                 </div>
-                            </div>
+                            )}
 
                             {typeOption === TYPE_OPTIONS.SCHOOL ? (
                                 <>
