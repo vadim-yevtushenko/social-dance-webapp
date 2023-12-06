@@ -7,10 +7,10 @@ import PrivacyPolicyForm from "./PrivacyPolicyForm";
 
 const navigation = {
     main: [
-        { name: 'About', href: '#' },
-        { name: 'Support', href: '#' },
-        { name: 'Privacy Policy', href: '#' },
-        { name: 'Partners', href: '#' },
+        { id: 1, name: 'About', href: '#' },
+        { id: 2, name: 'Support', href: '#' },
+        { id: 3, name: 'Privacy Policy', href: '/privacy' },
+        { id: 4, name: 'Partners', href: '#' },
     ],
     social: [
         {
@@ -79,7 +79,7 @@ const navigation = {
 
 export default function Footer() {
     const [openDialog, setOpenDialog] = useState(false)
-    const [navName, setNavName] = useState(false)
+    const [navName, setNavName] = useState("")
 
     const renderMainNav = () => {
         switch(navName){
@@ -88,9 +88,6 @@ export default function Footer() {
             }
             case "Support": {
                 return <SupportForm setOpenDialog={setOpenDialog}/>
-            }
-            case "Privacy Policy": {
-                return <PrivacyPolicyForm/>
             }
             default: {
                 return <p className="text-2xl">In developing...</p>
@@ -111,11 +108,11 @@ export default function Footer() {
             <div className="mx-auto max-w-7xl overflow-hidden px-6 py-20 sm:py-8 lg:px-8">
                 <nav className="-mb-6 columns-2 sm:flex sm:justify-center sm:space-x-12" aria-label="Footer">
                     {navigation.main.map((item) => (
-                        <div key={item.name} className="pb-6">
+                        <div key={item.id} className="pb-6">
                             <a
                                 href={item.href}
                                 className="text-md leading-6 text-gray-100 hover:text-gray-300 sm:mx-4"
-                                onClick={() => handleClick(item.name)}
+                                onClick={() => item.id === 3 || handleClick(item.name)}
                             >
                                 {item.name}
                             </a>

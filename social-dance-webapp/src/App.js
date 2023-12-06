@@ -1,6 +1,6 @@
 import './App.css';
 import {
-    DancersPage, EventPage, EventsPage, HomePage, LoginPage, Page404,
+    DancersPage, EventPage, EventsPage, HomePage, LoginPage, Page404, PrivacyPage,
     ProfilePage, RegistrationPage, SchoolPage, SchoolsPage
 } from "./pages";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -30,6 +30,7 @@ const App = () => {
               <Route path="profile" element={<ProfilePage/>}/>
               <Route path="login" element={<LoginPage/>}/>
               <Route path="registration" element={<RegistrationPage/>}/>
+              <Route path="privacy" element={<PrivacyPage/>}/>
               <Route path="*" element={<Page404/>}/>
             </Routes>
           </main>

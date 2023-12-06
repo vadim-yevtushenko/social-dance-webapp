@@ -8,7 +8,8 @@ import ProfilePage from "./ProfilePage";
 import SchoolPage from "./SchoolPage";
 import EventPage from "./EventPage";
 import HomePage from "./HomePage";
+import PrivacyPage from "./PrivacyPage";
 
 export {HomePage, DancersPage, SchoolsPage, EventsPage,
     Page404, LoginPage, RegistrationPage, ProfilePage,
-    SchoolPage, EventPage}
+    SchoolPage, EventPage, PrivacyPage}

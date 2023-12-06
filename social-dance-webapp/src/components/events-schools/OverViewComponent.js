@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import MapComponent from "./MapComponent";
 import DancerQuickViewComponent from "../dancer/DancerQuickViewComponent";
 import SocialNetworksComponent from "./SocialNetworksComponent";
-import {getGeneralRating, getRating, getReviews} from "../../redux/actions/feedbackActions";
+import { getGeneralRating, getRating, getReviews } from "../../redux/actions/feedbackActions";
 
 const OverViewComponent = ({ typeOption }) => {
     const dispatch = useDispatch();
