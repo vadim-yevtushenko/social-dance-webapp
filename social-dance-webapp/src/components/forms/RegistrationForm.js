@@ -7,8 +7,6 @@ import { useValues } from "../../hooks/useValues";
 import { useForm } from "react-hook-form";
 import { signup } from "../../api/CredentialApi";
 import { useValidate } from "../../hooks/useValidate";
-import DialogComponent from "../modals/DialogComponent";
-import PrivacyPolicyForm from "../layouts/footer/PrivacyPolicyForm";
 
 const RegistrationForm = () => {
     const [gender, setGender] = useState();
@@ -19,7 +17,6 @@ const RegistrationForm = () => {
     const [level, setLevel] = useState(levelOptions[0]);
     const { register, handleSubmit, formState: { errors }, getValues } = useForm()
     const { validatePassword } = useValidate()
-    const [openDialog, setOpenDialog] = useState(false)
 
     useEffect(() => {
         if (isAuthenticated){
@@ -191,13 +188,10 @@ const RegistrationForm = () => {
 
                             <div >
                                 <div className="mt-12">
-                                    <DialogComponent openDialog={openDialog} setOpenDialog={setOpenDialog}>
-                                        <PrivacyPolicyForm/>
-                                    </DialogComponent>
                                     <p className="text-sm">Your data is safe and will not be transferred to third parties. By clicking the "Sign up" button, you accept our&nbsp;
                                         <a
+                                            href={"/privacy"}
                                             className="text-sm text-indigo-700 hover:text-indigo-500 cursor-pointer"
-                                            onClick={() => setOpenDialog(true)}
                                         >
                                              Privacy Policy
                                         </a>.
