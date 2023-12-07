@@ -32,8 +32,7 @@ const DialogComponent = ({ openDialog, setOpenDialog, children }) => {
                 </Transition.Child>
 
                 <div
-                    className={classNamesJoin(children.type.name === "PrivacyPolicyForm" ? "h-screen" :
-                        "h-fit", "fixed inset-0 z-10 overflow-y-auto")}
+                    className={"fixed inset-0 z-10 overflow-y-auto h-fit"}
                 >
                     <div className="flex min-h-full items-stretch justify-center text-center md:items-center md:px-2 lg:px-4">
                          {/*This element is to trick the browser into centering the modal contents.*/}
