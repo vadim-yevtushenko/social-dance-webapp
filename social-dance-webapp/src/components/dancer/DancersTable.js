@@ -69,8 +69,8 @@ const DancersTable = () => {
                                                     {dancer.name} {dancer.lastName}
                                                 </div>
                                                 <p className="mt-1 italic text-gray-500">
-                                                    {dancer.contactInfo && dancer.contactInfo.country}
-                                                    {dancer.contactInfo && <>, {dancer.contactInfo.city}</>}
+                                                    {dancer.contactInfo && dancer.contactInfo.country && dancer.contactInfo.country}
+                                                    {dancer.contactInfo && dancer.contactInfo.city && <>, {dancer.contactInfo.city}</>}
                                                 </p>
                                             </div>
                                         </div>
