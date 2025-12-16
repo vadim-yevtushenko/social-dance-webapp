@@ -21,8 +21,8 @@ export const successHandling = (message) => {
 
 export const errorHandling = (error) => {
     if (error){
-        // const message = error.response?.data?.message ? error.response.data.message : error.message
-        const message = "Sorry, the server is temporarily unavailable. TECHNICAL WORK IS UNDERWAY!"
+        const message = error.response?.data?.message ? error.response.data.message : error.message
+        // const message = "Sorry, the server is temporarily unavailable. TECHNICAL WORK IS UNDERWAY!"
 
         toast.custom(<NotificationComponent
             showNotification={true}

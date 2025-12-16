@@ -1,6 +1,6 @@
 // const API_BASE_URL=process.env.API_BASE_URL
 // const API_BASE_URL='http://localhost:8080'
-const API_BASE_URL='https://social-dance-backend-003ba732e7ef.herokuapp.com'
+const API_BASE_URL='https://social-dance-server.onrender.com'
 
 export const GET = {
     // Dancers
