@@ -7,6 +7,7 @@ import { getSchools, getViewObject } from "../redux/actions/listsActions";
 import { fetchDancer } from "./DancerApi";
 
 export const fetchSchools = (name, country, city, page, size) => (dispatch) => {
+    dispatch(loadingRequest(true))
     return requestWrapper({
         axiosConfig: {
             method: 'GET',
@@ -22,6 +23,7 @@ export const fetchSchools = (name, country, city, page, size) => (dispatch) => {
 };
 
 export const fetchAdministratedSchool = (id) => (dispatch) => {
+    dispatch(loadingRequest(true))
     return requestWrapper({
         axiosConfig: {
             method: 'GET',
